@@ -6,6 +6,3 @@ This repo serves as a storage of the R and python scripts and the csv's needed t
 the data.
 
 Hopefully, the gathering of this info will lead to other browser-friendly media for visualizing the project and pipeline.
-
-
-test
