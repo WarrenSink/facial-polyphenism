@@ -1,0 +1,10 @@
+"status","target","source","Similarity","Individual_ID.x","Co_twins_ID.x","Sex.x","Ethnicity.x","Birth_year.x","Eye_color.x","Hair_color.x","Age.x","Individual_ID.y","Co_twins_ID.y","Sex.y","Ethnicity.y","Birth_year.y","Eye_color.y","Hair_color.y","Age.y"
+"positive_ctrl","Mitchell_Ned","Mitchell_Ned_control",99.9978866577148,"34B","34","M","black",1950,"brown","black",62,NA,NA,NA,NA,NA,NA,NA,NA
+"positive_ctrl","Mitchell_Ned","Mitchell_Ned_control",99.9978866577148,"pos2A","pos2","M","black",1950,"brown","black",62,NA,NA,NA,NA,NA,NA,NA,NA
+"positive_ctrl","Haick_Ava","Haick_Ava_control",99.9989776611328,"22A","22","F","caucasian",2007,"blue","brown",5,NA,NA,NA,NA,NA,NA,NA,NA
+"positive_ctrl","Haick_Ava","Haick_Ava_control",99.9989776611328,"pos1A","pos1","F","caucasian",2007,"blue","brown",5,NA,NA,NA,NA,NA,NA,NA,NA
+"positive_ctrl","Elder_Marilyn","Elder_Marilyn",99.9972610473633,"7B","7","F","caucasian",1944,"brown","brown",68,"7B","7","F","caucasian",1944,"brown","brown",68
+"positive_ctrl","Everingham_Steve","Everingham_Steve",99.99560546875,"17B","17","M","caucasian",1947,"brown","grey",65,"17B","17","M","caucasian",1947,"brown","grey",65
+"positive_ctrl","Parks_Katie","Parks_Katie",99.9980010986328,"40A","40","F","caucasian",2001,"blue","blond",11,"40A","40","F","caucasian",2001,"blue","blond",11
+"positive_ctrl","Ramsdell_Cole","Ramsdell_Cole",99.9985961914062,"42A","42","M","caucasian",1988,"brown","brown",24,"42A","42","M","caucasian",1988,"brown","brown",24
+"positive_ctrl","Starr_Ellen","Starr_Ellen",99.9982986450195,"47A","47","F","black",1942,"brown","grey",70,"47A","47","F","black",1942,"brown","grey",70
