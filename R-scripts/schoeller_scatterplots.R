@@ -1,4 +1,4 @@
-setwd("/Users/Warren.Sink/Desktop/R projects/facial-polyphenism")
+setwd("/Users/Warren.Sink/Desktop/R projects/facial-polyphenism/CSVs")
 
 library(tidyverse)
 
