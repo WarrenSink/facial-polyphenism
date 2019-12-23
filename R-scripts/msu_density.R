@@ -73,16 +73,92 @@ msu_cf <- rbind(msu_cf, msu_cf_negctrl)
 
 msu_cf <- msu_cf %>% arrange(factor(ctrl_id, levels(ctrl_id)[c(1,2,3)]))
 
+library(ggplot)
 
-ggplot(subset(similarity_scores_pheno_aldi, status == 'negative_ctrl' |status == 'co-twins'| status == 'positive_ctrl'),
-       aes(x=Similarity, color=status)) +
-  stat_density(aes(x=Similarity, y=..scaled..,color=status), position=position_dodge(width = .1), geom="line") +
+sample10_msu <- msu_cf %>% group_by(ctrl_id) %>% sample_n(size = 10)
+sample148_msu <- msu_cf %>% group_by(ctrl_id) %>% sample_n(size = 148)
+
+sample10_msu %>%
+  ggplot( ., aes(x = Similarity, group = ctrl_id, fill = ctrl_id)) +
+  geom_density(adjust=1.5, position="fill")
+
+sample10_msu %>%
+  filter(ctrl_id != "neg_ctrl") %>%
+  ggplot( ., aes(x = Similarity, group = ctrl_id, fill = ctrl_id)) +
+  geom_density(adjust=1.5, position="fill") +
+  labs(title = "AWS-Rekognition controls", y = "Density",color = "Similarity Scores") +
+  theme(legend.position=c(0.8,0.8),
+        plot.title = element_text(hjust = 0.5, size = 30),
+        axis.title.x = element_text(size = 40),
+        axis.title.y = element_text(size = 40),  
+        axis.text.x= element_text(size = 15, angle = 0),
+        axis.text.y= element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank())
+
+sample148_msu %>%
+  filter(ctrl_id != "neg_ctrl") %>%
+  ggplot( ., aes(x = Similarity, group = ctrl_id, fill = ctrl_id)) +
+  geom_density(adjust=1.5, position="fill") +
+  labs(title = "AWS-Rekognition controls", y = "Density",color = "Similarity Scores") +
+  theme(legend.position=c(0.8,0.8),
+        plot.title = element_text(hjust = 0.5, size = 30),
+        axis.title.x = element_text(size = 40),
+        axis.title.y = element_text(size = 40),  
+        axis.text.x= element_text(size = 15, angle = 0),
+        axis.text.y= element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank())
+
+ggplot(sample10_msu, aes(x=Similarity, fill = ctrl_id, color=ctrl_id)) +
+  geom_histogram(binwidth = 1, alpha = 0.5, position = "identity")
+
+ggplot(sample148_msu, aes(x=Similarity, fill = ctrl_id, color=ctrl_id)) +
+  geom_histogram(binwidth = 1, alpha = 0.5, position = "identity")
+
+ggplot(subset(sample10_msu, ctrl_id == 'neg_ctrl' |ctrl_id == 'co-twins'| ctrl_id == 'positive_ctrl'),
+       aes(x=Similarity, color=ctrl_id)) +
+  stat_density(aes(x=Similarity, y=..scaled..,color=ctrl_id), position=position_dodge(width = .1), geom="line") +
   scale_color_manual(values = c( "#615292", "#EA5454","#AEC960")) +
   scale_x_continuous(expand = c(0, 0)) + scale_y_continuous(expand = c(0, 0)) +
   scale_fill_discrete(name= "Similarity Scores",labels = c("cowtins",'negative control','positive control'))+
   labs(title = "AWS-Rekognition controls", y = "Density",color = "Similarity Scores")+
   expand_limits(x=102)+
-  theme(legend.position=c(0.5,0.5),
+  theme(legend.position=c(0.5,0.9),
+        plot.title = element_text(hjust = 0.5, size = 30),
+        axis.title.x = element_text(size = 40),
+        axis.title.y = element_text(size = 40),  
+        axis.text.x= element_text(size = 15, angle = 0),
+        axis.text.y= element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank())
+
+ggplot(subset(sample148_msu, ctrl_id == 'co-twins'| ctrl_id == 'positive_ctrl'),
+       aes(x=Similarity, color=ctrl_id)) +
+  stat_density(aes(x=Similarity, y=..scaled..,color=ctrl_id), position=position_dodge(width = .1), geom="line") +
+  scale_color_manual(values = c( "#615292", "#EA5454","#AEC960")) +
+  scale_x_continuous(expand = c(0, 0)) + scale_y_continuous(expand = c(0, 0)) +
+  scale_fill_discrete(name= "Similarity Scores",labels = c("cowtins",'positive control'))+
+  labs(title = "AWS-Rekognition controls", y = "Density",color = "Similarity Scores")+
+  expand_limits(x=102)+
+  theme(legend.position=c(0.5,0.9),
+        plot.title = element_text(hjust = 0.5, size = 30),
+        axis.title.x = element_text(size = 40),
+        axis.title.y = element_text(size = 40),  
+        axis.text.x= element_text(size = 15, angle = 0),
+        axis.text.y= element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank())
+
+ggplot(subset(msu_cf, ctrl_id == 'co-twins'| ctrl_id == 'positive_ctrl'),
+       aes(x=Similarity, color=ctrl_id)) +
+  stat_density(aes(x=Similarity, y=..scaled..,color=ctrl_id), position=position_dodge(width = .1), geom="line") +
+  scale_color_manual(values = c( "#615292", "#EA5454","#AEC960")) +
+  scale_x_continuous(expand = c(0, 0)) + scale_y_continuous(expand = c(0, 0)) +
+  scale_fill_discrete(name= "Similarity Scores",labels = c("cowtins",'negative control','positive control'))+
+  labs(title = "AWS-Rekognition controls", y = "Density",color = "Similarity Scores")+
+  expand_limits(x=102)+
+  theme(legend.position=c(0.5,0.9),
         plot.title = element_text(hjust = 0.5, size = 30),
         axis.title.x = element_text(size = 40),
         axis.title.y = element_text(size = 40),  
@@ -90,3 +166,23 @@ ggplot(subset(similarity_scores_pheno_aldi, status == 'negative_ctrl' |status ==
         axis.text.y= element_blank(),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank()) 
+
+ggplot(subset(msu_cf, ctrl_id == 'co-twins'| ctrl_id == 'positive_ctrl'),
+       aes(x=Similarity, color=ctrl_id)) +
+  stat_density(aes(x=Similarity, y=..scaled..,color=ctrl_id), position=position_dodge(width = .1), geom="line") +
+  scale_color_manual(values = c( "#615292", "#EA5454","#AEC960")) +
+  scale_x_continuous(expand = c(0, 0)) + scale_y_continuous(expand = c(0, 0)) +
+  scale_fill_discrete(labels = c("cowtins",'negative control','positive control'))+
+  labs(title = "AWS-Rekognition controls", y = "Density",color = "")+
+  expand_limits(x=102)+
+  theme_classic()+
+  theme(legend.position=c(0.5,0.9),
+        plot.title = element_text(hjust = 0.5, size = 30),
+        axis.title.x = element_text(size = 40),
+        axis.title.y = element_text(size = 40),  
+        axis.text.x= element_text(size = 15, angle = 0),
+        axis.text.y= element_blank()) 
+
+ggplot(subset(msu_cf, ctrl_id == 'negative_ctrl' |ctrl_id == 'co-twins'| ctrl_id == 'positive_ctrl'),
+       aes(x=Similarity, color=ctrl_id)) +
+  geom_histogram(fill="white", alpha=0.5, position="identity")
