@@ -1,0 +1,508 @@
+---
+title: "MClust"
+author: "WS"
+date: "1/12/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, root.dir = "/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust")
+library("mclust")
+```
+
+## MClust
+
+```{r MClust-all-dist-pheno-delta}
+
+# using first 2 pca eigenvectors
+
+pca.adpd <- prcomp(all_dist_pheno_delta[,10:360], retx = TRUE, center = TRUE, scale. = TRUE,
+       tol = NULL, rank. = NULL)
+
+cluster.pca.adpd.1.2 <- Mclust(pca.adpd[["x"]][,1:2], prior = priorControl())
+pdf("cluster.pca.adpd.1.2.BIC.pdf", w=6, h=4)
+plot(cluster.pca.adpd.1.2, what = "BIC")
+dev.off()
+pdf("cluster.pca.adpd.1.2.density.pdf", w=4, h=4)
+plot(cluster.pca.adpd.1.2, what = "density")
+dev.off()
+pdf("cluster.pca.adpd.1.2.plot.classification.pdf", w=4, h=4)
+plot(cluster.pca.adpd.1.2, what = "classification")
+dev.off()
+pdf("cluster.pca.adpd.1.2.plot.uncertainty.pdf", w=4, h=4)
+plot(cluster.pca.adpd.1.2, what = "uncertainty")
+dev.off()
+
+# using first 3 pca eigenvectors
+
+pca.adpd <- prcomp(all_dist_pheno_delta[,10:360], retx = TRUE, center = TRUE, scale. = TRUE,
+       tol = NULL, rank. = NULL)
+
+cluster.pca.adpd.1.2.3 <- Mclust(pca.adpd[["x"]][,1:3], prior = priorControl())
+pdf("cluster.pca.adpd.1.2.3.BIC.pdf", w=6, h=4)
+plot(cluster.pca.adpd.1.2.3, what = "BIC")
+dev.off()
+pdf("cluster.pca.adpd.1.2.3.density.pdf", w=4, h=4)
+plot(cluster.pca.adpd.1.2.3, what = "density")
+dev.off()
+pdf("cluster.pca.adpd.1.2.3.classification.pdf", w=4, h=4)
+plot(cluster.pca.adpd.1.2.3, what = "classification")
+dev.off()
+pdf("cluster.pca.adpd.1.2.3.uncertainty.pdf", w=4, h=4)
+plot(cluster.pca.adpd.1.2.3, what = "uncertainty")
+dev.off()
+
+```
+
+```{r MClust-all-dist-pheno-absdelta}
+
+# using first 2 pca eigenvectors
+
+pca.adpdabs <- prcomp(all_dist_pheno_absdelta[,10:360], retx = TRUE, center = TRUE, scale. = TRUE,
+       tol = NULL, rank. = NULL)
+
+cluster.pca.adpdabs.1.2 <- Mclust(pca.adpdabs[["x"]][,1:2], prior = priorControl())
+pdf("cluster.pca.adpdabs.1.2.BIC.pdf", w=6, h=4)
+plot(cluster.pca.adpdabs.1.2, what = "BIC")
+dev.off()
+pdf("cluster.pca.adpdabs.1.2.density.pdf", w=4, h=4)
+plot(cluster.pca.adpdabs.1.2, what = "density")
+dev.off()
+pdf("cluster.pca.adpdabs.1.2.plot.classification.pdf", w=4, h=4)
+plot(cluster.pca.adpdabs.1.2, what = "classification")
+dev.off()
+pdf("cluster.pca.adpdabs.1.2.plot.uncertainty.pdf", w=4, h=4)
+plot(cluster.pca.adpdabs.1.2, what = "uncertainty")
+dev.off()
+
+# using first 3 pca eigenvectors
+
+pca.adpdabs <- prcomp(all_dist_pheno_absdelta[,10:360], retx = TRUE, center = TRUE, scale. = TRUE,
+       tol = NULL, rank. = NULL)
+
+cluster.pca.adpdabs.1.2.3 <- Mclust(pca.adpdabs[["x"]][,1:3], prior = priorControl())
+pdf("cluster.pca.adpdabs.1.2.3.BIC.pdf", w=6, h=4)
+plot(cluster.pca.adpdabs.1.2.3, what = "BIC")
+dev.off()
+pdf("cluster.pca.adpdabs.1.2.3.density.pdf", w=4, h=4)
+plot(cluster.pca.adpdabs.1.2.3, what = "density")
+dev.off()
+pdf("cluster.pca.adpdabs.1.2.3.classification.pdf", w=4, h=4)
+plot(cluster.pca.adpdabs.1.2.3, what = "classification")
+dev.off()
+pdf("cluster.pca.adpdabs.1.2.3.uncertainty.pdf", w=4, h=4)
+plot(cluster.pca.adpdabs.1.2.3, what = "uncertainty")
+dev.off()
+
+```
+
+```{r MClust-all-dist-pheno-fc}
+
+# using first 2 pca eigenvectors
+
+pca.adpfc <- prcomp(all_dist_pheno_fc[,10:360], retx = TRUE, center = TRUE, scale. = TRUE,
+       tol = NULL, rank. = NULL)
+
+cluster.pca.adpfc.1.2 <- Mclust(pca.adpfc[["x"]][,1:2], prior = priorControl())
+pdf("cluster.pca.adpfc.1.2.BIC.pdf", w=6, h=4)
+plot(cluster.pca.adpfc.1.2, what = "BIC")
+dev.off()
+pdf("cluster.pca.adpfc.1.2.density.pdf", w=4, h=4)
+plot(cluster.pca.adpfc.1.2, what = "density")
+dev.off()
+pdf("cluster.pca.adpfc.1.2.plot.classification.pdf", w=4, h=4)
+plot(cluster.pca.adpfc.1.2, what = "classification")
+dev.off()
+pdf("cluster.pca.adpfc.1.2.plot.uncertainty.pdf", w=4, h=4)
+plot(cluster.pca.adpfc.1.2, what = "uncertainty")
+dev.off()
+
+# using first 3 pca eigenvectors
+
+cluster.pca.adpfc.1.2.3 <- Mclust(pca.adpfc[["x"]][,1:3], prior = priorControl())
+pdf("cluster.pca.adpfc.1.2.3.BIC.pdf", w=6, h=4)
+plot(cluster.pca.adpfc.1.2.3, what = "BIC")
+dev.off()
+pdf("cluster.pca.adpfc.1.2.3.density.pdf", w=4, h=4)
+plot(cluster.pca.adpfc.1.2.3, what = "density")
+dev.off()
+pdf("cluster.pca.adpfc.1.2.3.classification.pdf", w=4, h=4)
+plot(cluster.pca.adpfc.1.2.3, what = "classification")
+dev.off()
+pdf("cluster.pca.adpfc.1.2.3.uncertainty.pdf", w=4, h=4)
+plot(cluster.pca.adpfc.1.2.3, what = "uncertainty")
+dev.off()
+
+
+```
+
+
+```{r MClust-all-ratio-pheno-delta}
+
+# using first 2 pca eigenvectors
+
+pca.arpd <- prcomp(all_ratio_pheno_delta[,10:61434], retx = TRUE, center = TRUE, scale. = TRUE,
+       tol = NULL, rank. = NULL)
+
+cluster.pca.arpd.1.2 <- Mclust(pca.arpd[["x"]][,1:2], prior = priorControl())
+pdf("cluster.pca.arpd.1.2.BIC.pdf", w=6, h=4)
+plot(cluster.pca.arpd.1.2, what = "BIC")
+dev.off()
+pdf("cluster.pca.arpd.1.2.density.pdf", w=4, h=4)
+plot(cluster.pca.arpd.1.2, what = "density")
+dev.off()
+pdf("cluster.pca.arpd.1.2.plot.classification.pdf", w=4, h=4)
+plot(cluster.pca.arpd.1.2, what = "classification")
+dev.off()
+pdf("cluster.pca.arpd.1.2.plot.uncertainty.pdf", w=4, h=4)
+plot(cluster.pca.arpd.1.2, what = "uncertainty")
+dev.off()
+
+# using first 3 pca eigenvectors
+
+cluster.pca.arpd.1.2.3 <- Mclust(pca.arpd[["x"]][,1:3], prior = priorControl())
+pdf("cluster.pca.arpd.1.2.3.BIC.pdf", w=6, h=4)
+plot(cluster.pca.arpd.1.2.3, what = "BIC")
+dev.off()
+pdf("cluster.pca.arpd.1.2.3.density.pdf", w=4, h=4)
+plot(cluster.pca.arpd.1.2.3, what = "density")
+dev.off()
+pdf("cluster.pca.arpd.1.2.3.classification.pdf", w=4, h=4)
+plot(cluster.pca.arpd.1.2.3, what = "classification")
+dev.off()
+pdf("cluster.pca.arpd.1.2.3.uncertainty.pdf", w=4, h=4)
+plot(cluster.pca.arpd.1.2.3, what = "uncertainty")
+dev.off()
+
+
+```
+
+
+```{r MClust-all-ratio-pheno-fc}
+
+# using first 2 pca eigenvectors
+
+pca.arpfc <- prcomp(all_ratio_pheno_fc[,10:61434], retx = TRUE, center = TRUE, scale. = TRUE,
+       tol = NULL, rank. = NULL)
+
+cluster.pca.arpfc.1.2 <- Mclust(pca.arpfc[["x"]][,1:2], prior = priorControl())
+pdf("cluster.pca.arpfc.1.2.BIC.pdf", w=6, h=4)
+plot(cluster.pca.arpfc.1.2, what = "BIC")
+dev.off()
+pdf("cluster.pca.arpfc.1.2.density.pdf", w=4, h=4)
+plot(cluster.pca.arpfc.1.2, what = "density")
+dev.off()
+pdf("cluster.pca.arpfc.1.2.plot.classification.pdf", w=4, h=4)
+plot(cluster.pca.arpfc.1.2, what = "classification")
+dev.off()
+pdf("cluster.pca.arpfc.1.2.uncertainty.pdf", w=4, h=4)
+plot(cluster.pca.arpfc.1.2, what = "uncertainty")
+dev.off()
+
+# using first 3 pca eigenvectors
+
+cluster.pca.arpfc.1.2.3 <- Mclust(pca.adpfc[["x"]][,1:3], prior = priorControl())
+pdf("cluster.pca.arpfc.1.2.3.BIC.pdf", w=6, h=4)
+plot(cluster.pca.arpfc.1.2.3, what = "BIC")
+dev.off()
+pdf("cluster.pca.arpfc.1.2.3.density.pdf", w=4, h=4)
+plot(cluster.pca.arpfc.1.2.3, what = "density")
+dev.off()
+pdf("cluster.pca.arpfc.1.2.3.classification.pdf", w=4, h=4)
+plot(cluster.pca.arpfc.1.2.3, what = "classification")
+dev.off()
+pdf("cluster.pca.arpfc.1.2.3.uncertainty.pdf", w=4, h=4)
+plot(cluster.pca.arpfc.1.2.3, what = "uncertainty")
+dev.off()
+
+
+```
+
+
+```{r MClust-all-ratio-pheno-absdelta}
+
+# using first 2 pca eigenvectors
+
+pca.arpdabs <- prcomp(all_ratio_pheno_absdelta[,10:360], retx = TRUE, center = TRUE, scale. = TRUE,
+       tol = NULL, rank. = NULL)
+
+cluster.pca.arpdabs.1.2 <- Mclust(pca.arpdabs[["x"]][,1:2], prior = priorControl())
+pdf("cluster.pca.arpdabs.1.2.BIC.pdf", w=6, h=4)
+plot(cluster.pca.arpdabs.1.2, what = "BIC")
+dev.off()
+pdf("cluster.pca.arpdabs.1.2.density.pdf", w=4, h=4)
+plot(cluster.pca.arpdabs.1.2, what = "density")
+dev.off()
+pdf("cluster.pca.arpdabs.1.2.plot.classification.pdf", w=4, h=4)
+plot(cluster.pca.arpdabs.1.2, what = "classification")
+dev.off()
+pdf("cluster.pca.arpdabs.1.2.plot.uncertainty.pdf", w=4, h=4)
+plot(cluster.pca.arpdabs.1.2, what = "uncertainty")
+dev.off()
+
+# using first 3 pca eigenvectors
+
+cluster.pca.arpdabs.1.2.3 <- Mclust(pca.adpfc[["x"]][,1:3], prior = priorControl())
+pdf("cluster.pca.arpdabs.1.2.3.BIC.pdf", w=6, h=4)
+plot(cluster.pca.arpdabs.1.2.3, what = "BIC")
+dev.off()
+pdf("cluster.pca.arpdabs.1.2.3.density.pdf", w=4, h=4)
+plot(cluster.pca.arpdabs.1.2.3, what = "density")
+dev.off()
+pdf("cluster.pca.arpdabs.1.2.3.classification.pdf", w=4, h=4)
+plot(cluster.pca.arpdabs.1.2.3, what = "classification")
+dev.off()
+pdf("cluster.pca.arpdabs.1.2.3.uncertainty.pdf", w=4, h=4)
+plot(cluster.pca.arpdabs.1.2.3, what = "uncertainty")
+dev.off()
+```
+
+
+```{r MClust-all-dist-pheno-delta-73}
+# using first 2 pca eigenvectors
+
+pca.adpd.73 <- prcomp(all_dist_pheno_delta_73[,10:360], retx = TRUE, center = TRUE, scale. = TRUE,
+       tol = NULL, rank. = NULL)
+
+cluster.pca.adpd.73.1.2 <- Mclust(pca.adpd.73[["x"]][,1:2], prior = priorControl())
+pdf("cluster.pca.adpd.73.1.2.BIC.pdf", w=6, h=4)
+plot(cluster.pca.adpd.73.1.2, what = "BIC")
+dev.off()
+pdf("cluster.pca.adpd.73.1.2.density.pdf", w=4, h=4)
+plot(cluster.pca.adpd.73.1.2, what = "density")
+dev.off()
+pdf("cluster.pca.adpd.73.1.2.plot.classification.pdf", w=4, h=4)
+plot(cluster.pca.adpd.73.1.2, what = "classification")
+dev.off()
+pdf("cluster.pca.adpd.73.1.2.plot.uncertainty.pdf", w=4, h=4)
+plot(cluster.pca.adpd.73.1.2, what = "uncertainty")
+dev.off()
+
+# using first 3 pca eigenvectors
+
+pca.adpd.73 <- prcomp(all_dist_pheno_delta_73[,10:360], retx = TRUE, center = TRUE, scale. = TRUE,
+       tol = NULL, rank. = NULL)
+
+cluster.pca.adpd.73.1.2.3 <- Mclust(pca.adpd.73[["x"]][,1:3], prior = priorControl())
+pdf("cluster.pca.adpd.73.1.2.3.BIC.pdf", w=6, h=4)
+plot(cluster.pca.adpd.73.1.2.3, what = "BIC")
+dev.off()
+pdf("cluster.pca.adpd.73.1.2.3.density.pdf", w=4, h=4)
+plot(cluster.pca.adpd.73.1.2.3, what = "density")
+dev.off()
+pdf("cluster.pca.adpd.73.1.2.3.classification.pdf", w=4, h=4)
+plot(cluster.pca.adpd.73.1.2.3, what = "classification")
+dev.off()
+pdf("cluster.pca.adpd.73.1.2.3.uncertainty.pdf", w=4, h=4)
+plot(cluster.pca.adpd.73.1.2.3, what = "uncertainty")
+dev.off()
+
+```
+
+```{r MClust-all-dist-pheno-absdelta-73}
+
+# using first 2 pca eigenvectors
+
+pca.adpdabs.73 <- prcomp(all_dist_pheno_absdelta_73[,10:360], retx = TRUE, center = TRUE, scale. = TRUE,
+       tol = NULL, rank. = NULL)
+
+cluster.pca.adpdabs.73.1.2 <- Mclust(pca.adpdabs.73[["x"]][,1:2], prior = priorControl())
+pdf("cluster.pca.adpdabs.73.1.2.BIC.pdf", w=6, h=4)
+plot(cluster.pca.adpdabs.73.1.2, what = "BIC")
+dev.off()
+pdf("cluster.pca.adpdabs.1.2.density.pdf", w=4, h=4)
+plot(cluster.pca.adpdabs.1.2, what = "density")
+dev.off()
+pdf("cluster.pca.adpdabs.73.1.2.plot.classification.pdf", w=4, h=4)
+plot(cluster.pca.adpdabs.73.1.2, what = "classification")
+dev.off()
+pdf("cluster.pca.adpdabs.73.1.2.plot.uncertainty.pdf", w=4, h=4)
+plot(cluster.pca.adpdabs.73.1.2, what = "uncertainty")
+dev.off()
+
+# using first 3 pca eigenvectors
+
+pca.adpdabs.73 <- prcomp(all_dist_pheno_absdelta_73[,10:360], retx = TRUE, center = TRUE, scale. = TRUE,
+       tol = NULL, rank. = NULL)
+
+cluster.pca.adpdabs.73.1.2.3 <- Mclust(pca.adpdabs.73[["x"]][,1:3], prior = priorControl())
+pdf("cluster.pca.adpdabs.73.1.2.3.BIC.pdf", w=6, h=4)
+plot(cluster.pca.adpdabs.73.1.2.3, what = "BIC")
+dev.off()
+pdf("cluster.pca.adpdabs.73.1.2.3.density.pdf", w=4, h=4)
+plot(cluster.pca.adpdabs.73.1.2.3, what = "density")
+dev.off()
+pdf("cluster.pca.adpdabs.73.1.2.3.classification.pdf", w=4, h=4)
+plot(cluster.pca.adpdabs.73.1.2.3, what = "classification")
+dev.off()
+pdf("cluster.pca.adpdabs.73.1.2.3.uncertainty.pdf", w=4, h=4)
+plot(cluster.pca.adpdabs.73.1.2.3, what = "uncertainty")
+dev.off()
+
+```
+
+```{r MClust-all-dist-pheno-fc-73}
+
+# using first 2 pca eigenvectors
+
+pca.adpfc.73 <- prcomp(all_dist_pheno_fc_73[,10:360], retx = TRUE, center = TRUE, scale. = TRUE,
+       tol = NULL, rank. = NULL)
+
+cluster.pca.adpfc.73.1.2 <- Mclust(pca.adpfc.73[["x"]][,1:2], prior = priorControl())
+pdf("cluster.pca.adpfc.73.1.2.BIC.pdf", w=6, h=4)
+plot(cluster.pca.adpfc.73.1.2, what = "BIC")
+dev.off()
+pdf("cluster.pca.adpfc.73.1.2.density.pdf", w=4, h=4)
+plot(cluster.pca.adpfc.73.1.2, what = "density")
+dev.off()
+pdf("cluster.pca.adpfc.73.1.2.plot.classification.pdf", w=4, h=4)
+plot(cluster.pca.adpfc.73.1.2, what = "classification")
+dev.off()
+pdf("cluster.pca.adpfc.73.1.2.plot.uncertainty.pdf", w=4, h=4)
+plot(cluster.pca.adpfc.73.1.2, what = "uncertainty")
+dev.off()
+
+# using first 3 pca eigenvectors
+
+cluster.pca.adpfc.73.1.2.3 <- Mclust(pca.adpfc.73[["x"]][,1:3], prior = priorControl())
+pdf("cluster.pca.adpfc.73.1.2.3.BIC.pdf", w=6, h=4)
+plot(cluster.pca.adpfc.73.1.2.3, what = "BIC")
+dev.off()
+pdf("cluster.pca.adpfc.73.1.2.3.density.pdf", w=4, h=4)
+plot(cluster.pca.adpfc.73.1.2.3, what = "density")
+dev.off()
+pdf("cluster.pca.adpfc.73.1.2.3.classification.pdf", w=4, h=4)
+plot(cluster.pca.adpfc.73.1.2.3, what = "classification")
+dev.off()
+pdf("cluster.pca.adpfc.73.1.2.3.uncertainty.pdf", w=4, h=4)
+plot(cluster.pca.adpfc.73.1.2.3, what = "uncertainty")
+dev.off()
+
+
+```
+
+
+```{r MClust-all-ratio-pheno-delta-73}
+
+# using first 2 pca eigenvectors
+
+pca.arpd.73 <- prcomp(all_ratio_pheno_delta_73[,10:61434], retx = TRUE, center = TRUE, scale. = TRUE,
+       tol = NULL, rank. = NULL)
+
+cluster.pca.arpd.73.1.2 <- Mclust(pca.arpd.73[["x"]][,1:2], prior = priorControl())
+pdf("cluster.pca.arpd.73.1.2.BIC.pdf", w=6, h=4)
+plot(cluster.pca.arpd.73.1.2, what = "BIC")
+dev.off()
+pdf("cluster.pca.arpd.73.1.2.density.pdf", w=4, h=4)
+plot(cluster.pca.arpd.73.1.2, what = "density")
+dev.off()
+pdf("cluster.pca.arpd.73.1.2.plot.classification.pdf", w=4, h=4)
+plot(cluster.pca.arpd.73.1.2, what = "classification")
+dev.off()
+pdf("cluster.pca.arpd.73.1.2.plot.uncertainty.pdf", w=4, h=4)
+plot(cluster.pca.arpd.73.1.2, what = "uncertainty")
+dev.off()
+
+# using first 3 pca eigenvectors
+
+cluster.pca.arpd.73.1.2.3 <- Mclust(pca.arpd.73[["x"]][,1:3], prior = priorControl())
+pdf("cluster.pca.arpd.73.1.2.3.BIC.pdf", w=6, h=4)
+plot(cluster.pca.arpd.73.1.2.3, what = "BIC")
+dev.off()
+pdf("cluster.pca.arpd.73.1.2.3.density.pdf", w=4, h=4)
+plot(cluster.pca.arpd.73.1.2.3, what = "density")
+dev.off()
+pdf("cluster.pca.arpd.73.1.2.3.classification.pdf", w=4, h=4)
+plot(cluster.pca.arpd.73.1.2.3, what = "classification")
+dev.off()
+pdf("cluster.pca.arpd.73.1.2.3.uncertainty.pdf", w=4, h=4)
+plot(cluster.pca.arpd.73.1.2.3, what = "uncertainty")
+dev.off()
+
+
+```
+
+
+```{r MClust-all-ratio-pheno-fc-73}
+
+# using first 2 pca eigenvectors
+
+pca.arpfc.73 <- prcomp(all_ratio_pheno_fc_73[,10:61434], retx = TRUE, center = TRUE, scale. = TRUE,
+       tol = NULL, rank. = NULL)
+
+cluster.pca.arpfc.73.1.2 <- Mclust(pca.arpfc.73[["x"]][,1:2], prior = priorControl())
+pdf("cluster.pca.arpfc.73.1.2.BIC.pdf", w=6, h=4)
+plot(cluster.pca.arpfc.73.1.2, what = "BIC")
+dev.off()
+pdf("cluster.pca.arpfc.73.1.2.density.pdf", w=4, h=4)
+plot(cluster.pca.arpfc.73.1.2, what = "density")
+dev.off()
+pdf("cluster.pca.arpfc.73.1.2.plot.classification.pdf", w=4, h=4)
+plot(cluster.pca.arpfc.73.1.2, what = "classification")
+dev.off()
+pdf("cluster.pca.arpfc.73.1.2.uncertainty.pdf", w=4, h=4)
+plot(cluster.pca.arpfc.73.1.2, what = "uncertainty")
+dev.off()
+
+# using first 3 pca eigenvectors
+
+cluster.pca.arpfc.73.1.2.3 <- Mclust(pca.adpfc.73[["x"]][,1:3], prior = priorControl())
+pdf("cluster.pca.arpfc.73.1.2.3.BIC.pdf", w=6, h=4)
+plot(cluster.pca.arpfc.73.1.2.3, what = "BIC")
+dev.off()
+pdf("cluster.pca.arpfc.73.1.2.3.density.pdf", w=4, h=4)
+plot(cluster.pca.arpfc.73.1.2.3, what = "density")
+dev.off()
+pdf("cluster.pca.arpfc.73.1.2.3.classification.pdf", w=4, h=4)
+plot(cluster.pca.arpfc.73.1.2.3, what = "classification")
+dev.off()
+pdf("cluster.pca.arpfc.73.1.2.3.uncertainty.pdf", w=4, h=4)
+plot(cluster.pca.arpfc.73.1.2.3, what = "uncertainty")
+dev.off()
+
+
+```
+
+
+```{r MClust-all-ratio-pheno-absdelta-73}
+
+# using first 2 pca eigenvectors
+
+pca.arpdabs.73 <- prcomp(all_ratio_pheno_absdelta_73[,10:360], retx = TRUE, center = TRUE, scale. = TRUE,
+       tol = NULL, rank. = NULL)
+
+cluster.pca.arpdabs.1.2 <- Mclust(pca.arpdabs.73[["x"]][,1:2], prior = priorControl())
+pdf("cluster.pca.arpdabs.1.2.BIC.pdf", w=6, h=4)
+plot(cluster.pca.arpdabs.1.2, what = "BIC")
+dev.off()
+pdf("cluster.pca.arpdabs.1.2.density.pdf", w=4, h=4)
+plot(cluster.pca.arpdabs.1.2, what = "density")
+dev.off()
+pdf("cluster.pca.arpdabs.1.2.plot.classification.pdf", w=4, h=4)
+plot(cluster.pca.arpdabs.1.2, what = "classification")
+dev.off()
+pdf("cluster.pca.arpdabs.1.2.plot.uncertainty.pdf", w=4, h=4)
+plot(cluster.pca.arpdabs.1.2, what = "uncertainty")
+dev.off()
+
+# using first 3 pca eigenvectors
+
+cluster.pca.arpdabs.73.1.2.3 <- Mclust(pca.arpdabs.73[["x"]][,1:3], prior = priorControl())
+pdf("cluster.pca.arpdabs.73.1.2.3.BIC.pdf", w=6, h=4)
+plot(cluster.pca.arpdabs.73.1.2.3, what = "BIC")
+dev.off()
+pdf("cluster.pca.arpdabs.73.1.2.3.density.pdf", w=4, h=4)
+plot(cluster.pca.arpdabs.73.1.2.3, what = "density")
+dev.off()
+pdf("cluster.pca.arpdabs.73.1.2.3.classification.pdf", w=4, h=4)
+plot(cluster.pca.arpdabs.73.1.2.3, what = "classification")
+dev.off()
+pdf("cluster.pca.arpdabs.73.1.2.3.uncertainty.pdf", w=4, h=4)
+plot(cluster.pca.arpdabs.73.1.2.3, what = "uncertainty")
+dev.off()
+
+
+```
+
+
+
