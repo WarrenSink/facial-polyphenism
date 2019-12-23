@@ -1,4 +1,4 @@
-setwd("/Users/Warren.Sink/Desktop/OneDrive-Van-Andel-Institute")
+setwd("/Users/Warren.Sink/Desktop/R projects/facial-polyphenism")
 
 library(tidyverse)
 library(readr)
