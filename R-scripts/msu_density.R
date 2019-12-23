@@ -1,9 +1,11 @@
-setwd("/Users/Warren.Sink/Desktop/R projects/facial-polyphenism/CSVs")
+setwd("/Users/Warren.Sink/github/facial-polyphenism/CSVs")
 
 #Needs phenotype data from 
 
 library(tidyverse)
 library(readr)
+
+load("/Users/Warren.Sink/Desktop/OneDrive-Van-Andel-Institute/msu_dist-ratio_matrices.Rdata")
 
 msu_cf = read_csv(file = "msu_cf_nonredundant.csv")
 msu_cf_negctrl = read_csv(file = "msu_cf_redundant.csv")
@@ -86,7 +88,7 @@ sample10_msu %>%
   filter(ctrl_id != "neg_ctrl") %>%
   ggplot( ., aes(x = Similarity, group = ctrl_id, fill = ctrl_id)) +
   geom_density(adjust=1.5, position="fill") +
-  labs(title = "AWS-Rekognition controls", y = "Density",color = "Similarity Scores") +
+  labs(title = "Similarity Scores w.r.t. controls", y = "Density",color = "Similarity Scores") +
   theme(legend.position=c(0.8,0.8),
         plot.title = element_text(hjust = 0.5, size = 30),
         axis.title.x = element_text(size = 40),
@@ -100,7 +102,7 @@ sample148_msu %>%
   filter(ctrl_id != "neg_ctrl") %>%
   ggplot( ., aes(x = Similarity, group = ctrl_id, fill = ctrl_id)) +
   geom_density(adjust=1.5, position="fill") +
-  labs(title = "AWS-Rekognition controls", y = "Density",color = "Similarity Scores") +
+  labs(title = "Similarity Scores w.r.t. controls", y = "Density",color = "Similarity Scores") +
   theme(legend.position=c(0.8,0.8),
         plot.title = element_text(hjust = 0.5, size = 30),
         axis.title.x = element_text(size = 40),
@@ -122,7 +124,7 @@ ggplot(subset(sample10_msu, ctrl_id == 'neg_ctrl' |ctrl_id == 'co-twins'| ctrl_i
   scale_color_manual(values = c( "#615292", "#EA5454","#AEC960")) +
   scale_x_continuous(expand = c(0, 0)) + scale_y_continuous(expand = c(0, 0)) +
   scale_fill_discrete(name= "Similarity Scores",labels = c("cowtins",'negative control','positive control'))+
-  labs(title = "AWS-Rekognition controls", y = "Density",color = "Similarity Scores")+
+  labs(title = "Similarity Scores w.r.t. controls", y = "Density",color = "Similarity Scores")+
   expand_limits(x=102)+
   theme(legend.position=c(0.5,0.9),
         plot.title = element_text(hjust = 0.5, size = 30),
@@ -139,7 +141,7 @@ ggplot(subset(sample148_msu, ctrl_id == 'co-twins'| ctrl_id == 'positive_ctrl'),
   scale_color_manual(values = c( "#615292", "#EA5454","#AEC960")) +
   scale_x_continuous(expand = c(0, 0)) + scale_y_continuous(expand = c(0, 0)) +
   scale_fill_discrete(name= "Similarity Scores",labels = c("cowtins",'positive control'))+
-  labs(title = "AWS-Rekognition controls", y = "Density",color = "Similarity Scores")+
+  labs(title = "Similarity Scores w.r.t. controls", y = "Density",color = "Similarity Scores")+
   expand_limits(x=102)+
   theme(legend.position=c(0.5,0.9),
         plot.title = element_text(hjust = 0.5, size = 30),
@@ -156,7 +158,7 @@ ggplot(subset(msu_cf, ctrl_id == 'co-twins'| ctrl_id == 'positive_ctrl'),
   scale_color_manual(values = c( "#615292", "#EA5454","#AEC960")) +
   scale_x_continuous(expand = c(0, 0)) + scale_y_continuous(expand = c(0, 0)) +
   scale_fill_discrete(name= "Similarity Scores",labels = c("cowtins",'negative control','positive control'))+
-  labs(title = "AWS-Rekognition controls", y = "Density",color = "Similarity Scores")+
+  labs(title = "Similarity Scores w.r.t. controls", y = "Density",color = "Similarity Scores")+
   expand_limits(x=102)+
   theme(legend.position=c(0.5,0.9),
         plot.title = element_text(hjust = 0.5, size = 30),
@@ -173,7 +175,7 @@ ggplot(subset(msu_cf, ctrl_id == 'co-twins'| ctrl_id == 'positive_ctrl'),
   scale_color_manual(values = c( "#615292", "#EA5454","#AEC960")) +
   scale_x_continuous(expand = c(0, 0)) + scale_y_continuous(expand = c(0, 0)) +
   scale_fill_discrete(labels = c("cowtins",'negative control','positive control'))+
-  labs(title = "AWS-Rekognition controls", y = "Density",color = "")+
+  labs(title = "Similarity Scores w.r.t. controls", y = "Density",color = "")+
   expand_limits(x=102)+
   theme_classic()+
   theme(legend.position=c(0.5,0.9),
