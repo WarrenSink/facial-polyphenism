@@ -5,7 +5,7 @@ import pandas as pd
 
 #the bucket name refers to the name of the database folder, which contains the images
 #make sure the name is correct or else you may have the wrong data or generate an error
-bucket_name = 'schoeller-ctrl'
+bucket_name = 'schoeller-test'
 
 #s3 = the database with the buckets
 s3 = boto3.resource('s3')
@@ -36,7 +36,7 @@ for img in images:
     #here, each of the facial landmark coordinates are extracted and normalized to the nose
     #furthermore, they are appended to the 'results_long' list
     if 'FaceDetails' in response:
-        for f, face in enumerate(response['FaceDetails']):    
+        for f, face in enumerate(response['FaceDetails']):
             results_long.append(
             {"ID":img,
             "MouthLeft":[face['Landmarks'][2]['X']-face['Landmarks'][4]['X'],face['Landmarks'][2]['Y']-face['Landmarks'][4]['Y']],
@@ -66,8 +66,8 @@ for img in images:
             "ChinBottom":[face['Landmarks'][27]['X']-face['Landmarks'][4]['X'],face['Landmarks'][27]['Y']-face['Landmarks'][4]['Y']],
             "MidJawlineRight":[face['Landmarks'][28]['X']-face['Landmarks'][4]['X'],face['Landmarks'][28]['Y']-face['Landmarks'][4]['Y']],
             "UpperJawlineRight":[face['Landmarks'][29]['X']-face['Landmarks'][4]['X'],face['Landmarks'][29]['Y']-face['Landmarks'][4]['Y']]})
-            
-#create a pandas dataframe with the 'results_long' list 
+
+#create a pandas dataframe with the 'results_long' list
 img_df_long = pd.DataFrame(results_long, columns=["ID",'ChinBottom','LeftEyeDown',
 'LeftEyeLeft','LeftEyeRight','LeftEyeUp','LeftEyebrowLeft','LeftEyebrowRight','LeftEyebrowUp',
 'LeftPupil','MidJawlineLeft','MidJawlineRight','MouthDown','MouthLeft','MouthRight','MouthUp',
@@ -78,15 +78,4 @@ img_df_long = pd.DataFrame(results_long, columns=["ID",'ChinBottom','LeftEyeDown
 img_df_long_1 = img_df_long.transpose()
 
 #create the csv
-img_df_long_1.to_csv("schoeller_ctrl_coord_nose_norm.csv")
-
-
-
-
-
-
-    
-
-            
-            
-            
+img_df_long_1.to_csv("schoeller_test.csv")

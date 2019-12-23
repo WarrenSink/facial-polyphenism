@@ -1,4 +1,5 @@
-setwd("/Users/Warren.Sink/Desktop/R projects/facial-polyphenism/CSVs")
+setwd("/Users/Warren.Sink/github/facial-polyphenism/CSVs")
+options(stringsAsFactors = FALSE)
 library(tidyverse)
 ####### Phenotypic data######
 
@@ -10,8 +11,8 @@ Co_twins_ID <- c('1','1','1','2','2','3','3','4','4','5','6','7','8','9','10','1
                  '48','49','49','8','47','50','50','51','51',
                  '52','52','53','53','54','54',
                  #'52_broad','52_broad','53_broad','53_broad',
-                 'neg1','neg1','neg2','neg2','neg3','neg3','neg4','neg4','neg5','neg5',
-                 'pos1','pos1','pos2','pos2','pos3','pos3','pos4','pos4','pos5','pos5')
+                 '55','55','56','56','57','57','58','58','59','59',
+                 '60','60','61','61','62','62','63','63','64','64')
 
 Individual_ID <- c('1A','1B','1C','2A','2B','3A','3B','4A','4B','5A','6A','7A','8A','9A','10A','10B','11A','11B','8B','12A','12B','13A','14A','14B','15A','15B','7B','16A','16B','17A','17B','18A','18B','18C','18D','19A',
                    '20A','20B','21A','21B','22A','22B','6B','23A','23B','23C','9B','24A','25A','25B','26A','5B','27A','27B','28A','28B','29A','30A','30B','31A','31B','32A','32B','33A','33B','34A','34B',
@@ -19,8 +20,8 @@ Individual_ID <- c('1A','1B','1C','2A','2B','3A','3B','4A','4B','5A','6A','7A','
                    '48B','49A','49B','8D','47B','50A','50B','51A','51B',
                    '52A','52B','53A','53B','54A','54B',
                    #'52_hdA','52_hdB','53_hdA','53_hdB',
-                   'neg1A','neg1B','neg2A','neg2B','neg3A','neg3B','neg4A','neg4B','neg5A','neg5B',
-                   'pos1A','pos1B','pos2A','pos2B','pos3A','pos3B','pos4A','pos4B','pos5A','pos5B')
+                   '55A','55B','56A','56B','57A','57B','58A','58B','59A','59B',
+                   '60A','60B','61A','61B','62A','62B','63A','63B','64A','64B')
 
 Names <- c("Allooh_Jonas","Allooh_Moses","Allooh_Noah","Andrews_Doug","Andrews_Ross",
            "Ayer_Carly","Ayer_Lily","Bowen_David","Bowen_Richard","Bowers_Brenda",
@@ -55,6 +56,7 @@ Sex <- c('M','M','M','M','M','F','F','M','M','F','F','F','F','F','M','M','M','M'
          #'M','M','F','F',
          'F','F','M','M','F','F','M','M','F','F',
          'M','M','M',"M",'M','M','F','F','M','M')
+
 
 Ethnicity <- c('caucasian','caucasian','caucasian','caucasian','caucasian','caucasian','caucasian','caucasian','caucasian','caucasian','black','caucasian','caucasian','caucasian','caucasian','caucasian','hispanic','hispanic','caucasian','caucasian','caucasian','caucasian','caucasian','caucasian','black','black','caucasian','caucasian','caucasian','caucasian','caucasian','black','black','black','black','caucasian',
                'black','black','caucasian','caucasian','caucasian','caucasian','black','caucasian','caucasian','caucasian','caucasian','caucasian','caucasian','caucasian','caucasian','caucasian','caucasian','caucasian','caucasian','caucasian','caucasian','caucasian','caucasian','caucasian','caucasian','black','black','caucasian','caucasian','black','black',
@@ -204,6 +206,30 @@ M.ratio_t <- t(M.ratio)
 all_dist_pheno <- cbind(pheno_data,M_t[,1:351])
 all_ratio_pheno <- cbind(pheno_data,M.ratio_t[,1:61425])
 
+# arranging the data so greatest value comes first 
+
+all_dist_pheno <- data.frame(all_dist_pheno)
+all_ratio_pheno <- data.frame(all_ratio_pheno)
+
+mkshft.dist <- all_dist_pheno[,c(3, 10:360)] %>% group_by(Co_twins_ID) %>% arrange(Co_twins_ID, ChinBottom_LeftEyeDown) 
+mkshft.dist <- as.data.frame(mkshft.dist)
+mkshft.dist <- left_join(mkshft.dist, all_dist_pheno[,1:10], by = c("Co_twins_ID","ChinBottom_LeftEyeDown"))
+all_dist_pheno <- cbind(mkshft.dist[353:354], mkshft.dist[1], mkshft.dist[355:360], mkshft.dist[2:352])
+#mkshft.dist$Co_twins_ID <- as.integer(as.character(mkshft.dist$Co_twins_ID)) 
+#mkshft.dist <- mkshft.dist %>% arrange(Co_twins_ID)
+#all_dist_pheno <- cbind(all_dist_pheno[1:2], mkshft.dist[1], all_dist_pheno[4:9], mkshft.dist[2:352])
+
+mkshft.ratio <- all_ratio_pheno[,c(3, 10:61434)] %>% group_by(Co_twins_ID) %>% arrange_all() 
+mkshft.ratio <- as.data.frame(mkshft.ratio)
+mkshft.ratio <- left_join(mkshft.ratio, all_ratio_pheno[,1:10], by = c("Co_twins_ID","ChinBottom_LeftEyeDown__ChinBottom_LeftEyeLeft"))
+all_ratio_pheno <- cbind(mkshft.ratio[61427:61428], mkshft.ratio[1], mkshft.ratio[61429:61434], mkshft.ratio[2:61426])
+
+#mkshft.ratio <- all_ratio_pheno[,c(3, 10:61434)] %>% group_by(Co_twins_ID) %>% arrange_all() 
+#mkshft.ratio <- as.data.frame(mkshft.ratio)
+#mkshft.ratio$Co_twins_ID <- as.integer(as.character(mkshft.ratio$Co_twins_ID)) 
+#mkshft.ratio <- mkshft.ratio %>% arrange(Co_twins_ID)
+#all_ratio_pheno <- cbind(all_ratio_pheno[1:2], mkshft.ratio[1], all_ratio_pheno[4:9], mkshft.ratio[2:61426])
+
 
 rm(list = ls()[!ls() %in% c("pheno_data","all_dist_pheno","all_ratio_pheno")])
 
@@ -230,9 +256,9 @@ for (UniqId in UniqIds){
       i=idx[v]
       j=idx[w]
       nam= paste0(all_dist_pheno[i,1],"__",all_dist_pheno[j,1])
-      nam2=paste0(all_dist_pheno)
-      delta<-abs((as.numeric(all_dist_pheno[i,10:dim(all_dist_pheno)[2]]) -as.numeric(all_dist_pheno[j,10:dim(all_dist_pheno)[2]])))
+      delta<-abs(as.numeric(all_dist_pheno[i,10:dim(all_dist_pheno)[2]]) - as.numeric(all_dist_pheno[j,10:dim(all_dist_pheno)[2]]))
       L.delta[[nam]]<-delta
+      #"/n" -> makes new line
       cat(nam,"\n")
     }
   }
@@ -298,7 +324,7 @@ for (UniqId in UniqIds){
       j=idx[w]
       
       nam= paste0(all_ratio_pheno[i,1],"__",all_ratio_pheno[j,1])
-      delta<-abs(as.numeric(all_ratio_pheno[i,10:dim(all_ratio_pheno)[2]]) -as.numeric(all_ratio_pheno[j,10:dim(all_ratio_pheno)[2]]))
+      delta<-as.numeric(all_ratio_pheno[i,10:dim(all_ratio_pheno)[2]]) -as.numeric(all_ratio_pheno[j,10:dim(all_ratio_pheno)[2]])
       L.delta[[nam]]<-delta
       cat(nam,"\n")
     }
@@ -663,7 +689,7 @@ all_ratio_pheno_abslog2_absdelta<-do.call(rbind,L.delta)
 colnames(all_ratio_pheno_abslog2_absdelta)<-colnames(all_ratio_pheno)[10:ncol(all_ratio_pheno)]
 
 
-####### getting rid of NAs + paired pheno x paired dfs########
+####### getting rid of NAs ########
 
 #getting rid of NAs
 
@@ -730,33 +756,47 @@ all_ratio_pheno_abslog2_delta<-all_ratio_pheno_abslog2_delta[, colSums(is.na(all
 all_ratio_pheno_abslog2_absdelta[sapply(all_ratio_pheno_abslog2_absdelta, is.infinite)] <- NA
 all_ratio_pheno_abslog2_absdelta<-all_ratio_pheno_abslog2_absdelta[, colSums(is.na(all_ratio_pheno_abslog2_absdelta)) != nrow(all_ratio_pheno_abslog2_absdelta)]
 
-#paired pheno x paired dfs#
+###############paired pheno x paired dfs########
 
-pheno_data_paired = pheno_data[,c(3:9)]
-Co_twins_ID <- c('1','1','1','10','11','12','13','14','15','16','17','18','18','18','18',
-                        '18','18','19','2','20','21','22','23','23','23','24','24','24','24','24',
-                        '24','25','26','27','28','29','3','30','31','32','33','34','35','36','37','38',
-                        '39','4','40','41','42','43','44','45','46','47','48','49','5','50','51','52','53',
-                        '54','6','7','8','8','8','8','8','8','9',
-                        'pos1','pos2','pos3','pos4','pos5','neg1','neg2','neg3','neg4','neg5')
+paired.rownames <- row.names(all_dist_pheno_delta)
 
-all_dist_pheno <- data.frame(all_dist_pheno)
-all_ratio_pheno <- data.frame(all_ratio_pheno)
+pheno_data_paired = pheno_data[,c(3,5:9)]
+Co_twins_ID <- c('1','1','1','10','11','12','13','14','15','16','17','18','18','18','18','18','18','19',
+                 '2','20','21','22','23','23','23','24','24','24','24','24','24','25','26','27','28','29',
+                 '3','30','31','32','33','34','35','36','37','38','39',
+                 '4','40','41','42','43','44','45','46','47','48','49',
+                 '5','50','51','52','53','54','55','56','57','58','59',
+                 '6','60','61','62','63','64','7','8','8','8','8','8','8','9')
+
+# paired sexes: male = 0; female = 1; both = 2
+Sex_Diff <- c("0","0","0","0","0","1","1","0","1",
+              "0","0","0","0","0","0","0","0",'1',
+              "0","1","0","1","1","1","1","1","1",
+              "1","1","1","1","0","1","1","0","1",
+              "1","1","0","1","1",'0','0','0','1',
+              '0','0','0','1','1','0','1','1','1',
+              '0','1','0','2','2','1','1','0','1',
+              '1','1','0','1','0','1','1','0','0',
+              '0','1','0','1','1','1','1','1','1',
+              '1','1')
 
 all_dist_pheno_fc <- data.frame(all_dist_pheno_fc)
-all_dist_pheno_fc <- cbind(Co_twins_ID, all_dist_pheno_fc)
+all_dist_pheno_fc <- cbind(Co_twins_ID, Sex_Diff, all_dist_pheno_fc)
 all_dist_pheno_fc <- full_join(all_dist_pheno_fc, pheno_data_paired,by = "Co_twins_ID")
 all_dist_pheno_fc <- distinct(all_dist_pheno_fc,ChinBottom_LeftPupil,.keep_all= TRUE)
+row.names(all_dist_pheno_fc) <- paired.rownames
 
 all_dist_pheno_delta<-data.frame(all_dist_pheno_delta)
-all_dist_pheno_delta<- cbind(Co_twins_ID, all_dist_pheno_delta)
+all_dist_pheno_delta<- cbind(Co_twins_ID, Sex_Diff, all_dist_pheno_delta)
 all_dist_pheno_delta<-left_join(all_dist_pheno_delta, pheno_data_paired,by = "Co_twins_ID")
 all_dist_pheno_delta <- distinct(all_dist_pheno_delta,ChinBottom_LeftPupil,.keep_all= TRUE)
+row.names(all_dist_pheno_delta) <- paired.rownames
 
 all_dist_pheno_absdelta<-data.frame(all_dist_pheno_absdelta)
-all_dist_pheno_absdelta<- cbind(Co_twins_ID, all_dist_pheno_absdelta)
+all_dist_pheno_absdelta<- cbind(Co_twins_ID, Sex_Diff, all_dist_pheno_absdelta)
 all_dist_pheno_absdelta<-left_join(all_dist_pheno_absdelta, pheno_data_paired,by = "Co_twins_ID")
 all_dist_pheno_absdelta <- distinct(all_dist_pheno_absdelta,ChinBottom_LeftPupil,.keep_all= TRUE)
+row.names(all_dist_pheno_absdelta) <- paired.rownames
 
 all_dist_pheno_log2<-data.frame(all_dist_pheno_log2)
 all_dist_pheno_abslog2<-data.frame(all_dist_pheno_abslog2)
@@ -792,19 +832,22 @@ all_dist_pheno_abslog2_fc<-left_join(all_dist_pheno_abslog2_fc, pheno_data_paire
 all_dist_pheno_abslog2_fc <- distinct(all_dist_pheno_abslog2_fc,ChinBottom_LeftPupil,.keep_all= TRUE)
 
 all_ratio_pheno_fc <- data.frame(all_ratio_pheno_fc)
-all_ratio_pheno_fc <- cbind(Co_twins_ID, all_ratio_pheno_fc)
+all_ratio_pheno_fc <- cbind(Co_twins_ID, Sex_Diff, all_ratio_pheno_fc)
 all_ratio_pheno_fc <- left_join(all_ratio_pheno_fc, pheno_data_paired,by = "Co_twins_ID")
 all_ratio_pheno_fc <- distinct(all_ratio_pheno_fc,ChinBottom_LeftPupil__ChinBottom_RightPupil,.keep_all= TRUE)
+row.names(all_ratio_pheno_fc) <- paired.rownames
 
 all_ratio_pheno_delta<-data.frame(all_ratio_pheno_delta)
-all_ratio_pheno_delta<- cbind(Co_twins_ID, all_ratio_pheno_delta)
+all_ratio_pheno_delta<- cbind(Co_twins_ID, Sex_Diff, all_ratio_pheno_delta)
 all_ratio_pheno_delta<-left_join(all_ratio_pheno_delta, pheno_data_paired,by = "Co_twins_ID")
 all_ratio_pheno_delta <- distinct(all_ratio_pheno_delta,ChinBottom_LeftPupil__ChinBottom_RightPupil,.keep_all= TRUE)
+row.names(all_ratio_pheno_delta) <- paired.rownames
 
 all_ratio_pheno_absdelta<-data.frame(all_ratio_pheno_absdelta)
-all_ratio_pheno_absdelta<- cbind(Co_twins_ID, all_ratio_pheno_absdelta)
+all_ratio_pheno_absdelta<- cbind(Co_twins_ID, Sex_Diff, all_ratio_pheno_absdelta)
 all_ratio_pheno_absdelta<-left_join(all_ratio_pheno_absdelta, pheno_data_paired,by = "Co_twins_ID")
 all_ratio_pheno_absdelta <- distinct(all_ratio_pheno_absdelta,ChinBottom_LeftPupil__ChinBottom_RightPupil,.keep_all= TRUE)
+row.names(all_ratio_pheno_absdelta) <- paired.rownames
 
 all_ratio_pheno_log2<-data.frame(all_ratio_pheno_log2)
 all_ratio_pheno_abslog2<-data.frame(all_ratio_pheno_abslog2)
@@ -839,12 +882,188 @@ all_ratio_pheno_abslog2_absdelta<-cbind(Co_twins_ID, all_ratio_pheno_abslog2_abs
 all_ratio_pheno_abslog2_absdelta<-left_join(all_ratio_pheno_abslog2_absdelta, pheno_data_paired,by = "Co_twins_ID")
 all_ratio_pheno_abslog2_absdelta<-distinct(all_ratio_pheno_abslog2_absdelta,ChinBottom_LeftPupil__ChinBottom_RightPupil,.keep_all= TRUE)
 
-all_dist_pheno_absdelta <- all_dist_pheno_absdelta[,c(1,353:358,2:352)]
-all_dist_pheno_delta <- all_dist_pheno_delta[,c(1,353:358,2:352)]
-all_dist_pheno_fc <- all_dist_pheno_fc[,c(1,353:358,2:352)]
-all_ratio_pheno_absdelta <- all_ratio_pheno_absdelta[,c(1,61427:61432,2:61426)]
-all_ratio_pheno_delta <- all_ratio_pheno_delta[,c(1,61427:61432,2:61426)]
-all_ratio_pheno_fc <- all_ratio_pheno_fc[,c(1,61427:61432,2:61426)]
+#arrange pheno data to be at the front
+
+all_dist_pheno_absdelta <- all_dist_pheno_absdelta[,c(1:2,354:358,3:353)]
+all_dist_pheno_delta <- all_dist_pheno_delta[,c(1:2,354:358,3:353)]
+all_dist_pheno_fc <- all_dist_pheno_fc[,c(1:2,354:358,3:353)]
+all_ratio_pheno_absdelta <- all_ratio_pheno_absdelta[,c(1:2,61428:61432,3:61427)]
+all_ratio_pheno_delta <- all_ratio_pheno_delta[,c(1:2,61428:61432,3:61427)]
+all_ratio_pheno_fc <- all_ratio_pheno_fc[,c(1:2,61428:61432,3:61427)]
+
+#bring rownames to columns
+
+all_dist_pheno_delta <- all_dist_pheno_delta %>%
+  rownames_to_column(var = "Paired_Individuals") %>%
+  separate(Paired_Individuals, c('Individual_1', 'Individual_2'), sep = '__') 
+  
+all_dist_pheno_absdelta <- all_dist_pheno_absdelta %>%
+  rownames_to_column(var = "Paired_Individuals") %>%
+  separate(Paired_Individuals, c('Individual_1', 'Individual_2'), sep = '__')
+
+all_dist_pheno_fc <- all_dist_pheno_fc %>%
+  rownames_to_column(var = "Paired_Individuals") %>%
+  separate(Paired_Individuals, c('Individual_1', 'Individual_2'), sep = '__')
+
+all_ratio_pheno_absdelta <- all_ratio_pheno_absdelta %>%
+  rownames_to_column(var = "Paired_Individuals") %>%
+  separate(Paired_Individuals, c('Individual_1', 'Individual_2'), sep = '__')
+
+all_ratio_pheno_delta <- all_ratio_pheno_delta %>%
+  rownames_to_column(var = "Paired_Individuals") %>%
+  separate(Paired_Individuals, c('Individual_1', 'Individual_2'), sep = '__')
+
+all_ratio_pheno_fc <- all_ratio_pheno_fc %>%
+  rownames_to_column(var = "Paired_Individuals") %>%
+  separate(Paired_Individuals, c('Individual_1', 'Individual_2'), sep = '__')
+
+#arrange data wrt cotwins
+
+all_dist_pheno_absdelta <- all_dist_pheno_absdelta %>% arrange(as.integer(Co_twins_ID)) 
+all_dist_pheno_delta <- all_dist_pheno_delta %>% arrange(as.integer(Co_twins_ID)) 
+all_dist_pheno_fc <- all_dist_pheno_fc %>% arrange(as.integer(Co_twins_ID)) 
+all_ratio_pheno_absdelta <- all_ratio_pheno_absdelta %>% arrange(as.integer(Co_twins_ID)) 
+all_ratio_pheno_delta <- all_ratio_pheno_delta %>% arrange(as.integer(Co_twins_ID)) 
+all_ratio_pheno_fc <- all_ratio_pheno_fc %>% arrange(as.integer(Co_twins_ID))
+
+#pair each observation (ie cotwin pair) to their similarity score from AWS CompareFaces 
+#bring rownames to a column and split character vector in two so as to match with CompareFaces df
+
+Similarity = list()
+for (i in 1:nrow(test)){
+  str_dete
+}
+
+#### Linear Models #########
+
+# isolate co-twins and add similarity scores to dist and ratio matrices
+
+schoeller_cf <- read.csv( "/Users/Warren.Sink/github/facial-polyphenism/CSVs/schoeller_cf.csv", header = TRUE, stringsAsFactors = FALSE)
+
+all_dist_pheno_delta$Co_twins_ID <- as.character(all_dist_pheno_delta$Co_twins_ID)
+all_dist_pheno_fc$Co_twins_ID <- as.character(all_dist_pheno_fc$Co_twins_ID)
+all_dist_pheno_absdelta$Co_twins_ID <- as.character(all_dist_pheno_absdelta$Co_twins_ID)
+#all_dist_pheno_delta_73$Co_twins_ID <- as.character(all_dist_pheno_delta_73$Co_twins_ID)
+#all_dist_pheno_fc_73$Co_twins_ID <- as.character(all_dist_pheno_delta_73$Co_twins_ID)
+#all_dist_pheno_absdelta_73$Co_twins_ID <- as.character(all_dist_pheno_delta_73$Co_twins_ID)
+all_ratio_pheno_delta$Co_twins_ID <- as.character(all_ratio_pheno_delta$Co_twins_ID)
+all_ratio_pheno_fc$Co_twins_ID <- as.character(all_ratio_pheno_fc$Co_twins_ID)
+all_ratio_pheno_absdelta$Co_twins_ID <- as.character(all_ratio_pheno_absdelta$Co_twins_ID)
+#all_ratio_pheno_delta_73$Co_twins_ID <- as.character(all_ratio_pheno_delta_73$Co_twins_ID)
+#all_ratio_pheno_fc_73$Co_twins_ID <- as.character(all_ratio_pheno_delta_73$Co_twins_ID)
+#all_ratio_pheno_absdelta_73$Co_twins_ID <- as.character(all_ratio_pheno_delta_73$Co_twins_ID)
+
+# dist delta
+
+all_dist_pheno_delta_73 <- all_dist_pheno_delta[1:73,]
+
+all_dist_pheno_delta_73$Co_twins_ID <- as.integer(as.character(all_dist_pheno_delta_73$Co_twins_ID)) 
+
+all_dist_pheno_delta_73 <- all_dist_pheno_delta_73 %>% arrange(Co_twins_ID)
+
+schoeller_cf_cotwins <- schoeller_cf %>% filter(ctrl_id == "co-twins") 
+
+schoeller_cf_cotwins$Co_twins_ID.x <- as.integer(as.character(schoeller_cf_cotwins$Co_twins_ID.x))
+
+schoeller_cf_cotwins <- schoeller_cf_cotwins %>% arrange(Co_twins_ID.x)
+
+all_dist_pheno_delta_73 <- cbind(all_dist_pheno_delta_73, schoeller_cf_cotwins[,4]) 
+
+colnames(all_dist_pheno_delta_73)[360] <- "Similarity"
+
+all_dist_pheno_delta_73 <- cbind(all_dist_pheno_delta_73[1:7],all_dist_pheno_delta_73[8:360])
+
+L = list()
+for (i in 1:nrow(schoeller_cf)){
+  if (schoeller_cf[i,2] == schoeller_cf[i,3]){
+    L[[i]] <- schoeller_cf[i,]
+  }
+}
+schoeller_cf_negctrl <- do.call(rbind, L)
+
+
+# dist fc
+
+all_dist_pheno_fc_73 <- all_dist_pheno_fc[1:73,]
+
+all_dist_pheno_fc_73$Co_twins_ID <- as.integer(as.character(all_dist_pheno_fc_73$Co_twins_ID)) 
+
+all_dist_pheno_fc_73 <- all_dist_pheno_fc_73 %>% arrange(Co_twins_ID)
+
+all_dist_pheno_fc_73 <- cbind(all_dist_pheno_fc_73, schoeller_cf_cotwins[,4])
+
+colnames(all_dist_pheno_fc_73)[360] <- "Similarity"
+
+all_dist_pheno_fc_73 <- cbind(all_dist_pheno_fc_73[1:7],all_dist_pheno_fc_73[8:360])
+
+# dist absdelta 
+
+all_dist_pheno_absdelta_73 <- all_dist_pheno_absdelta[1:73,]
+
+all_dist_pheno_absdelta_73$Co_twins_ID <- as.integer(as.character(all_dist_pheno_absdelta_73$Co_twins_ID)) 
+
+all_dist_pheno_absdelta_73 <- all_dist_pheno_absdelta_73 %>% arrange(Co_twins_ID)
+
+all_dist_pheno_absdelta_73 <- cbind(all_dist_pheno_absdelta_73, schoeller_cf_cotwins[,4])
+
+colnames(all_dist_pheno_absdelta_73)[360] <- "Similarity"
+
+all_dist_pheno_absdelta_73 <- cbind(all_dist_pheno_absdelta_73[1:7],all_dist_pheno_absdelta_73[8:360])
+
+# ratio delta
+
+all_ratio_pheno_delta_73 <- all_ratio_pheno_delta[1:73,]
+
+all_ratio_pheno_delta_73$Co_twins_ID <- as.integer(as.character(all_ratio_pheno_delta_73$Co_twins_ID)) 
+
+all_ratio_pheno_delta_73 <- all_ratio_pheno_delta_73 %>% arrange(Co_twins_ID)
+
+all_ratio_pheno_delta_73 <- cbind(all_ratio_pheno_delta_73, schoeller_cf_cotwins[,4])
+
+colnames(all_ratio_pheno_delta_73)[61434] <- "Similarity"
+
+all_ratio_pheno_delta_73 <- cbind(all_ratio_pheno_delta_73[1:7],all_ratio_pheno_delta_73[8:61434])
+
+# ratio fc
+
+all_ratio_pheno_fc_73 <- all_ratio_pheno_fc[1:73,]
+
+all_ratio_pheno_fc_73$Co_twins_ID <- as.integer(as.character(all_ratio_pheno_fc_73$Co_twins_ID)) 
+
+all_ratio_pheno_fc_73 <- all_ratio_pheno_fc_73 %>% arrange(Co_twins_ID)
+
+all_ratio_pheno_fc_73 <- cbind(all_ratio_pheno_fc_73, schoeller_cf_cotwins[,4])
+
+colnames(all_ratio_pheno_fc_73)[61434] <- "Similarity"
+
+all_ratio_pheno_fc_73 <- cbind(all_ratio_pheno_fc_73[1:7],all_ratio_pheno_fc_73[8:61434])
+
+# ratio absdelta
+
+all_ratio_pheno_absdelta_73 <- all_ratio_pheno_absdelta[1:73,]
+
+all_ratio_pheno_absdelta_73$Co_twins_ID <- as.integer(as.character(all_ratio_pheno_absdelta_73$Co_twins_ID)) 
+
+all_ratio_pheno_absdelta_73 <- all_ratio_pheno_absdelta_73 %>% arrange(Co_twins_ID)
+
+all_ratio_pheno_absdelta_73 <- cbind(all_ratio_pheno_absdelta_73, schoeller_cf_cotwins[,4])
+
+colnames(all_ratio_pheno_absdelta_73)[61434] <- "Similarity"
+
+all_ratio_pheno_absdelta_73 <- cbind(all_ratio_pheno_absdelta_73[1:7],all_ratio_pheno_absdelta_73[8:61434])
+
+all_dist_pheno_delta$Co_twins_ID <- as.character(all_dist_pheno_delta$Co_twins_ID)
+all_dist_pheno_fc$Co_twins_ID <- as.character(all_dist_pheno_fc$Co_twins_ID)
+all_dist_pheno_absdelta$Co_twins_ID <- as.character(all_dist_pheno_absdelta$Co_twins_ID)
+all_dist_pheno_delta_73$Co_twins_ID <- as.character(all_dist_pheno_delta_73$Co_twins_ID)
+all_dist_pheno_fc_73$Co_twins_ID <- as.character(all_dist_pheno_delta_73$Co_twins_ID)
+all_dist_pheno_absdelta_73$Co_twins_ID <- as.character(all_dist_pheno_delta_73$Co_twins_ID)
+all_ratio_pheno_delta$Co_twins_ID <- as.character(all_ratio_pheno_delta$Co_twins_ID)
+all_ratio_pheno_fc$Co_twins_ID <- as.character(all_ratio_pheno_fc$Co_twins_ID)
+all_ratio_pheno_absdelta$Co_twins_ID <- as.character(all_ratio_pheno_absdelta$Co_twins_ID)
+all_ratio_pheno_delta_73$Co_twins_ID <- as.character(all_ratio_pheno_delta_73$Co_twins_ID)
+all_ratio_pheno_fc_73$Co_twins_ID <- as.character(all_ratio_pheno_delta_73$Co_twins_ID)
+all_ratio_pheno_absdelta_73$Co_twins_ID <- as.character(all_ratio_pheno_delta_73$Co_twins_ID)
 
 rm(list = ls()[!ls() %in% c("pheno_data","all_dist_pheno","all_ratio_pheno",'all_dist_pheno_delta','all_dist_pheno_absdelta',
                             'all_dist_pheno_fc','all_ratio_pheno_delta','all_ratio_pheno_absdelta','all_ratio_pheno_fc',
@@ -852,107 +1071,13 @@ rm(list = ls()[!ls() %in% c("pheno_data","all_dist_pheno","all_ratio_pheno",'all
                             'all_dist_pheno_log2_delta','all_dist_pheno_abslog2_fc','all_dist_pheno_abslog2_delta','all_dist_pheno_abslog2_delta',
                             "all_ratio_pheno_log2","all_ratio_pheno_abslog2",'all_ratio_pheno_log2_fc',
                             'all_ratio_pheno_log2_delta','all_ratio_pheno_log2_absdelta',"all_ratio_pheno_abslog2_fc","all_ratio_pheno_abslog2_delta",
-                            'all_ratio_pheno_abslog2_absdelta')])
+                            'all_ratio_pheno_abslog2_absdelta','all_dist_pheno_delta_73','all_dist_pheno_fc_73',
+                            'all_dist_pheno_absdelta_73','all_ratio_pheno_delta_73','all_ratio_pheno_fc_73',
+                            'all_ratio_pheno_absdelta_73','schoeller_cf')])
 
-#save only the numeric columns for ipython tsne
-
-all_ratio_pheno_delta_nops<-all_ratio_pheno_delta[,2:61426]
-all_ratio_pheno_absdelta_nops<-all_ratio_pheno_absdelta[,2:61426]
-all_ratio_pheno_fc_nops<-all_ratio_pheno_fc[,2:61426]
-all_ratio_pheno_abslog2_delta_nops<-all_ratio_pheno_abslog2_delta[,2:61426]
-all_ratio_pheno_abslog2_absdelta_nops<-all_ratio_pheno_abslog2_absdelta[,2:61426]
-all_ratio_pheno_abslog2_fc_nops<-all_ratio_pheno_abslog2_fc[,2:61426]
-all_ratio_pheno_log2_delta_nops<-all_ratio_pheno_log2_delta[,2:61426]
-all_ratio_pheno_log2_fc_nops<-all_ratio_pheno_log2_fc[,2:61426]
-
-save(all_ratio_pheno_delta_nops, file="all_ratio_pheno_delta_nops.Rdata")
-save(all_ratio_pheno_absdelta_nops, file="all_ratio_pheno_absdelta_nops.Rdata")
-save(all_ratio_pheno_fc_nops, file="all_ratio_pheno_fc_nops.Rdata")
-save(all_ratio_pheno_abslog2_delta_nops, file="all_ratio_pheno_abslog2_delta_nops.Rdata")
-save(all_ratio_pheno_abslog2_absdelta_nops, file="all_ratio_pheno_abslog2_absdelta_nops.Rdata")
-save(all_ratio_pheno_abslog2_fc_nops, file="all_ratio_pheno_abslog2_fc_nops.Rdata")
-save(all_ratio_pheno_log2_delta_nops, file="all_ratio_pheno_log2_delta_nops.Rdata")
-save(all_ratio_pheno_log2_fc_nops, file="all_ratio_pheno_log2_fc_nops.Rdata")
-
-write_csv(all_ratio_pheno_delta_nops,path = "Users/Warren.Sink/Desktop/OneDrive-Van-Andel-Institute/alpd_nops.csv")
-
-########hpc-ratio-tsne trampoline########
-
-tab_all_ratio_pheno_absdelta<-read.table(file="/Volumes/projects_secondary/mnp/warren/test/tsne_all_ratio_delta.tab", sep ="\t", header=F)
-tab_all_ratio_pheno_fc<-read.table(file="/Volumes/projects_secondary/mnp/warren/test/tsne_all_ratio_fc.tab", sep ="\t", header=F)
-
-all_ratio_pheno_delta_tsne<-cbind(all_dist_pheno_fc[c(1,406:411)],tab_all_ratio_pheno_absdelta)
-all_ratio_pheno_fc_tsne<-cbind(all_dist_pheno_fc[c(1,407:413)],tab_all_ratio_pheno_fc)
-
-all_ratio_pheno_fc_tsne_male<-all_ratio_pheno_fc_tsne%>%filter(.,Sex.y=="M")
-all_ratio_pheno_fc_tsne_female<-all_ratio_pheno_fc_tsne%>%filter(.,Sex.y=="F")
-all_ratio_pheno_delta_tsne_male<-all_ratio_pheno_delta_tsne%>%filter(.,Sex.y=='M')
-all_ratio_pheno_delta_tsne_female<-all_ratio_pheno_delta_tsne%>%filter(.,Sex.y=='F')
-
-rm(list = ls()[!ls() %in% c("pheno_data","all_dist_pheno","all_ratio_pheno",'all_dist_pheno_delta',
-                            'all_dist_pheno_fc','all_ratio_pheno_delta','all_ratio_pheno_fc',
-                            "all_dist_pheno_log2","all_dist_pheno_abslog2", "all_dist_pheno_log2_fc",
-                            'all_dist_pheno_log2_delta','all_dist_pheno_abslog2_fc','all_dist_pheno_abslog2_delta',
-                            'all_dist_pheno_abslog2_absdelta','all_dist_pheno_log2_absdelta',
-                            "all_ratio_pheno_log2","all_ratio_pheno_abslog2",'all_ratio_pheno_log2_fc',
-                            'all_ratio_pheno_log2_delta',"all_ratio_pheno_abslog2_fc","all_ratio_pheno_abslog2_delta",
-                            "all_ratio_pheno_abslog2_absdelta","all_ratio_pheno_delta_tsne","all_ratio_pheno_fc_tsne",
-                            "all_ratio_pheno_fc_tsne_male","all_ratio_pheno_fc_tsne_female","all_ratio_pheno_delta_tsne_male",
-                            "all_ratio_pheno_delta_tsne_female","schoeller_similarity_scores_pheno","rd_0.Rdata",
-                            "similarity_scores_pheno_aldi","all_ratio_pheno_delta_nops_tsne","all_ratio_pheno_fc_nops_tsne",
-                            "all_ratio_pheno_delta_nops_tsne_male","all_ratio_pheno_delta_nops_tsne_female",
-                            "all_ratio_pheno_fc_nops_tsne_male","all_ratio_pheno_fc_nops_tsne_female")])
-
-rm(list = ls()[!ls() %in% c("all_ratio_pheno_delta_nops_tsne","all_ratio_pheno_fc_nops_tsne",
-                            "all_ratio_pheno_delta_nops_tsne_male","all_ratio_pheno_delta_nops_tsne_female",
-                            "all_ratio_pheno_fc_nops_tsne_male","all_ratio_pheno_fc_nops_tsne_female")])
-####Elimination of highly correlative or retention of most covariate elements#####
-##correlation matrix##
-write.csv(all_ratio_pheno_delta[,2:82102],"schoeller_all_ratio_pheno_delta.csv")
-write.csv(all_ratio_pheno_fc[,2:82407],"schoeller_all_ratio_pheno_fc.csv")
-write.csv(all_ratio_pheno_log2_delta[,2:81407],"schoeller_all_ratio_pheno_log2_delta.csv")
-write.csv(all_ratio_pheno_log2_fc[,2:81351],"schoeller_all_ratio_pheno_log2_fc.csv")
-write.csv(all_ratio_pheno_abslog2_delta[,2:81407],"schoeller_all_ratio_pheno_abslog2_delta.csv")
-write.csv(all_ratio_pheno_abslog2_fc[,2:81346],"schoeller_all_ratio_pheno_abslog2_fc.csv")
+# lasso
 
 
-library(corrplot)
-correlation_matrix_ratio_delta <- cor(all_ratio_pheno_delta, all_ratio_pheno_delta, method = "pearson" )
-correlation_matrix_ratio_fc <- cor(all_ratio_pheno_fc, all_ratio_pheno_fc, method = "pearson" )
-#correlation_matrix <- cor(data[c(6)] , data[c(11:50)] , use="complete.obs" , method = "pearson" ) ###this is to skip NA data###
-
-library("Hmisc") ##this is to obtain pval associated to correlation matrix##
-all_ratio_pheno_delta_mat<-as.matrix(all_ratio_pheno_delta)
-all_ratio_pheno_fc_mat<-as.matrix(all_ratio_pheno_fc)
-correlation_matrix_ratio_delta_2 <- rcorr(all_ratio_pheno_delta_mat , all_ratio_pheno_delta_mat , type  = "pearson" )
-correlation_matrix_ratio_fc_2 <- rcorr(as.matrix(all_ratio_pheno_fc) , as.matrix(data[all_ratio_pheno_fc]) , type  = "pearson" )
-correlation_matrix_ratio_delta_2$r ##Extract the correlation coefficients##
-correlation_matrix_ratio_delta_2$P ##Extract p-values##
-correlation_matrix_ratio_fc_2$r
-correlation_matrix_ratio_fc_2$P
-
-##this is to format the correlation matrix##
-
-flattenCorrMatrix <- function(cormat, pmat) {
-  ut <- upper.tri(cormat)
-  data.frame(
-    row = rownames(cormat)[row(cormat)[ut]],
-    column = rownames(cormat)[col(cormat)[ut]],
-    cor  =(cormat)[ut],
-    p = pmat[ut]
-  )
-} 
-flattenCorrMatrix(correlation_matrix_2$r, correlation_matrix_2$P)
-flatten_corr_matrix <- flattenCorrMatrix(correlation_matrix_2$r, correlation_matrix_2$P)
-View(flatten_corr_matrix)
-##the following is for correlation matrix with corrplot##
-library(corrplot)
-correlation_matrix_total <- cor(data[c(6,11:50)] , data[c(6,11:50)] , use="complete.obs" , method = "pearson" )
-corrplot(correlation_matrix_total, type = "upper", order = "hclust",
-         tl.col = "black", tl.srt = 45, tl.cex = 0.7)
-##this is to add pval information##
-corrplot(correlation_matrix_2$r, type="upper", order="hclust",
-         p.mat = correlation_matrix_2$P, sig.level = 0.05, insig = "blank", tl.col = "black", tl.srt = 45, tl.cex = 0.7)
 
 ###########PCA########
 
@@ -960,22 +1085,187 @@ library("FactoMineR")
 library("factoextra")
 library(ggrepel)
 library(ggpmisc)
-#all dist pheno fc
 
-scaled_all_dist_pheno_fc<-scale(all_dist_pheno_fc[,8:358])
-scaled_all_dist_pheno_fc<-cbind(all_dist_pheno_fc[c(1:7)],scaled_all_dist_pheno_fc)
-res.pca <- prcomp(scaled_all_dist_pheno_fc[8:358])
+#dist
 
-#ggfortify
+all_dist_pheno$Co_twins_ID <- as.integer(as.character(all_dist_pheno$Co_twins_ID))
 
-library(ggfortify)
+all_dist_pheno %<>% arrange(Co_twins_ID)
 
-autoplot(res.pca, data = all_dist_pheno_fc, colour = 'Sex', loadings = TRUE, loadings.colour = 'blue',
-         loadings.label = TRUE, loadings.label.size = 3)
-
-
+scaled_all_dist_pheno<-scale(all_dist_pheno[,10:360])
+scaled_all_dist_pheno<-cbind(all_dist_pheno[c(1:9)],scaled_all_dist_pheno)
+res.pca <- prcomp(scaled_all_dist_pheno[,10:360])
 
 #controls
+#pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-PCA/Schoeller-dist-fc/schoeller_pca_dist_fc_controls_arranged.pdf", w=4, h=4)
+fviz_pca_ind(res.pca, pointsize = 10, axes = c(1, 2), repel = TRUE, geom = "text",
+             geom.ind = "point", 
+             mean.point = F, 
+             pointshape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            24,24,24,24,24,24,24,24,24,24,
+                            25,25,25,25,25,25,25,25,25,25),
+             col.ind = c("none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                         "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                         "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                         "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                         "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                         "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                         "#FF0000","#FF0000","#FF0000","#FF0000","#FF0000","#FF0000","#FF0000","#FF0000","#FF0000","#FF0000",
+                         "#668d3c","#668d3c","#668d3c","#668d3c","#668d3c","#668d3c","#668d3c","#668d3c","#668d3c","#668d3c"), 
+             fill.ind = c("none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                          "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                          "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                          "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                          "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                          "none","none","none","none","none","none","none","none","none","none","none","none","none",
+                          "#FF0000","#FF0000","#FF0000","#FF0000","#FF0000","#FF0000","#FF0000","#FF0000","#FF0000","#FF0000",
+                          "#668d3c","#668d3c","#668d3c","#668d3c","#668d3c","#668d3c","#668d3c","#668d3c","#668d3c","#668d3c"), 
+             alpha.ind = 0.4 , 
+             palette = c(), 
+             title = "PCA of All Cotwins' Distance between Landmarks") +
+  theme(legend.position = "none",
+        plot.title = element_text(size=30)) + 
+  geom_text(aes(label = all_dist_pheno$Co_twins_ID))
+#dev.off()
+
+#sex
+groups <- as.factor(all_dist_pheno$Sex) # group by Sex
+fviz_pca_ind(res.pca, pointsize = 10, axes = c(1, 2), repel = T, 
+             geom.ind = "point", 
+             mean.point = F, 
+             pointshape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            24,24,24,24,24,24,24,24,24,24,
+                            25,25,25,25,25,25,25,25,25,25),
+             col.ind = groups, fill.ind = groups,
+             #addEllipses = TRUE,
+             alpha.ind = 0.4 , 
+             #habillage = groups,# color by groups
+             palette = c(), 
+             legend.title = "Sex", #theme(legend.position = "none") + 
+             title = "PCA of All Cotwins' Distance between Landmarks") +
+  theme(plot.title = element_text(size=30))
+#theme(legend.position = "none") +   
+#geom_text(aes(label = scaled_all_dist_pheno_fc$Co_twins_ID)) 
+
+#age
+all_dist_pheno_age <- all_dist_pheno %>%
+  mutate(FortyPlus = ifelse(Age > 40, 1, 0)) 
+
+fviz_pca_ind(res.pca, pointsize = 10, 
+             axes = c(1, 2), repel = F, 
+             geom.ind = "point", 
+             mean.point = F, 
+             pointshape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            24,24,24,24,24,24,24,24,24,24,
+                            25,25,25,25,25,25,25,25,25,25),
+             #col.ind = as.character(all_dist_pheno_fc_age$FortyPlus), 
+             fill.ind = as.character(all_dist_pheno_age$FortyPlus),
+             #gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+             alpha.ind = 0.4 , 
+             #habillage = groups,# color by groups
+             #palette = c(), 
+             #legend.title = "Age" ) #+ theme(legend.position = "none")
+             title = "PCA of All Cotwins' Distance between Landmarks") +
+  #scale_fill_gradientn(colours = heat.colors(5))+
+  #theme_classic()+
+  #scale_fill_discrete(name= "",labels = c("cowtins",'negative control','positive control'))+
+  theme(plot.title = element_text(size=30),
+        legend.position = "none"
+  ) 
+
+fviz_pca_ind(res.pca, pointsize = 10, 
+             axes = c(1, 2), repel = F, 
+             geom.ind = "point", 
+             mean.point = F, 
+             pointshape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            24,24,24,24,24,24,24,24,24,24,
+                            25,25,25,25,25,25,25,25,25,25),
+             #col.ind = all_dist_pheno_fc$Age, 
+             fill.ind = all_dist_pheno$Age,
+             #gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+             alpha.ind = 0.4 , 
+             #habillage = groups,# color by groups
+             #palette = c(), 
+             #legend.title = "Age" ) #+ theme(legend.position = "none")
+             title = "PCA of All Cotwins' Distance between Landmarks") +
+  scale_fill_gradientn(colours = heat.colors(5))+
+  #theme_classic() +
+  labs(title = "PCA of All Cotwins' Distance between Landmarks", fill = "Age") +
+  theme(plot.title = element_text(size=30)) 
+#theme(legend.position = "none")
+
+fviz_screeplot(res.pca, addlabels = TRUE, ylim = c(0, 50))
+
+fviz_eig(res.pca, choice = c("variance"), geom = c("bar"))
+
+fviz_eig(res.pca, choice = c("eigenvalue"), geom = c("bar"))
+
+fviz_contrib(res.pca, choice = "var", axes = 1, top = 30)  +
+  theme(axis.text.x = element_text(angle=90))
+
+#Mclust w/ first 2 PCs
+cluster.pca.adp.1.2 <- Mclust(res.pca[["x"]][,1:2], prior = priorControl())
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.pca.adp.1.2.BIC.pdf", w=6, h=4)
+plot(cluster.pca.adp.1.2, what = "BIC")
+dev.off()
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.pca.adp.1.2.density.pdf", w=4, h=4)
+plot(cluster.pca.adp.1.2, what = "density")
+dev.off()
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.pca.adp.1.2.plot.classification.pdf", w=4, h=4)
+plot(cluster.pca.adp.1.2, what = "classification")
+dev.off()
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.pca.adp.1.2.plot.uncertainty.pdf", w=4, h=4)
+plot(cluster.pca.adp.1.2, what = "uncertainty")
+dev.off()
+
+# using first 3 PCs
+
+cluster.pca.adp.1.2.3 <- Mclust(res.pca[["x"]][,1:3], prior = priorControl())
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.pca.adp.1.2.3.BIC.pdf", w=6, h=4)
+plot(cluster.pca.adp.1.2.3, what = "BIC")
+dev.off()
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.pca.adp.1.2.3.density.pdf", w=4, h=4)
+plot(cluster.pca.adp.1.2.3, what = "density")
+dev.off()
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.pca.adp.1.2.3.classification.pdf", w=4, h=4)
+plot(cluster.pca.adp.1.2.3, what = "classification")
+dev.off()
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.pca.adp.1.2.3.uncertainty.pdf", w=4, h=4)
+plot(cluster.pca.adp.1.2.3, what = "uncertainty")
+dev.off()
+
+all_dist_pheno_test<-all_dist_pheno
+all_dist_pheno_test$mclust_clusters <- cluster.pca.adp.1.2.3$classification
+
+
+#dist fc
+
+scaled_all_dist_pheno_fc<-scale(all_dist_pheno_fc[,10:360])
+scaled_all_dist_pheno_fc<-cbind(all_dist_pheno_fc[c(1:9)],scaled_all_dist_pheno_fc)
+res.pca <- prcomp(scaled_all_dist_pheno_fc[,10:360])
+
+#controls
+#pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-PCA/Schoeller-dist-fc/schoeller_pca_dist_fc_controls_arranged.pdf", w=4, h=4)
 fviz_pca_ind(res.pca, pointsize = 10, axes = c(1, 2), repel = TRUE, geom = "text",
              geom.ind = "point", 
              mean.point = F, 
@@ -984,18 +1274,18 @@ fviz_pca_ind(res.pca, pointsize = 10, axes = c(1, 2), repel = TRUE, geom = "text
                             21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
                             21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
                             24,24,24,24,24,25,25,25,25,25),
-             col.ind = "black", fill.ind = c("none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+             col.ind = "black", 
+             fill.ind = c("none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
                                              "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
                                              "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
                                              "none","none","none","none","none","none","none","none","none","none","none","none","none",
                                              "#FF0000","#FF0000","#FF0000","#FF0000","#FF0000","#668d3c","#668d3c","#668d3c","#668d3c","#668d3c"), 
              alpha.ind = 0.4 , 
              palette = c(), 
-             #legend.title = "Age" ) #+ theme(legend.position = "none") 
-             title = "PCA of FC of Feature Distance") + 
-  theme(legend.position = "none") 
-  #stat_dens2d_filter(geom = "text_repel", keep.fraction = 0.1)
-  #geom_text_repel(aes(label = scaled_all_dist_pheno_fc$Co_twins_ID)) +
+             title = "PCA of FC of Feature Distance") +
+  theme(legend.position = "none",
+        plot.title = element_text(size=30)) + geom_text(aes(label = scaled_all_dist_pheno_fc$Co_twins_ID))
+#dev.off()
 
 #sex
 groups <- as.factor(scaled_all_dist_pheno_fc$Sex) # group by Sex
@@ -1007,16 +1297,21 @@ fviz_pca_ind(res.pca, pointsize = 10, axes = c(1, 2), repel = T,
                             21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
                             21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
                             24,24,24,24,24,25,25,25,25,25),
-             col.ind = groups, fill.ind = groups, 
+             col.ind = groups, fill.ind = groups,
+             #addEllipses = TRUE,
              alpha.ind = 0.4 , 
              #habillage = groups,# color by groups
              palette = c(), 
              legend.title = "Sex", #theme(legend.position = "none") + 
-             title = "PCA of FC of Feature Distance") 
+             title = "PCA of FC of Feature Distance") +
+  theme(plot.title = element_text(size=30))
   #theme(legend.position = "none") +   
   #geom_text(aes(label = scaled_all_dist_pheno_fc$Co_twins_ID)) 
 
 #age
+all_dist_pheno_fc_age <- all_dist_pheno_fc %>%
+  mutate(FortyPlus = ifelse(Age > 40, 1, 0)) 
+
 fviz_pca_ind(res.pca, pointsize = 10, 
              axes = c(1, 2), repel = F, 
              geom.ind = "point", 
@@ -1024,10 +1319,34 @@ fviz_pca_ind(res.pca, pointsize = 10,
              pointshape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
                             21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
                             21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,22,22,22,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
                             24,24,24,24,24,25,25,25,25,25),
-             col.ind = scaled_all_dist_pheno_fc$Age, 
-             fill.ind = scaled_all_dist_pheno_fc$Age,
+             #col.ind = as.character(all_dist_pheno_fc_age$FortyPlus), 
+             fill.ind = as.character(all_dist_pheno_fc_age$FortyPlus),
+             #gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+             alpha.ind = 0.4 , 
+             #habillage = groups,# color by groups
+             #palette = c(), 
+             #legend.title = "Age" ) #+ theme(legend.position = "none")
+             title = "PCA of FC of Feature Distance") +
+  #scale_fill_gradientn(colours = heat.colors(5))+
+  #theme_classic()+
+  #scale_fill_discrete(name= "",labels = c("cowtins",'negative control','positive control'))+
+  theme(plot.title = element_text(size=30),
+        legend.position = "none"
+        ) 
+
+fviz_pca_ind(res.pca, pointsize = 10, 
+             axes = c(1, 2), repel = F, 
+             geom.ind = "point", 
+             mean.point = F, 
+             pointshape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            24,24,24,24,24,25,25,25,25,25),
+             #col.ind = all_dist_pheno_fc$Age, 
+             fill.ind = all_dist_pheno_fc$Age,
              #gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
              alpha.ind = 0.4 , 
              #habillage = groups,# color by groups
@@ -1035,16 +1354,249 @@ fviz_pca_ind(res.pca, pointsize = 10,
              #legend.title = "Age" ) #+ theme(legend.position = "none")
              title = "PCA of FC of Feature Distance") +
   scale_fill_gradientn(colours = heat.colors(5))+
+  #theme_classic() +
+  labs(title = "PCA of FC of Feature Distance", fill = "Age") +
+  theme(plot.title = element_text(size=30)) 
+  #theme(legend.position = "none")
+
+fviz_screeplot(res.pca, addlabels = TRUE, ylim = c(0, 50))
+
+fviz_eig(res.pca, choice = c("variance"), geom = c("bar"))
+
+fviz_eig(res.pca, choice = c("eigenvalue"), geom = c("bar"))
+
+fviz_contrib(res.pca, choice = "var", axes = 1, top = 30)  +
+  theme(axis.text.x = element_text(angle=90))
+
+#Mclust w/ first 2 PCs
+cluster.pca.adpfc.1.2 <- Mclust(pca.adpfc[["x"]][,1:2], prior = priorControl())
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.pca.adpfc.1.2.BIC.pdf", w=6, h=4)
+plot(cluster.pca.adpfc.1.2, what = "BIC")
+dev.off()
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.pca.adpfc.1.2.density.pdf", w=4, h=4)
+plot(cluster.pca.adpfc.1.2, what = "density")
+dev.off()
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.pca.adpfc.1.2.plot.classification.pdf", w=4, h=4)
+plot(cluster.pca.adpfc.1.2, what = "classification")
+dev.off()
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.pca.adpfc.1.2.plot.uncertainty.pdf", w=4, h=4)
+plot(cluster.pca.adpfc.1.2, what = "uncertainty")
+dev.off()
+
+# using first 3 PCs
+
+cluster.pca.adpfc.1.2.3 <- Mclust(pca.adpfc[["x"]][,1:3], prior = priorControl())
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.pca.adpfc.1.2.3.BIC.pdf", w=6, h=4)
+plot(cluster.pca.adpfc.1.2.3, what = "BIC")
+dev.off()
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.pca.adpfc.1.2.3.density.pdf", w=4, h=4)
+plot(cluster.pca.adpfc.1.2.3, what = "density")
+dev.off()
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.pca.adpfc.1.2.3.classification.pdf", w=4, h=4)
+plot(cluster.pca.adpfc.1.2.3, what = "classification")
+dev.off()
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.pca.adpfc.1.2.3.uncertainty.pdf", w=4, h=4)
+plot(cluster.pca.adpfc.1.2.3, what = "uncertainty")
+dev.off()
+
+all_dist_pheno_fc_test <- all_dist_pheno_fc
+all_dist_pheno_fc_test$mclust_clusters <- cluster.pca.adpfc.1.2.3$classification
+
+all_dist_pheno_fc_test_1 <- all_dist_pheno_fc_test %>% filter(mclust_clusters == 1)
+all_dist_pheno_fc_test_2 <- all_dist_pheno_fc_test %>% filter(mclust_clusters == 2)
+
+
+all_dist_pheno_fc_test  %>% count(Ethnicity)
+#Ethnicity     n
+# asian         3
+# black        13
+# caucasian    65
+# hispanic      2
+all_dist_pheno_fc_test  %>% count(Sex_Diff)
+#Sex_Diff      n
+# 0            35
+# 1            46
+# 2            2
+all_dist_pheno_fc_test_1  %>% count(Ethnicity)
+#Ethnicity       n
+# asian         3
+# black         10
+# caucasian     46
+# hispanic      2
+all_dist_pheno_fc_test_1  %>% count(Sex_Diff)
+#Sex_Diff     n
+# 0           29
+# 1           30
+# 2            2
+all_dist_pheno_fc_test_2  %>% count(Ethnicity)
+#Ethnicity         n
+# black         3
+# caucasian     19
+all_dist_pheno_fc_test_2  %>% count(Sex_Diff)
+#Ethnicity         n
+# black         6
+# caucasian     16
+
+#dist delta
+
+scaled_all_dist_pheno_delta<-scale(all_dist_pheno_delta[,10:360])
+scaled_all_dist_pheno_delta<-cbind(all_dist_pheno_delta[c(1:9)],scaled_all_dist_pheno_delta)
+res.pca <- prcomp(scaled_all_dist_pheno_delta[,10:360])
+
+#controls
+fviz_pca_ind(res.pca, pointsize = 10, axes = c(1, 2), repel = TRUE, geom = "text",
+             geom.ind = "point", 
+             mean.point = F, 
+             pointshape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            24,24,24,24,24,25,25,25,25,25),
+             col.ind = "black", 
+             fill.ind = c("none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                          "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                          "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                          "none","none","none","none","none","none","none","none","none","none","none","none","none",
+                          "#FF0000","#FF0000","#FF0000","#FF0000","#FF0000","#668d3c","#668d3c","#668d3c","#668d3c","#668d3c"), 
+             alpha.ind = 0.4 , 
+             palette = c(), 
+             title = "PCA of Delta of Feature Distance") +
+  theme(legend.position = "none",
+        plot.title = element_text(size=30)) + geom_text(aes(label = scaled_all_dist_pheno_fc$Co_twins_ID))
+
+#sex
+groups <- as.factor(scaled_all_dist_pheno_fc$Sex_Diff) # group by Sex
+fviz_pca_ind(res.pca, pointsize = 10, axes = c(1, 2), repel = T, 
+             geom.ind = "point", 
+             mean.point = F, 
+             pointshape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            24,24,24,24,24,25,25,25,25,25),
+             col.ind = groups, fill.ind = groups,
+             #addEllipses = TRUE,
+             alpha.ind = 0.4 , 
+             #habillage = groups,# color by groups
+             palette = c(), 
+             legend.title = "Sex", #theme(legend.position = "none") + 
+             title = "PCA of Delta of Feature Distance") +
+  theme(plot.title = element_text(size=30))
+#theme(legend.position = "none") +   
+#geom_text(aes(label = scaled_all_dist_pheno_fc$Co_twins_ID)) 
+
+all_dist_pheno_delta_age <- all_dist_pheno_delta %>%
+  mutate(FortyPlus = ifelse(Age > 40, 1, 0)) 
+
+fviz_pca_ind(res.pca, pointsize = 10, 
+             axes = c(1, 2), repel = F, 
+             geom.ind = "point", 
+             mean.point = F, 
+             pointshape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            24,24,24,24,24,25,25,25,25,25),
+             #col.ind = as.character(all_dist_pheno_fc_age$FortyPlus), 
+             fill.ind = as.character(all_dist_pheno_fc_age$FortyPlus),
+             #gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+             alpha.ind = 0.4 , 
+             #habillage = groups,# color by groups
+             #palette = c(), 
+             #legend.title = "Age" ) #+ theme(legend.position = "none")
+             title = "PCA of Delta of Feature Distance") +
+  #scale_fill_gradientn(colours = heat.colors(5))+
+  #theme_classic()+
+  #scale_fill_discrete(name= "",labels = c("cowtins",'negative control','positive control'))+
+  theme(plot.title = element_text(size=30),
+        legend.position = "none"
+  )
+
+#age
+fviz_pca_ind(res.pca, pointsize = 10, 
+             axes = c(1, 2), repel = F, 
+             geom.ind = "point", 
+             mean.point = F, 
+             pointshape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            24,24,24,24,24,25,25,25,25,25),
+             #col.ind = all_dist_pheno_delta_age$FortyPlus, 
+             fill.ind = all_dist_pheno_delta_age$FortyPlus,
+             #gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+             alpha.ind = 0.4 , 
+             #habillage = groups,# color by groups
+             #palette = c(), 
+             #legend.title = "Age" ) #+ theme(legend.position = "none")
+             title = "PCA of Delta of Feature Distance") +
+  #scale_fill_gradientn(colours = heat.colors(5))+
   #theme_classic()+
   theme(legend.position = "none")
 
+fviz_pca_ind(res.pca, pointsize = 10, 
+             axes = c(1, 2), repel = F, 
+             geom.ind = "point", 
+             mean.point = F, 
+             pointshape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            24,24,24,24,24,25,25,25,25,25),
+             #col.ind = all_dist_pheno_delta$Age, 
+             fill.ind = all_dist_pheno_delta$Age,
+             #gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+             alpha.ind = 0.4 , 
+             #habillage = groups,# color by groups
+             #palette = c(), 
+             #legend.title = "Age" ) #+ theme(legend.position = "none")
+             title = "PCA of Delta of Feature Distance") +
+  scale_fill_gradientn(colours = heat.colors(5))+
+  #theme_classic()+
+  theme(plot.title = element_text(size=30),
+        legend.position = "none"
+        )
+
 fviz_contrib(res.pca, choice = "var", axes = 1, top = 30)  +
   theme(axis.text.x = element_text(angle=90))
 
-#PCA fc with Andrew(84)
-scaled_all_dist_pheno_fc<-scale(all_dist_pheno_fc[,2:352])
-scaled_all_dist_pheno_fc<-cbind(all_dist_pheno_fc[c(1,353:358)],scaled_all_dist_pheno_fc)
-res.pca <- prcomp(scaled_all_dist_pheno_fc[8:358])
+#Mclust w/ first 2 PCs
+
+cluster.pca.adpd.1.2 <- Mclust(pca.adpd[["x"]][,1:2], prior = priorControl())
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.pca.adpd.1.2.BIC.pdf", w=6, h=4)
+plot(cluster.pca.adpd.1.2, what = "BIC")
+dev.off()
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.pca.adpd.1.2.density.pdf", w=4, h=4)
+plot(cluster.pca.adpd.1.2, what = "density")
+dev.off()
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.pca.adpd.1.2.plot.classification.pdf", w=4, h=4)
+plot(cluster.pca.adpd.1.2, what = "classification")
+dev.off()
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.pca.adpd.1.2.plot.uncertainty.pdf", w=4, h=4)
+plot(cluster.pca.adpd.1.2, what = "uncertainty")
+dev.off()
+
+#using first 3 PCs
+
+cluster.pca.adpd.1.2.3 <- Mclust(res.pca[["x"]][,1:3], prior = priorControl())
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.pca.adpd.1.2.3.BIC.pdf", w=6, h=4)
+plot(cluster.pca.adpd.1.2.3, what = "BIC")
+dev.off()
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.pca.adpd.1.2.3.density.pdf", w=4, h=4)
+plot(cluster.pca.adpd.1.2.3, what = "density")
+dev.off()
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.pca.adpd.1.2.3.classification.pdf", w=4, h=4)
+plot(cluster.pca.adpd.1.2.3, what = "classification")
+dev.off()
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.pca.adpd.1.2.3.uncertainty.pdf", w=4, h=4)
+plot(cluster.pca.adpd.1.2.3, what = "uncertainty")
+dev.off()
+
+#dist absdelta
+
+scaled_all_dist_pheno_absdelta<-scale(all_dist_pheno_absdelta[10:360])
+scaled_all_dist_pheno_absdelta<-cbind(all_dist_pheno_absdelta[c(1:9)],scaled_all_dist_pheno_absdelta)
+res.pca <- prcomp(scaled_all_dist_pheno_absdelta[10:360])
 #controls
 fviz_pca_ind(res.pca, pointsize = 10, axes = c(1, 2), repel = T, 
              geom.ind = "point", 
@@ -1052,105 +1604,39 @@ fviz_pca_ind(res.pca, pointsize = 10, axes = c(1, 2), repel = T,
              pointshape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
                             21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
                             21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,22,22,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
                             24,24,24,24,24,25,25,25,25,25),
              col.ind = "black", fill.ind = c("none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
                                              "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
                                              "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
-                                             "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                                             "none","none","none","none","none","none","none","none","none","none","none","none","none",
                                              "#FF0000","#FF0000","#FF0000","#FF0000","#FF0000","#668d3c","#668d3c","#668d3c","#668d3c","#668d3c"), 
              alpha.ind = 0.4 , 
+             #habillage = groups,# color by groups
              palette = c(), 
              #legend.title = "Age" ) #+ theme(legend.position = "none") 
-             title = "PCA of FC of Feature Distance") + 
-  theme(legend.position = "none") +
-  geom_text(aes(label = scaled_all_dist_pheno_fc$Co_twins_ID)) 
+             title = "PCA of Absolute Delta of Feature Distance") + 
+  theme(legend.position = "none", plot.title = element_text(size=30)) +
+  geom_text(aes(label = scaled_all_dist_pheno_fc$Co_twins_ID))
+  
 
 #sex
-groups <- as.factor(all_dist_pheno_fc$Sex) # group by Sex
+groups <- as.factor(scaled_all_dist_pheno_absdelta$Sex) # group by Twin_ID
 fviz_pca_ind(res.pca, pointsize = 10, axes = c(1, 2), repel = T, 
              geom.ind = "point", 
              mean.point = F, 
              pointshape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
                             21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
                             21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,22,22,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
                             24,24,24,24,24,25,25,25,25,25),
              col.ind = groups, fill.ind = groups, 
              alpha.ind = 0.4 , 
              #habillage = groups,# color by groups
              palette = c(), 
              #legend.title = "Sex" ) #+ theme(legend.position = "none") 
-             title = "PCA of FC of Feature Distance") + theme(legend.position = "none") +   geom_text(aes(label = Co_twins_ID)) 
-
-#age
-fviz_pca_ind(res.pca, pointsize = 10, 
-             axes = c(1, 2), repel = F, 
-             geom.ind = "point", 
-             mean.point = F, 
-             pointshape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,22,22,22,
-                            24,24,24,24,24,25,25,25,25,25,22,22),
-             col.ind = all_dist_pheno_fc$Age.x, 
-             fill.ind = all_dist_pheno_fc$Age.x,
-             #gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
-             alpha.ind = 0.4 , 
-             #habillage = groups,# color by groups
-             #palette = c(), 
-             #legend.title = "Age" ) #+ theme(legend.position = "none")
-             title = "PCA of FC of Feature Distance") +
-  scale_fill_gradientn(colours = heat.colors(5))+
-  theme_classic()+
-  theme(legend.position = "none")
-
-fviz_contrib(res.pca, choice = "var", axes = 1, top = 30)  +
-  theme(axis.text.x = element_text(angle=90))
-
-#all dist pheno delta
-
-all_dist_pheno_delta_no84<-slice(all_dist_pheno_delta, c(1:83,85))
-scaled_all_dist_pheno_delta<-scale(all_dist_pheno_delta_no84[2:352])
-scaled_all_dist_pheno_delta<-cbind(all_dist_pheno_delta_no84[c(1,353:358)],scaled_all_dist_pheno_delta)
-res.pca <- prcomp(scaled_all_dist_pheno_delta[8:358])
-#controls
-fviz_pca_ind(res.pca, pointsize = 10, axes = c(1, 2), repel = T, 
-             geom.ind = "point", 
-             mean.point = F, 
-             pointshape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            24,24,24,24,24,25,25,25,25,25,22),
-             col.ind = "black", fill.ind = c("none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
-                                             "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
-                                             "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
-                                             "none","none","none","none","none","none","none","none","none","none","none","none","none",
-                                             "#FF0000","#FF0000","#FF0000","#FF0000","#FF0000","#668d3c","#668d3c","#668d3c","#668d3c","#668d3c","none"), 
-             alpha.ind = 0.4 , 
-             #habillage = groups,# color by groups
-             palette = c(), 
-             #legend.title = "Age" ) #+ theme(legend.position = "none") 
-             title = "Feature Distances x Delta between Cotwins") + theme(legend.position = "none") +
-  geom_text(aes(label = scaled_all_dist_pheno_delta$Co_twins_ID)) 
-
-#sex
-groups <- as.factor(scaled_all_dist_pheno_delta$Sex.x)
-fviz_pca_ind(res.pca, pointsize = 10, axes = c(1, 2), repel = T, 
-             geom.ind = "point", 
-             mean.point = F, 
-             pointshape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            24,24,24,24,24,25,25,25,25,25,22,22),
-             col.ind = groups, fill.ind = groups, 
-             alpha.ind = 0.4 , 
-             #habillage = groups,# color by groups
-             palette = c(), 
-             #legend.title = "Sex" ) #+ theme(legend.position = "none") 
-             title = "Ratio of Distances x Delta between Cotwins") + theme(legend.position = "none")
+             title = "PCA of Absolute Delta of Feature Distance") + theme(legend.position = "none",
+                                                                          plot.title = element_text(size=30))
 #age
 fviz_pca_ind(res.pca, pointsize = 10, 
              axes = c(1, 2), repel = F, 
@@ -1160,96 +1646,256 @@ fviz_pca_ind(res.pca, pointsize = 10,
                             21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
                             21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
                             21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            24,24,24,24,24,25,25,25,25,25,22,22),
-             col.ind = all_ratio_pheno_delta$Age, 
-             fill.ind = all_ratio_pheno_delta$Age,
+                            24,24,24,24,24,25,25,25,25,25),
+             col.ind = scaled_all_dist_pheno_absdelta$Age, 
+             fill.ind = scaled_all_dist_pheno_absdelta$Age,
              #gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
              alpha.ind = 0.4 , 
              #habillage = groups,# color by groups
              #palette = c(), 
              #legend.title = "Age" ) #+ theme(legend.position = "none")
-             title = "Ratio of Distances x Delta between Cotwins") +
+             title = "PCA of Absolute Delta of Feature Distance") +
   scale_fill_gradientn(colours = heat.colors(5))+
-  theme_classic()+
-  theme(legend.position = "none")
+  #theme_classic()+
+  theme(legend.position = "none",
+        plot.title = element_text(size=30))
 
-fviz_contrib(res.pca, choice = "var", axes = 1, top = 30)  +
-  theme(axis.text.x = element_text(angle=90))
-
-#all dist pheno absdelta
-scaled_all_dist_pheno_absdelta<-scale(all_dist_pheno_absdelta[2:352])
-scaled_all_dist_pheno_absdelta<-cbind(all_dist_pheno_absdelta[c(1,353:358)],scaled_all_dist_pheno_absdelta)
-res.pca <- prcomp(scaled_all_dist_pheno_absdelta[8:358])
-#controls
-fviz_pca_ind(res.pca, pointsize = 10, axes = c(1, 2), repel = T, 
-             geom.ind = "point", 
-             mean.point = F, 
-             pointshape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            24,24,24,24,24,25,25,25,25,25,22,22),
-             col.ind = "black", fill.ind = c("none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
-                                             "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
-                                             "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
-                                             "none","none","none","none","none","none","none","none","none","none","none","none","none",
-                                             "#FF0000","#FF0000","#FF0000","#FF0000","#FF0000","#668d3c","#668d3c","#668d3c","#668d3c","#668d3c","none","none"), 
-             alpha.ind = 0.4 , 
-             #habillage = groups,# color by groups
-             palette = c(), 
-             #legend.title = "Age" ) #+ theme(legend.position = "none") 
-             title = "Ratio of Distances x absDelta between Cotwins") + theme(legend.position = "none")
-#sex
-groups <- as.factor(scaled_all_dist_pheno_absdelta$Sex.x) # group by Twin_ID
-fviz_pca_ind(res.pca, pointsize = 10, axes = c(1, 2), repel = T, 
-             geom.ind = "point", 
-             mean.point = F, 
-             pointshape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            24,24,24,24,24,25,25,25,25,25,22,22),
-             col.ind = groups, fill.ind = groups, 
-             alpha.ind = 0.4 , 
-             #habillage = groups,# color by groups
-             palette = c(), 
-             #legend.title = "Sex" ) #+ theme(legend.position = "none") 
-             title = "Ratio of Distances x absDelta between Cotwins") + theme(legend.position = "none")
-#age
-fviz_pca_ind(res.pca, pointsize = 10, 
-             axes = c(1, 2), repel = F, 
-             geom.ind = "point", 
-             mean.point = F, 
-             pointshape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            24,24,24,24,24,25,25,25,25,25,22,22),
-             col.ind = scaled_all_dist_pheno_absdelta$Age.x, 
-             fill.ind = scaled_all_dist_pheno_absdelta$Age.x,
-             #gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
-             alpha.ind = 0.4 , 
-             #habillage = groups,# color by groups
-             #palette = c(), 
-             #legend.title = "Age" ) #+ theme(legend.position = "none")
-             title = "Ratio of Distances x absDelta between Cotwins") +
-  scale_fill_gradientn(colours = heat.colors(5))+
-  theme_classic()+
-  theme(legend.position = "none")
-
-fviz_contrib(res.pca, choice = "var", axes = 1:2, top = 30)  +
-  theme(axis.text.x = element_text(angle=90))
 
 # Contributions of variables to PC1
 fviz_contrib(res.pca, choice = "ind", axes = 1:2, top = 120)  +
   theme(axis.text.x = element_text(angle=90))
 # Contributions of variables to PC2
-fviz_contrib(res.pca, choice = "var", axes = 2, top = 20)
+fviz_contrib(res.pca, choice = "var", axes = 2, top = 20) +
+  theme(axis.text.x = element_text(angle=90))
 
-#all ratio pheno delta
-res.pca <- prcomp(all_ratio_pheno_delta[2:61426])
+#Mclust w/ first 2 PCs
+
+cluster.pca.adpdabs.1.2 <- Mclust(res.pca[["x"]][,1:2], prior = priorControl())
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.pca.adpdabs.1.2.BIC.pdf", w=6, h=4)
+plot(cluster.pca.adpdabs.1.2, what = "BIC")
+dev.off()
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.pca.adpdabs.1.2.density.pdf", w=4, h=4)
+plot(cluster.pca.adpdabs.1.2, what = "density")
+dev.off()
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.pca.adpdabs.1.2.plot.classification.pdf", w=4, h=4)
+plot(cluster.pca.adpdabs.1.2, what = "classification")
+dev.off()
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.pca.adpdabs.1.2.plot.uncertainty.pdf", w=4, h=4)
+plot(cluster.pca.adpdabs.1.2, what = "uncertainty")
+dev.off()
+
+#using first 3 PCs
+
+cluster.pca.adpdabs.1.2.3 <- Mclust(res.pca[["x"]][,1:3], prior = priorControl())
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.pca.adpdabs.1.2.3.BIC.pdf", w=6, h=4)
+plot(cluster.pca.adpdabs.1.2.3, what = "BIC")
+dev.off()
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.pca.adpdabs.1.2.3.density.pdf", w=4, h=4)
+plot(cluster.pca.adpdabs.1.2.3, what = "density")
+dev.off()
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.pca.adpdabs.1.2.3.classification.pdf", w=4, h=4)
+plot(cluster.pca.adpdabs.1.2.3, what = "classification")
+dev.off()
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.pca.adpdabs.1.2.3.uncertainty.pdf", w=4, h=4)
+plot(cluster.pca.adpdabs.1.2.3, what = "uncertainty")
+dev.off()
+
+#ratio
+
+all_ratio_pheno$Co_twins_ID <- as.integer(as.character(all_ratio_pheno$Co_twins_ID))
+
+all_ratio_pheno %<>% arrange(Co_twins_ID)
+
+scaled_all_ratio_pheno<-scale(all_ratio_pheno[,10:(ncol(all_ratio_pheno))])
+scaled_all_ratio_pheno<-cbind(all_ratio_pheno[c(1:9)],scaled_all_ratio_pheno)
+res.pca <- prcomp(scaled_all_ratio_pheno[,10:(ncol(all_ratio_pheno))])
+
 #controls
-groups <- as.factor(all_ratio_pheno_delta$Sex) # group by Twin_ID
+#pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-PCA/Schoeller-dist-fc/schoeller_pca_dist_fc_controls_arranged.pdf", w=4, h=4)
+fviz_pca_ind(res.pca, pointsize = 10, axes = c(1, 2), repel = TRUE, geom = "text",
+             geom.ind = "point", 
+             mean.point = F, 
+             pointshape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            24,24,24,24,24,24,24,24,24,24,
+                            25,25,25,25,25,25,25,25,25,25),
+             col.ind = c("none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                         "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                         "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                         "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                         "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                         "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                         "#FF0000","#FF0000","#FF0000","#FF0000","#FF0000","#FF0000","#FF0000","#FF0000","#FF0000","#FF0000",
+                         "#668d3c","#668d3c","#668d3c","#668d3c","#668d3c","#668d3c","#668d3c","#668d3c","#668d3c","#668d3c"), 
+             fill.ind = c("none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                          "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                          "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                          "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                          "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                          "none","none","none","none","none","none","none","none","none","none","none","none","none",
+                          "#FF0000","#FF0000","#FF0000","#FF0000","#FF0000","#FF0000","#FF0000","#FF0000","#FF0000","#FF0000",
+                          "#668d3c","#668d3c","#668d3c","#668d3c","#668d3c","#668d3c","#668d3c","#668d3c","#668d3c","#668d3c"), 
+             alpha.ind = 0.4 , 
+             palette = c(), 
+             title = "PCA of All Cotwins' Ratio of Distances between Landmarks") +
+  theme(legend.position = "none",
+        plot.title = element_text(size=30)) + 
+  geom_text(aes(label = all_dist_pheno$Co_twins_ID))
+#dev.off()
+
+#sex
+groups <- as.factor(all_dist_pheno$Sex) # group by Sex
+fviz_pca_ind(res.pca, pointsize = 10, axes = c(1, 2), repel = T, 
+             geom.ind = "point", 
+             mean.point = F, 
+             pointshape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            24,24,24,24,24,24,24,24,24,24,
+                            25,25,25,25,25,25,25,25,25,25),
+             col.ind = groups, fill.ind = groups,
+             #addEllipses = TRUE,
+             alpha.ind = 0.4 , 
+             #habillage = groups,# color by groups
+             palette = c(), 
+             legend.title = "Sex", #theme(legend.position = "none") + 
+             title = "PCA of All Cotwins' Ratio of Distances between Landmarks") +
+  theme(plot.title = element_text(size=30))
+#theme(legend.position = "none") +   
+#geom_text(aes(label = scaled_all_dist_pheno_fc$Co_twins_ID)) 
+
+#age
+all_dist_pheno_age <- all_dist_pheno %>%
+  mutate(FortyPlus = ifelse(Age > 40, 1, 0)) 
+
+fviz_pca_ind(res.pca, pointsize = 10, 
+             axes = c(1, 2), repel = F, 
+             geom.ind = "point", 
+             mean.point = F, 
+             pointshape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            24,24,24,24,24,24,24,24,24,24,
+                            25,25,25,25,25,25,25,25,25,25),
+             #col.ind = as.character(all_dist_pheno_fc_age$FortyPlus), 
+             fill.ind = as.character(all_dist_pheno_age$FortyPlus),
+             #gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+             alpha.ind = 0.4 , 
+             #habillage = groups,# color by groups
+             #palette = c(), 
+             #legend.title = "Age" ) #+ theme(legend.position = "none")
+             title = "PCA of All Cotwins' Ratio of Distances between Landmarks") +
+  #scale_fill_gradientn(colours = heat.colors(5))+
+  #theme_classic()+
+  #scale_fill_discrete(name= "",labels = c("cowtins",'negative control','positive control'))+
+  theme(plot.title = element_text(size=30),
+        legend.position = "none"
+  ) 
+
+fviz_pca_ind(res.pca, pointsize = 10, 
+             axes = c(1, 2), repel = F, 
+             geom.ind = "point", 
+             mean.point = F, 
+             pointshape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            24,24,24,24,24,24,24,24,24,24,
+                            25,25,25,25,25,25,25,25,25,25),
+             #col.ind = all_dist_pheno_fc$Age, 
+             fill.ind = all_dist_pheno$Age,
+             #gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+             alpha.ind = 0.4 , 
+             #habillage = groups,# color by groups
+             #palette = c(), 
+             #legend.title = "Age" ) #+ theme(legend.position = "none")
+             title = "PCA of All Cotwins' Ratio of Distances between Landmarks") +
+  scale_fill_gradientn(colours = heat.colors(5))+
+  #theme_classic() +
+  labs(title = "PCA of All Cotwins' Ratio of Distances between Landmarks", fill = "Age") +
+  theme(plot.title = element_text(size=30)) 
+#theme(legend.position = "none")
+
+fviz_screeplot(res.pca, addlabels = TRUE, ylim = c(0, 50))
+
+fviz_eig(res.pca, choice = c("variance"), geom = c("bar"))
+
+fviz_eig(res.pca, choice = c("eigenvalue"), geom = c("bar"))
+
+fviz_contrib(res.pca, choice = "var", axes = 1, top = 30)  +
+  theme(axis.text.x = element_text(angle=90))
+
+#Mclust w/ first 2 PCs
+cluster.pca.arp.1.2 <- Mclust(res.pca[["x"]][,1:2], prior = priorControl())
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.pca.arp.1.2.BIC.pdf", w=6, h=4)
+plot(cluster.pca.adp.1.2, what = "BIC")
+dev.off()
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.pca.arp.1.2.density.pdf", w=4, h=4)
+plot(cluster.pca.arp.1.2, what = "density")
+dev.off()
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.pca.arp.1.2.plot.classification.pdf", w=4, h=4)
+plot(cluster.pca.arp.1.2, what = "classification")
+dev.off()
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.pca.arp.1.2.plot.uncertainty.pdf", w=4, h=4)
+plot(cluster.pca.arp.1.2, what = "uncertainty")
+dev.off()
+
+# using first 3 PCs
+
+cluster.pca.arp.1.2.3 <- Mclust(res.pca[["x"]][,1:3], prior = priorControl())
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.pca.arp.1.2.3.BIC.pdf", w=6, h=4)
+plot(cluster.pca.adp.1.2.3, what = "BIC")
+dev.off()
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.pca.arp.1.2.3.density.pdf", w=4, h=4)
+plot(cluster.pca.arp.1.2.3, what = "density")
+dev.off()
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.pca.arp.1.2.3.classification.pdf", w=4, h=4)
+plot(cluster.pca.arp.1.2.3, what = "classification")
+dev.off()
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.pca.arp.1.2.3.uncertainty.pdf", w=4, h=4)
+plot(cluster.pca.arp.1.2.3, what = "uncertainty")
+dev.off()
+
+#ratio delta
+
+scaled_all_ratio_pheno_delta<-scale(all_ratio_pheno_delta[,10:61434])
+scaled_all_ratio_pheno_delta<-cbind(all_ratio_pheno_delta[c(1:9)],scaled_all_ratio_pheno_delta)
+res.pca <- prcomp(scaled_all_ratio_pheno_delta[,10:61434])
+#controls
+fviz_pca_ind(res.pca, pointsize = 10, axes = c(1, 2), repel = TRUE, geom = "text",
+             geom.ind = "point", 
+             mean.point = F, 
+             pointshape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            24,24,24,24,24,25,25,25,25,25),
+             col.ind = "black", 
+             fill.ind = c("none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                          "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                          "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                          "none","none","none","none","none","none","none","none","none","none","none","none","none",
+                          "#FF0000","#FF0000","#FF0000","#FF0000","#FF0000","#668d3c","#668d3c","#668d3c","#668d3c","#668d3c"), 
+             alpha.ind = 0.4 , 
+             palette = c(), 
+             title = "PCA of Delta of Feature Distance Ratios") +
+  theme(legend.position = "none",
+        plot.title = element_text(size=30)) + geom_text(aes(label = scaled_all_dist_pheno_fc$Co_twins_ID))
+
+#sex
+groups <- as.factor(scaled_all_ratio_pheno_delta$Sex_Diff) # group by Sex
 fviz_pca_ind(res.pca, pointsize = 10, axes = c(1, 2), repel = T, 
              geom.ind = "point", 
              mean.point = F, 
@@ -1257,17 +1903,225 @@ fviz_pca_ind(res.pca, pointsize = 10, axes = c(1, 2), repel = T,
                             21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
                             21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
                             21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            24,24,24,24,24,25,25,25,25,25,22,22),
+                            24,24,24,24,24,25,25,25,25,25),
+             col.ind = groups, fill.ind = groups,
+             #addEllipses = TRUE,
+             alpha.ind = 0.4 , 
+             #habillage = groups,# color by groups
+             palette = c(), 
+             legend.title = "Sex", #theme(legend.position = "none") + 
+             title = "PCA of Delta of Feature Distance Ratio") +
+  theme(plot.title = element_text(size=30))
+#theme(legend.position = "none") +   
+#geom_text(aes(label = scaled_all_dist_pheno_fc$Co_twins_ID)) 
+
+#age
+fviz_pca_ind(res.pca, pointsize = 10, 
+             axes = c(1, 2), repel = F, 
+             geom.ind = "point", 
+             mean.point = F, 
+             pointshape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            24,24,24,24,24,25,25,25,25,25),
+             #col.ind = all_ratio_pheno_delta$Age, 
+             fill.ind = all_dist_pheno_delta_age$FortyPlus,
+             #gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+             alpha.ind = 0.4 , 
+             #habillage = groups,# color by groups
+             #palette = c(), 
+             #legend.title = "Age" ) #+ theme(legend.position = "none")
+             title = "PCA of Delta of Feature Distance Ratio") +
+  #scale_fill_gradientn(colours = heat.colors(5))+
+  #theme_classic()+
+  theme(plot.title = element_text(size=30), 
+        legend.position = "none")
+
+fviz_contrib(res.pca, choice = "var", axes = 1, top = 30)  +
+  theme(axis.text.x = element_text(angle=75))
+
+#Mclust w/ first 2 PCs
+
+cluster.pca.arpd.1.2 <- Mclust(res.pca[["x"]][,1:2], prior = priorControl())
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.pca.arpd.1.2.BIC.pdf", w=6, h=4)
+plot(cluster.pca.arpd.1.2, what = "BIC")
+dev.off()
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.pca.arpd.1.2.density.pdf", w=4, h=4)
+plot(cluster.pca.arpd.1.2, what = "density")
+dev.off()
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.pca.arpd.1.2.plot.classification.pdf", w=4, h=4)
+plot(cluster.pca.arpd.1.2, what = "classification")
+dev.off()
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.pca.arpd.1.2.plot.uncertainty.pdf", w=4, h=4)
+plot(cluster.pca.arpd.1.2, what = "uncertainty")
+dev.off()
+
+# using first 3 pca eigenvectors
+
+cluster.pca.arpd.1.2.3 <- Mclust(res.pca[["x"]][,1:3], prior = priorControl())
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.pca.arpd.1.2.3.BIC.pdf", w=6, h=4)
+plot(cluster.pca.arpd.1.2.3, what = "BIC")
+dev.off()
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.pca.arpd.1.2.3.density.pdf", w=4, h=4)
+plot(cluster.pca.arpd.1.2.3, what = "density")
+dev.off()
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.pca.arpd.1.2.3.classification.pdf", w=4, h=4)
+plot(cluster.pca.arpd.1.2.3, what = "classification")
+dev.off()
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.pca.arpd.1.2.3.uncertainty.pdf", w=4, h=4)
+plot(cluster.pca.arpd.1.2.3, what = "uncertainty")
+dev.off()
+
+#ratio fc
+
+scaled_all_ratio_pheno_fc<-scale(all_ratio_pheno_fc[,10:360])
+scaled_all_ratio_pheno_fc<-cbind(all_ratio_pheno_fc[c(1:9)],scaled_all_ratio_pheno_fc)
+res.pca <- prcomp(scaled_all_ratio_pheno_fc[,10:360])
+#controls
+fviz_pca_ind(res.pca, pointsize = 10, axes = c(1, 2), repel = TRUE, geom = "text",
+             geom.ind = "point", 
+             mean.point = F, 
+             pointshape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            24,24,24,24,24,25,25,25,25,25),
+             col.ind = "black", 
+             fill.ind = c("none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                          "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                          "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                          "none","none","none","none","none","none","none","none","none","none","none","none","none",
+                          "#FF0000","#FF0000","#FF0000","#FF0000","#FF0000","#668d3c","#668d3c","#668d3c","#668d3c","#668d3c"), 
+             alpha.ind = 0.4 , 
+             palette = c(), 
+             title = "PCA of FC of Feature Distance Ratio") +
+  theme(legend.position = "none",
+        plot.title = element_text(size=30)) + geom_text(aes(label = scaled_all_ratio_pheno_fc$Co_twins_ID))
+
+#sex
+groups <- as.factor(scaled_all_ratio_pheno_fc$Sex_Diff) # group by Sex
+fviz_pca_ind(res.pca, pointsize = 10, axes = c(1, 2), repel = T, 
+             geom.ind = "point", 
+             mean.point = F, 
+             pointshape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            24,24,24,24,24,25,25,25,25,25),
+             col.ind = groups, fill.ind = groups,
+             #addEllipses = TRUE,
+             alpha.ind = 0.4 , 
+             #habillage = groups,# color by groups
+             palette = c(), 
+             legend.title = "Sex", #theme(legend.position = "none") + 
+             title = "PCA of FC of Feature Distance Ratio") +
+  theme(plot.title = element_text(size=30))
+#theme(legend.position = "none") +   
+#geom_text(aes(label = scaled_all_dist_pheno_fc$Co_twins_ID)) 
+
+fviz_pca_ind(res.pca, pointsize = 10, 
+             axes = c(1, 2), repel = F, 
+             geom.ind = "point", 
+             mean.point = F, 
+             pointshape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            24,24,24,24,24,25,25,25,25,25),
+             #col.ind = all_dist_pheno_delta_age$FortyPlus, 
+             fill.ind = all_dist_pheno_delta_age$FortyPlus,
+             #gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+             alpha.ind = 0.4 , 
+             #habillage = groups,# color by groups
+             #palette = c(), 
+             #legend.title = "Age" ) #+ theme(legend.position = "none")
+             title = "PCA of Delta of Feature Distance Ratio") +
+  #scale_fill_gradientn(colours = heat.colors(5))+
+  #theme_classic()+
+  theme(plot.title = element_text(size=30), legend.position = "none")
+
+#age
+fviz_pca_ind(res.pca, pointsize = 10, 
+             axes = c(1, 2), repel = F, 
+             geom.ind = "point", 
+             mean.point = F, 
+             pointshape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            24,24,24,24,24,25,25,25,25,25),
+             #col.ind = all_dist_pheno_delta$Age, 
+             fill.ind = scaled_all_ratio_pheno_delta$Age,
+             #gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+             alpha.ind = 0.4 , 
+             #habillage = groups,# color by groups
+             #palette = c(), 
+             #legend.title = "Age" ) #+ theme(legend.position = "none")
+             title = "PCA of Delta of Feature Distance Ratio") +
+  scale_fill_gradient(heat.colors(5)) +
+  #theme_classic()+
+  theme(plot.title = element_text(size=30),
+        legend.position = "none")
+
+fviz_contrib(res.pca, choice = "var", axes = 1, top = 30)  +
+  theme(axis.text.x = element_text(angle=90))
+
+# using first 2 PC eigenvectors
+
+cluster.pca.arpfc.1.2 <- Mclust(res.pca[["x"]][,1:2], prior = priorControl())
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.pca.arpfc.1.2.BIC.pdf", w=6, h=4)
+plot(cluster.pca.arpfc.1.2, what = "BIC")
+dev.off()
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.pca.arpfc.1.2.density.pdf", w=4, h=4)
+plot(cluster.pca.arpfc.1.2, what = "density")
+dev.off()
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.pca.arpfc.1.2.plot.classification.pdf", w=4, h=4)
+plot(cluster.pca.arpfc.1.2, what = "classification")
+dev.off()
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.pca.arpfc.1.2.uncertainty.pdf", w=4, h=4)
+plot(cluster.pca.arpfc.1.2, what = "uncertainty")
+dev.off()
+
+# using first 3 PC eigenvectors
+
+cluster.pca.arpfc.1.2.3 <- Mclust(res.pca[["x"]][,1:3], prior = priorControl())
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.pca.arpfc.1.2.3.BIC.pdf", w=6, h=4)
+plot(cluster.pca.arpfc.1.2.3, what = "BIC")
+dev.off()
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.pca.arpfc.1.2.3.density.pdf", w=4, h=4)
+plot(cluster.pca.arpfc.1.2.3, what = "density")
+dev.off()
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.pca.arpfc.1.2.3.classification.pdf", w=4, h=4)
+plot(cluster.pca.arpfc.1.2.3, what = "classification")
+dev.off()
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.pca.arpfc.1.2.3.uncertainty.pdf", w=4, h=4)
+plot(cluster.pca.arpfc.1.2.3, what = "uncertainty")
+dev.off()
+
+#ratio absdelta
+scaled_all_ratio_pheno_absdelta<-scale(all_ratio_pheno_absdelta[10:61434])
+scaled_all_ratio_pheno_absdelta-cbind(all_dist_pheno_absdelta[c(1:9)],scaled_all_ratio_pheno_absdelta)
+res.pca <- prcomp(scaled_all_ratio_pheno_absdelta[10:61434])
+#controls
+fviz_pca_ind(res.pca, pointsize = 10, axes = c(1, 2), repel = T, 
+             geom.ind = "point", 
+             mean.point = F, 
+             pointshape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            24,24,24,24,24,25,25,25,25,25),
              col.ind = "black", fill.ind = c("none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
                                              "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
                                              "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
                                              "none","none","none","none","none","none","none","none","none","none","none","none","none",
-                                             "#FF0000","#FF0000","#FF0000","#FF0000","#FF0000","#668d3c","#668d3c","#668d3c","#668d3c","#668d3c","none","none"),
+                                             "#FF0000","#FF0000","#FF0000","#FF0000","#FF0000","#668d3c","#668d3c","#668d3c","#668d3c","#668d3c"),
              alpha.ind = 0.4 , 
              #habillage = groups,# color by groups
              palette = c(), 
              #legend.title = "Age" ) #+ theme(legend.position = "none") 
-             title = "Ratio of Distances x Delta between Cotwins") + 
+             title = "PCA of Delta of Feature Distance Ratio") + 
   theme(legend.position = "none") +
   geom_text(aes(label=all_ratio_pheno_delta[,1])) 
 #sex
@@ -1279,7 +2133,7 @@ fviz_pca_ind(res.pca, pointsize = 10, axes = c(1, 2), repel = T,
                             21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
                             21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
                             21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            24,24,24,24,24,25,25,25,25,25,22,22),
+                            24,24,24,24,24,25,25,25,25,25),
              col.ind = groups, fill.ind = groups, 
              alpha.ind = 0.4 , 
              #habillage = groups,# color by groups
@@ -1295,7 +2149,7 @@ fviz_pca_ind(res.pca, pointsize = 10,
                             21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
                             21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
                             21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            24,24,24,24,24,25,25,25,25,25,22,22),
+                            24,24,24,24,24,25,25,25,25,25),
              col.ind = all_ratio_pheno_delta$Age, 
              fill.ind = all_ratio_pheno_delta$Age,
              #gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
@@ -1311,472 +2165,86 @@ fviz_pca_ind(res.pca, pointsize = 10,
 fviz_contrib(pca, choice = "var", axes = 1:2, top = 30)  +
   theme(axis.text.x = element_text(angle=90))
 
+#Mclust with first 2 PCs
 
-#all ratio pheno absdelta
-res.pca <- prcomp(all_ratio_pheno_absdelta[2:61426])
-#controls
-groups <- as.factor(all_ratio_pheno_absdelta$Sex) # group by Twin_ID
-fviz_pca_ind(res.pca, pointsize = 10, axes = c(1, 2), repel = T, 
-             geom.ind = "point", 
-             mean.point = F, 
-             pointshape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            24,24,24,24,24,25,25,25,25,25,22,22),
-             col.ind = "black", fill.ind = c("none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
-                                             "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
-                                             "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
-                                             "none","none","none","none","none","none","none","none","none","none","none","none","none",
-                                             "#FF0000","#FF0000","#FF0000","#FF0000","#FF0000","#668d3c","#668d3c","#668d3c","#668d3c","#668d3c","none","none"), 
-             alpha.ind = 0.4 , 
-             #habillage = groups,# color by groups
-             palette = c(), 
-             #legend.title = "Age" ) #+ theme(legend.position = "none") 
-             title = "Ratio of Distances x Delta between Cotwins") + theme(legend.position = "none")
-#sex
-groups <- as.factor(all_ratio_pheno_absdelta$Sex) # group by Twin_ID
-fviz_pca_ind(res.pca, pointsize = 10, axes = c(1, 2), repel = T, 
-             geom.ind = "point", 
-             mean.point = F, 
-             pointshape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            24,24,24,24,24,25,25,25,25,25,22,22),
-             col.ind = groups, fill.ind = groups, 
-             alpha.ind = 0.4 , 
-             #habillage = groups,# color by groups
-             palette = c(), 
-             #legend.title = "Sex" ) #+ theme(legend.position = "none") 
-             title = "Ratio of Distances x delta between Cotwins") + theme(legend.position = "none")
-#age
-fviz_pca_ind(res.pca, pointsize = 10, 
-             axes = c(1, 2), repel = F, 
-             geom.ind = "point", 
-             mean.point = F, 
-             pointshape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            24,24,24,24,24,25,25,25,25,25,22,22),
-             col.ind = all_ratio_pheno_delta$Age, 
-             fill.ind = all_ratio_pheno_delta$Age,
-             #gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
-             alpha.ind = 0.4 , 
-             #habillage = groups,# color by groups
-             #palette = c(), 
-             #legend.title = "Age" ) #+ theme(legend.position = "none")
-             title = "Ratio of Distances x delta between Cotwins") +
-  scale_fill_gradientn(colours = heat.colors(5))+
-  theme_classic()+
-  theme(legend.position = "none")
+cluster.pca.arpdabs.1.2 <- Mclust(res.pca[["x"]][,1:2], prior = priorControl())
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.pca.arpdabs.1.2.BIC.pdf", w=6, h=4)
+plot(cluster.pca.arpdabs.1.2, what = "BIC")
+dev.off()
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.pca.arpdabs.1.2.density.pdf", w=4, h=4)
+plot(cluster.pca.arpdabs.1.2, what = "density")
+dev.off()
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.pca.arpdabs.1.2.plot.classification.pdf", w=4, h=4)
+plot(cluster.pca.arpdabs.1.2, what = "classification")
+dev.off()
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.pca.arpdabs.1.2.plot.uncertainty.pdf", w=4, h=4)
+plot(cluster.pca.arpdabs.1.2, what = "uncertainty")
+dev.off()
 
-fviz_contrib(pca, choice = "var", axes = 1:2, top = 30)  +
-  theme(axis.text.x = element_text(angle=90))
+# using first 3 PCs 
 
-#all ratio pheno fc
-res.pca <- prcomp(all_ratio_pheno_fc[2:61426])
-#controls
-fviz_pca_ind(res.pca, pointsize = 10, axes = c(1, 2), repel = T, 
-             geom.ind = "point", 
-             mean.point = F, 
-             pointshape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            24,24,24,24,24,25,25,25,25,25,22,22),
-             col.ind = "black", fill.ind = c("none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
-                                             "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
-                                             "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
-                                             "none","none","none","none","none","none","none","none","none","none","none","none","none",
-                                             "#FF0000","#FF0000","#FF0000","#FF0000","#FF0000","#668d3c","#668d3c","#668d3c","#668d3c","#668d3c","none","none"), 
-             alpha.ind = 0.4 , 
-             #habillage = groups,# color by groups
-             palette = c(), 
-             #legend.title = "Age" ) #+ theme(legend.position = "none") 
-             title = "Ratio of Distances x FC between Cotwins") + theme(legend.position = "none")
-#sex
-groups <- as.factor(all_ratio_pheno_fc$Sex) # group by Twin_ID
-fviz_pca_ind(res.pca, pointsize = 10, axes = c(1, 2), repel = T, 
-             geom.ind = "point", 
-             mean.point = F, 
-             pointshape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            24,24,24,24,24,25,25,25,25,25,22,22),
-             col.ind = groups, fill.ind = groups, 
-             alpha.ind = 0.4 , 
-             #habillage = groups,# color by groups
-             palette = c(), 
-             #legend.title = "Sex" ) #+ theme(legend.position = "none") 
-             title = "Ratio of Distances x FC between Cotwins") + theme(legend.position = "none")
-#age
-fviz_pca_ind(res.pca, pointsize = 10, 
-             axes = c(1, 2), repel = F, 
-             geom.ind = "point", 
-             mean.point = F, 
-             pointshape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            24,24,24,24,24,25,25,25,25,25,22,22),
-             col.ind = all_ratio_pheno_delta$Age, 
-             fill.ind = all_ratio_pheno_delta$Age,
-             #gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
-             alpha.ind = 0.4 , 
-             #habillage = groups,# color by groups
-             #palette = c(), 
-             #legend.title = "Age" ) #+ theme(legend.position = "none")
-             title = "Ratio of Distances x FC between Cotwins") +
-  scale_fill_gradientn(colours = heat.colors(5))+
-  theme_classic()+
-  theme(legend.position = "none")
+cluster.pca.arpdabs.1.2.3 <- Mclust(res.pca[["x"]][,1:3], prior = priorControl())
+pdf("cluster.pca.arpdabs.1.2.3.BIC.pdf", w=6, h=4)
+plot(cluster.pca.arpdabs.1.2.3, what = "BIC")
+dev.off()
+pdf("cluster.pca.arpdabs.1.2.3.density.pdf", w=4, h=4)
+plot(cluster.pca.arpdabs.1.2.3, what = "density")
+dev.off()
+pdf("cluster.pca.arpdabs.1.2.3.classification.pdf", w=4, h=4)
+plot(cluster.pca.arpdabs.1.2.3, what = "classification")
+dev.off()
+pdf("cluster.pca.arpdabs.1.2.3.uncertainty.pdf", w=4, h=4)
+plot(cluster.pca.arpdabs.1.2.3, what = "uncertainty")
+dev.off()
 
-fviz_contrib(pca, choice = "var", axes = 1:2, top = 30)  +
-  theme(axis.text.x = element_text(angle=90))
+###### Sparse PCA ########
 
-#all ratio pheno log2fc
-res.pca <- prcomp(all_ratio_pheno_log2_fc[2:61426])
-#controls
-fviz_pca_ind(res.pca, pointsize = 10, axes = c(1, 2), repel = T, 
-             geom.ind = "point", 
-             mean.point = F, 
-             pointshape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            24,24,24,24,24,25,25,25,25,25,22,22),
-             col.ind = "black", fill.ind = c("none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
-                                             "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
-                                             "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
-                                             "none","none","none","none","none","none","none","none","none","none","none","none","none",
-                                             "#FF0000","#FF0000","#FF0000","#FF0000","#FF0000","#668d3c","#668d3c","#668d3c","#668d3c","#668d3c","none","none"), 
-             alpha.ind = 0.4 , 
-             #habillage = groups,# color by groups
-             palette = c(), 
-             #legend.title = "Age" ) #+ theme(legend.position = "none") 
-             title = "Ratio of Distances x FC between Cotwins") + theme(legend.position = "none")
-#sex
-groups <- as.factor(all_ratio_pheno_fc$Sex) # group by Twin_ID
-fviz_pca_ind(res.pca, pointsize = 10, axes = c(1, 2), repel = T, 
-             geom.ind = "point", 
-             mean.point = F, 
-             pointshape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            24,24,24,24,24,25,25,25,25,25,22,22),
-             col.ind = groups, fill.ind = groups, 
-             alpha.ind = 0.4 , 
-             #habillage = groups,# color by groups
-             palette = c(), 
-             #legend.title = "Sex" ) #+ theme(legend.position = "none") 
-             title = "Ratio of Distances x FC between Cotwins") + theme(legend.position = "none")
-#age
-fviz_pca_ind(res.pca, pointsize = 10, 
-             axes = c(1, 2), repel = F, 
-             geom.ind = "point", 
-             mean.point = F, 
-             pointshape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            24,24,24,24,24,25,25,25,25,25,22,22),
-             col.ind = all_ratio_pheno_delta$Age, 
-             fill.ind = all_ratio_pheno_delta$Age,
-             #gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
-             alpha.ind = 0.4 , 
-             #habillage = groups,# color by groups
-             #palette = c(), 
-             #legend.title = "Age" ) #+ theme(legend.position = "none")
-             title = "Ratio of Distances x FC between Cotwins") +
-  scale_fill_gradientn(colours = heat.colors(5))+
-  theme_classic()+
-  theme(legend.position = "none")
+library("elasticnet")
 
-#all ratio pheno abslog2fc
-res.pca <- prcomp(all_ratio_pheno_abslog2_fc[2:61426])
-#controls
-fviz_pca_ind(res.pca, pointsize = 10, axes = c(1, 2), repel = T, 
-             geom.ind = "point", 
-             mean.point = F, 
-             pointshape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            24,24,24,24,24,25,25,25,25,25,22,22),
-             col.ind = "black", fill.ind = c("none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
-                                             "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
-                                             "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
-                                             "none","none","none","none","none","none","none","none","none","none","none","none","none",
-                                             "#FF0000","#FF0000","#FF0000","#FF0000","#FF0000","#668d3c","#668d3c","#668d3c","#668d3c","#668d3c","none","none"), 
-             alpha.ind = 0.4 , 
-             #habillage = groups,# color by groups
-             palette = c(), 
-             #legend.title = "Age" ) #+ theme(legend.position = "none") 
-             title = "Ratio of Distances x FC between Cotwins") + theme(legend.position = "none")
-#sex
-groups <- as.factor(all_ratio_pheno_abslog2_fc$Sex) # group by Twin_ID
-fviz_pca_ind(res.pca, pointsize = 10, axes = c(1, 2), repel = T, 
-             geom.ind = "point", 
-             mean.point = F, 
-             pointshape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            24,24,24,24,24,25,25,25,25,25,22,22),
-             col.ind = groups, fill.ind = groups, 
-             alpha.ind = 0.4 , 
-             #habillage = groups,# color by groups
-             palette = c(), 
-             #legend.title = "Sex" ) #+ theme(legend.position = "none") 
-             title = "Ratio of Distances x FC between Cotwins") + theme(legend.position = "none")
-#age
-fviz_pca_ind(res.pca, pointsize = 10, 
-             axes = c(1, 2), repel = F, 
-             geom.ind = "point", 
-             mean.point = F, 
-             pointshape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            24,24,24,24,24,25,25,25,25,25,22,22),
-             col.ind = all_ratio_pheno_delta$Age, 
-             fill.ind = all_ratio_pheno_delta$Age,
-             #gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
-             alpha.ind = 0.4 , 
-             #habillage = groups,# color by groups
-             #palette = c(), 
-             #legend.title = "Age" ) #+ theme(legend.position = "none")
-             title = "Ratio of Distances x FC between Cotwins") +
-  scale_fill_gradientn(colours = heat.colors(5))+
-  theme_classic()+
-  theme(legend.position = "none")
+sparse.pca.result <- 
+  spca(all_ratio_pheno_delta[,8:61432], K = 2, type = "predictor", sparse = "varnum", para = c(30, 30))
 
-#all ratio pheno log2delta
-res.pca <- prcomp(all_ratio_pheno_log2_delta[2:61426])
-#controls
-fviz_pca_ind(res.pca, pointsize = 10, axes = c(1, 2), repel = T, 
-             geom.ind = "point", 
-             mean.point = F, 
-             pointshape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            24,24,24,24,24,25,25,25,25,25,22,22),
-             col.ind = "black", fill.ind = c("none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
-                                             "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
-                                             "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
-                                             "none","none","none","none","none","none","none","none","none","none","none","none","none",
-                                             "#FF0000","#FF0000","#FF0000","#FF0000","#FF0000","#668d3c","#668d3c","#668d3c","#668d3c","#668d3c","none","none"), 
-             alpha.ind = 0.4 , 
-             #habillage = groups,# color by groups
-             palette = c(), 
-             #legend.title = "Age" ) #+ theme(legend.position = "none") 
-             title = "Ratio of Distances x FC between Cotwins") + theme(legend.position = "none")
-#sex
-groups <- as.factor(all_ratio_pheno_log2_delta$Sex) # group by Twin_ID
-fviz_pca_ind(res.pca, pointsize = 10, axes = c(1, 2), repel = T, 
-             geom.ind = "point", 
-             mean.point = F, 
-             pointshape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            24,24,24,24,24,25,25,25,25,25,22,22),
-             col.ind = groups, fill.ind = groups, 
-             alpha.ind = 0.4 , 
-             #habillage = groups,# color by groups
-             palette = c(), 
-             #legend.title = "Sex" ) #+ theme(legend.position = "none") 
-             title = "Ratio of Distances x FC between Cotwins") + theme(legend.position = "none")
-#age
-fviz_pca_ind(res.pca, pointsize = 10, 
-             axes = c(1, 2), repel = F, 
-             geom.ind = "point", 
-             mean.point = F, 
-             pointshape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            24,24,24,24,24,25,25,25,25,25,22,22),
-             col.ind = all_ratio_pheno_delta$Age, 
-             fill.ind = all_ratio_pheno_delta$Age,
-             #gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
-             alpha.ind = 0.4 , 
-             #habillage = groups,# color by groups
-             #palette = c(), 
-             #legend.title = "Age" ) #+ theme(legend.position = "none")
-             title = "Ratio of Distances x FC between Cotwins") +
-  scale_fill_gradientn(colours = heat.colors(5))+
-  theme_classic()+
-  theme(legend.position = "none")
-
-fviz_contrib(res.pca, choice = "var", axes = 1:2, top = 30)  +
-  theme(axis.text.x = element_text(angle=90))
-
-#all ratio pheno log2absdelta
-res.pca <- prcomp(all_ratio_pheno_log2_absdelta[2:61426])
-#controls
-groups <- as.factor(all_ratio_pheno_log2_absdelta$Sex) # group by Twin_ID
-fviz_pca_ind(res.pca, pointsize = 10, axes = c(1, 2), repel = T, 
-             geom.ind = "point", 
-             mean.point = F, 
-             pointshape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            24,24,24,24,24,25,25,25,25,25,22,22),
-             col.ind = "black", fill.ind = c("none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
-                                             "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
-                                             "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
-                                             "none","none","none","none","none","none","none","none","none","none","none","none","none",
-                                             "#FF0000","#FF0000","#FF0000","#FF0000","#FF0000","#668d3c","#668d3c","#668d3c","#668d3c","#668d3c","none","none"), 
-             alpha.ind = 0.4 , 
-             #habillage = groups,# color by groups
-             palette = c(), 
-             #legend.title = "Age" ) #+ theme(legend.position = "none") 
-             title = "Ratio of Distances x FC between Cotwins") + theme(legend.position = "none")
-#sex
-groups <- as.factor(all_ratio_pheno_log2_delta$Sex) # group by Twin_ID
-fviz_pca_ind(res.pca, pointsize = 10, axes = c(1, 2), repel = T, 
-             geom.ind = "point", 
-             mean.point = F, 
-             pointshape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            24,24,24,24,24,25,25,25,25,25,22,22),
-             col.ind = groups, fill.ind = groups, 
-             alpha.ind = 0.4 , 
-             #habillage = groups,# color by groups
-             palette = c(), 
-             #legend.title = "Sex" ) #+ theme(legend.position = "none") 
-             title = "Ratio of Distances x FC between Cotwins") + theme(legend.position = "none")
-#age
-fviz_pca_ind(res.pca, pointsize = 10, 
-             axes = c(1, 2), repel = F, 
-             geom.ind = "point", 
-             mean.point = F, 
-             pointshape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            24,24,24,24,24,25,25,25,25,25,22,22),
-             col.ind = all_ratio_pheno_delta$Age, 
-             fill.ind = all_ratio_pheno_delta$Age,
-             #gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
-             alpha.ind = 0.4 , 
-             #habillage = groups,# color by groups
-             #palette = c(), 
-             #legend.title = "Age" ) #+ theme(legend.position = "none")
-             title = "Ratio of Distances x FC between Cotwins") +
-  scale_fill_gradientn(colours = heat.colors(5))+
-  theme_classic()+
-  theme(legend.position = "none")
-
-fviz_contrib(pca, choice = "var", axes = 1:2, top = 30)  +
-  theme(axis.text.x = element_text(angle=90))
-
-#all ratio pheno abslog2 absdelta
-res.pca <- prcomp(all_ratio_pheno_abslog2_absdelta[2:61426])
-#controls
-groups <- as.factor(all_ratio_pheno_abslog2_absdelta$Sex) # group by Twin_ID
-fviz_pca_ind(res.pca, pointsize = 10, axes = c(1, 2), repel = T, 
-             geom.ind = "point", 
-             mean.point = F, 
-             pointshape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            24,24,24,24,24,25,25,25,25,25,22,22),
-             col.ind = "black", fill.ind = c("none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
-                                             "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
-                                             "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
-                                             "none","none","none","none","none","none","none","none","none","none","none","none","none",
-                                             "#FF0000","#FF0000","#FF0000","#FF0000","#FF0000","#668d3c","#668d3c","#668d3c","#668d3c","#668d3c","none","none"), 
-             alpha.ind = 0.4 , 
-             #habillage = groups,# color by groups
-             palette = c(), 
-             #legend.title = "Age" ) #+ theme(legend.position = "none") 
-             title = "Ratio of Distances x FC between Cotwins") + theme(legend.position = "none")
-#sex
-groups <- as.factor(all_ratio_pheno_log2_absdelta$Sex) # group by Twin_ID
-fviz_pca_ind(res.pca, pointsize = 10, axes = c(1, 2), repel = T, 
-             geom.ind = "point", 
-             mean.point = F, 
-             pointshape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            24,24,24,24,24,25,25,25,25,25,22,22),
-             col.ind = groups, fill.ind = groups, 
-             alpha.ind = 0.4 , 
-             #habillage = groups,# color by groups
-             palette = c(), 
-             #legend.title = "Sex" ) #+ theme(legend.position = "none") 
-             title = "Ratio of Distances x FC between Cotwins") + theme(legend.position = "none")
-#age
-fviz_pca_ind(res.pca, pointsize = 10, 
-             axes = c(1, 2), repel = F, 
-             geom.ind = "point", 
-             mean.point = F, 
-             pointshape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                            24,24,24,24,24,25,25,25,25,25,22,22),
-             col.ind = all_ratio_pheno_delta$Age, 
-             fill.ind = all_ratio_pheno_delta$Age,
-             #gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
-             alpha.ind = 0.4 , 
-             #habillage = groups,# color by groups
-             #palette = c(), 
-             #legend.title = "Age" ) #+ theme(legend.position = "none")
-             title = "Ratio of Distances x FC between Cotwins") +
-  scale_fill_gradientn(colours = heat.colors(5))+
-  theme_classic()+
-  theme(legend.position = "none")
-
-fviz_contrib(res.pca, choice = "var", axes = 1:2, top = 30)  +
-  theme(axis.text.x = element_text(angle=90))
-
-# Contributions of variables to PC1
-fviz_contrib(res.pca, choice = "var", axes = 1, top = 30)  +
-  theme(axis.text.x = element_text(angle=90))
-# Contributions of variables to PC2
-fviz_contrib(res.pca, choice = "var", axes = 2, top = 30)+
-  theme(axis.text.x = element_text(angle=90))
-
-
-##### t-SNE#######
+#####t-SNE dist#######
 library(tidyverse)
-
 library(Rtsne)
-
 library(ggplot2)
+
+setwd("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-tSNE/")
 
 #all dist pheno fc
 
-scaled_all_dist_pheno_fc<-scale(all_dist_pheno_fc[2:352])
-scaled_all_dist_pheno_fc<-cbind(all_dist_pheno_fc[c(1,353:358)],scaled_all_dist_pheno_fc)
+scaled_all_dist_pheno_fc<-scale(all_dist_pheno_fc[10:360])
+scaled_all_dist_pheno_fc<-cbind(all_dist_pheno_fc[1:9],scaled_all_dist_pheno_fc)
 
-tsne <- Rtsne(scaled_all_dist_pheno_fc[,8:358],check_duplicates = FALSE, perplexity=5, max_iter = 20000, theta = 0.0) 
+tsne <- Rtsne(scaled_all_dist_pheno_fc[,10:360],check_duplicates = FALSE, perplexity=12, max_iter = 20000, theta = 0.0) 
 
 #plot t-sne results (you put it in a plot)
 tsne_plot <- data.frame(x = tsne$Y[,1], y = tsne$Y[,2]) # 1 and 2 are the dimensions of t-sne
 
 #color and modify t-sne plot
-ggplot(tsne_plot) + geom_point(aes(x=x, y=y, color=scaled_all_dist_pheno_fc$Co_twins_ID, 
-                                   fill=scaled_all_dist_pheno_fc$Co_twins_ID), 
-                               alpha = 0.3, size = 10, shape=21) + 
+pdf("schoeller_rtsne_dist_fc_controls_arranged_pplx12.pdf", w=10, h=8)
+ggplot(tsne_plot) + geom_point(aes(x=x, y=y, color=c("none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                                                     "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                                                     "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                                                     "none","none","none","none","none","none","none","none","none","none","none","none","none",
+                                                     "#FF0000","#FF0000","#FF0000","#FF0000","#FF0000","#668d3c","#668d3c","#668d3c","#668d3c","#668d3c"),
+                                   fill=c("none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                                          "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                                          "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                                          "none","none","none","none","none","none","none","none","none","none","none","none","none",
+                                          "#FF0000","#FF0000","#FF0000","#FF0000","#FF0000",
+                                          "#668d3c","#668d3c","#668d3c","#668d3c","#668d3c")), 
+                               alpha = 0.3, size = 10, shape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                                                       21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                                                       21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                                                       21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                                                       24,24,24,24,24,25,25,25,25,25)) + 
   theme_classic() + # alpha is the opacity
   geom_text(aes(x=x, y=y, label=scaled_all_dist_pheno_fc$Co_twins_ID)) +
-  labs(title = "t-SNE of distances in pop", x="tSNE dim1", y="tSNE dim2", color="Co_twins_ID", fill="Co_twins_ID") + # labs = labels
+  labs( x="tSNE dim1", y="tSNE dim2", color="Co_twins_ID", fill="Co_twins_ID") + # labs = labels
   #scale_colour_gradientn(aesthetics = c("colour", "fill"), colors =rev(heat.colors(10))) + # this is to use a color scale rather then discrete colors ## heat.colors = palette
-  theme(plot.title = element_text(hjust = 0.5, size = 25), ## all these are just sixe of texts, position of title
+  theme(legend.position = "none",
+        plot.title = element_text(hjust = 0.5, size = 25), ## all these are just sixe of texts, position of title
         axis.title.x = element_text(size = 25),
         axis.title.y = element_text(size = 25),
         axis.text.x= element_text(size = 22),
@@ -1784,26 +2252,104 @@ ggplot(tsne_plot) + geom_point(aes(x=x, y=y, color=scaled_all_dist_pheno_fc$Co_t
         legend.title=element_text(size=20), 
         legend.text=element_text(size=20))#, 
 #legend.position = "none") 
+dev.off()
 
-#all dist pheno delta: both sexes x 2, just male, just female
+pdf("schoeller_rtsne_dist_fc_sex_arranged_pplx12.pdf", w=10, h=8)
+ggplot(tsne_plot) + geom_point(aes(x=x, y=y, color=scaled_all_dist_pheno_fc$Sex, 
+                                   fill=scaled_all_dist_pheno_fc$Sex), 
+                               alpha = 0.3, size = 10, shape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                                                 21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                                                 21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                                                 21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                                                 24,24,24,24,24,25,25,25,25,25)) + 
+  theme_classic() + # alpha is the opacity
+  geom_text(aes(x=x, y=y, label=scaled_all_dist_pheno_fc$Co_twins_ID)) +
+  labs(x="tSNE dim1", y="tSNE dim2", color="Co_twins_ID", fill="Co_twins_ID") + # labs = labels
+  #scale_colour_gradientn(aesthetics = c("colour", "fill"), colors =rev(heat.colors(10))) + # this is to use a color scale rather then discrete colors ## heat.colors = palette
+  theme(plot.title = element_text(hjust = 0.5, size = 25),
+        legend.position = "none", ## all these are just sixe of texts, position of title
+        axis.title.x = element_text(size = 25),
+        axis.title.y = element_text(size = 25),
+        axis.text.x= element_text(size = 22),
+        axis.text.y= element_text(size = 22), 
+        legend.title=element_text(size=20), 
+        legend.text=element_text(size=20))#, 
+#legend.position = "none") 
+dev.off()
 
-scaled_all_dist_pheno_delta<-scale(all_dist_pheno_delta[2:352])
-scaled_all_dist_pheno_delta<-cbind(all_dist_pheno_delta[c(1,353:358)],scaled_all_dist_pheno_delta)
+pdf("schoeller_rtsne_dist_fc_age-gradient_arranged_pplx12.pdf", w=10, h=8)
+ggplot(tsne_plot) + geom_point(aes(x=x, y=y, color=scaled_all_dist_pheno_fc$Age, 
+                                   fill=scaled_all_dist_pheno_fc$Age), 
+                               alpha = 0.3, size = 10, shape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                                                 21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                                                 21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                                                 21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                                                 24,24,24,24,24,25,25,25,25,25)) + 
+  theme_classic() + # alpha is the opacity
+  geom_text(aes(x=x, y=y, label=scaled_all_dist_pheno_fc$Co_twins_ID)) +
+  labs(x="tSNE dim1", y="tSNE dim2", color="Co_twins_ID", fill="Co_twins_ID") + # labs = labels
+  scale_colour_gradientn(aesthetics = c("colour", "fill"), colors =rev(heat.colors(10))) + # this is to use a color scale rather then discrete colors ## heat.colors = palette
+  theme(plot.title = element_text(hjust = 0.5, size = 25),
+        legend.position = "none", ## all these are just sixe of texts, position of title
+        axis.title.x = element_text(size = 25),
+        axis.title.y = element_text(size = 25),
+        axis.text.x= element_text(size = 22),
+        axis.text.y= element_text(size = 22), 
+        legend.title=element_text(size=20), 
+        legend.text=element_text(size=20))#, 
+#legend.position = "none")
+dev.off()
 
-tsne <- Rtsne(scaled_all_dist_pheno_delta[,8:358],check_duplicates = FALSE, perplexity=5, max_iter = 20000, theta = 0.0) 
+#Mclust w/ first tSNE x and y dimensions
+cluster.tsne.adpfc.1.2 <- Mclust(tsne_plot[,1:2], prior = priorControl())
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.tsne.adpfc.1.2.BIC.pdf", w=6, h=4)
+plot(cluster.tsne.adpfc.1.2, what = "BIC")
+dev.off()
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.tsne.adpfc.1.2.density.pdf", w=4, h=4)
+plot(cluster.tsne.adpfc.1.2, what = "density")
+dev.off()
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.tsne.adpfc.1.2.plot.classification.pdf", w=4, h=4)
+plot(cluster.tsne.adpfc.1.2, what = "classification")
+dev.off()
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.tsne.adpfc.1.2.plot.uncertainty.pdf", w=4, h=4)
+plot(cluster.tsne.adpfc.1.2, what = "uncertainty")
+dev.off()
+
+#dist delta
+
+
+scaled_all_dist_pheno_delta<-scale(all_dist_pheno_delta[10:360])
+scaled_all_dist_pheno_delta<-cbind(all_dist_pheno_delta[1:9],scaled_all_dist_pheno_delta)
+
+tsne <- Rtsne(scaled_all_dist_pheno_delta[,10:360],check_duplicates = FALSE, perplexity=20, max_iter = 20000, theta = 0.0) 
 
 #plot t-sne results (you put it in a plot)
 tsne_plot <- data.frame(x = tsne$Y[,1], y = tsne$Y[,2]) # 1 and 2 are the dimensions of t-sne
 
 #color and modify t-sne plot
-ggplot(tsne_plot) + geom_point(aes(x=x, y=y, color=scaled_all_dist_pheno_delta$Sex.x, 
-                                   fill=scaled_all_dist_pheno_delta$Sex.x), 
-                               alpha = 0.3, size = 10, shape=21) + 
+pdf("schoeller_rtsne_dist_delta_controls_arranged_pplx20.pdf", w=10, h=8)
+ggplot(tsne_plot) + geom_point(aes(x=x, y=y, color=c("none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                                                    "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                                                    "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                                                    "none","none","none","none","none","none","none","none","none","none","none","none","none",
+                                                    "#FF0000","#FF0000","#FF0000","#FF0000","#FF0000","#668d3c","#668d3c","#668d3c","#668d3c","#668d3c"),
+                                   fill=c("none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                                          "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                                          "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                                          "none","none","none","none","none","none","none","none","none","none","none","none","none",
+                                          "#FF0000","#FF0000","#FF0000","#FF0000","#FF0000",
+                                          "#668d3c","#668d3c","#668d3c","#668d3c","#668d3c")), 
+                               alpha = 0.3, size = 10, shape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                                                 21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                                                 21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                                                 21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                                                 24,24,24,24,24,25,25,25,25,25)) + 
   theme_classic() + # alpha is the opacity
   geom_text(aes(x=x, y=y, label=scaled_all_dist_pheno_delta$Co_twins_ID)) +
-  labs(title = "t-SNE of distances in pop", x="tSNE dim1", y="tSNE dim2", color="Co_twins_ID", fill="Co_twins_ID") + # labs = labels
+  labs(x="tSNE dim1", y="tSNE dim2", color="Co_twins_ID", fill="Co_twins_ID") + # labs = labels
   #scale_colour_gradientn(aesthetics = c("colour", "fill"), colors =rev(heat.colors(10))) + # this is to use a color scale rather then discrete colors ## heat.colors = palette
-  theme(plot.title = element_text(hjust = 0.5, size = 25), ## all these are just sixe of texts, position of title
+  theme(plot.title = element_text(hjust = 0.5, size = 25),
+        legend.position = "none", ## all these are just sixe of texts, position of title
         axis.title.x = element_text(size = 25),
         axis.title.y = element_text(size = 25),
         axis.text.x= element_text(size = 22),
@@ -1811,15 +2357,22 @@ ggplot(tsne_plot) + geom_point(aes(x=x, y=y, color=scaled_all_dist_pheno_delta$S
         legend.title=element_text(size=20), 
         legend.text=element_text(size=20))#, 
 #legend.position = "none") 
+dev.off()
 
-ggplot(tsne_plot) + geom_point(aes(x=x, y=y, color=scaled_all_dist_pheno_delta$Sex.x, 
-                                   fill=scaled_all_dist_pheno_delta$Sex.x), 
-                               alpha = 0.3, size = 10, shape=21) + 
+pdf("schoeller_rtsne_dist_delta_age-gradient_arranged_pplx20.pdf", w=10, h=8)
+ggplot(tsne_plot) + geom_point(aes(x=x, y=y, color=scaled_all_dist_pheno_delta$Sex, 
+                                   fill=scaled_all_dist_pheno_delta$Sex), 
+                               alpha = 0.3, size = 10, shape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                                                 21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                                                 21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                                                 21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                                                 24,24,24,24,24,25,25,25,25,25)) + 
   theme_classic() + # alpha is the opacity
-  geom_text(aes(x=x, y=y, label=scaled_all_dist_pheno_delta$Co_twins_ID)) +
-  labs(title = "t-SNE of distances in pop", x="tSNE dim1", y="tSNE dim2", color="Co_twins_ID", fill="Co_twins_ID") + # labs = labels
+  #geom_text(aes(x=x, y=y, label=scaled_all_dist_pheno_delta$Co_twins_ID)) +
+  labs(x="tSNE dim1", y="tSNE dim2", color="Co_twins_ID", fill="Co_twins_ID") + # labs = labels
   #scale_colour_gradientn(aesthetics = c("colour", "fill"), colors =rev(heat.colors(10))) + # this is to use a color scale rather then discrete colors ## heat.colors = palette
-  theme(plot.title = element_text(hjust = 0.5, size = 25), ## all these are just sixe of texts, position of title
+  theme(plot.title = element_text(hjust = 0.5, size = 25),
+        legend.position = "none", ## all these are just sixe of texts, position of title
         axis.title.x = element_text(size = 25),
         axis.title.y = element_text(size = 25),
         axis.text.x= element_text(size = 22),
@@ -1827,15 +2380,22 @@ ggplot(tsne_plot) + geom_point(aes(x=x, y=y, color=scaled_all_dist_pheno_delta$S
         legend.title=element_text(size=20), 
         legend.text=element_text(size=20))#, 
 #legend.position = "none") 
+dev.off()
 
-ggplot(tsne_plot) + geom_point(aes(x=x, y=y, color=scaled_all_dist_pheno_delta$Sex.x, 
-                                   fill=scaled_all_dist_pheno_delta$Sex.x), 
-                               alpha = 0.3, size = 10, shape=21) + 
+pdf("schoeller_rtsne_dist_delta_sex_arranged_pplx20.pdf", w=10, h=8)
+ggplot(tsne_plot) + geom_point(aes(x=x, y=y, color=scaled_all_dist_pheno_delta$Age, 
+                                   fill=scaled_all_dist_pheno_delta$Age), 
+                               alpha = 0.3, size = 10, shape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                                                 21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                                                 21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                                                 21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                                                 24,24,24,24,24,25,25,25,25,25)) + 
   theme_classic() + # alpha is the opacity
   geom_text(aes(x=x, y=y, label=scaled_all_dist_pheno_delta$Co_twins_ID)) +
-  labs(title = "t-SNE of distances in pop", x="tSNE dim1", y="tSNE dim2", color="Co_twins_ID", fill="Co_twins_ID") + # labs = labels
-  #scale_colour_gradientn(aesthetics = c("colour", "fill"), colors =rev(heat.colors(10))) + # this is to use a color scale rather then discrete colors ## heat.colors = palette
-  theme(plot.title = element_text(hjust = 0.5, size = 25), ## all these are just sixe of texts, position of title
+  labs(x="tSNE dim1", y="tSNE dim2", color="Co_twins_ID", fill="Co_twins_ID") + # labs = labels
+  scale_colour_gradientn(aesthetics = c("colour", "fill"), colors =rev(heat.colors(10))) + # this is to use a color scale rather then discrete colors ## heat.colors = palette
+  theme(plot.title = element_text(hjust = 0.5, size = 25),
+        legend.position = "none", ## all these are just sixe of texts, position of title
         axis.title.x = element_text(size = 25),
         axis.title.y = element_text(size = 25),
         axis.text.x= element_text(size = 22),
@@ -1843,106 +2403,445 @@ ggplot(tsne_plot) + geom_point(aes(x=x, y=y, color=scaled_all_dist_pheno_delta$S
         legend.title=element_text(size=20), 
         legend.text=element_text(size=20))#, 
 #legend.position = "none") 
+dev.off()
+
+#Mclust w/ tSNE dimensions
+
+cluster.tsne.adpd.1.2 <- Mclust(tsne_plot[,1:2], prior = priorControl())
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.tsne.adpd.1.2.BIC.pdf", w=6, h=4)
+plot(cluster.tsne.adpd.1.2, what = "BIC")
+dev.off()
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.tsne.adpd.1.2.density.pdf", w=4, h=4)
+plot(cluster.tsne.adpd.1.2, what = "density")
+dev.off()
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.tsne.adpd.1.2.plot.classification.pdf", w=4, h=4)
+plot(cluster.tsne.adpd.1.2, what = "classification")
+dev.off()
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.tsne.adpd.1.2.plot.uncertainty.pdf", w=4, h=4)
+plot(cluster.tsne.adpd.1.2, what = "uncertainty")
+dev.off()
+
+
+##########tSNE ratio#############
 
 
 #import of tsnes from server and plots of ratio matrices 
 
-#tab_all_ratio_pheno_absdelta<-read.table(file="/Volumes/projects_secondary/mnp/warren/test/tsne_all_ratio_delta.tab", sep ="\t", header=F)
-#tab_all_ratio_pheno_fc<-read.table(file="/Volumes/projects_secondary/mnp/warren/test/tsne_all_ratio_fc.tab", sep ="\t", header=F)
-tab_all_ratio_pheno_delta_nops<-read.table(file="/Volumes/projects_secondary/mnp/warren/test/tsne_all_ratio_delta_nops.tab",sep="\t",header=F)
-tab_all_ratio_pheno_fc_nops<-read.table(file="/Volumes/projects_secondary/mnp/warren/test/tsne_all_ratio_fc_nops.tab",sep="\t",header=F)
+arpd_tsne_tab <- read.table(sfile = "/Users/Warren.Sink/github/facial-polyphenism/CSVs/tsne_all_ratio_delta.tab", sep = "\t", header = F)
+arpfc_tsne_tab <- read.table(file = "/Users/Warren.Sink/github/facial-polyphenism/CSVs/tsne_all_ratio_fc.tab", sep = "\t", header = F)
+arpd_arranged_tsne_tab <- read.table(file = "/Users/Warren.Sink/github/facial-polyphenism/CSVs/tsne_schoeller_all_ratio_pheno_delta.tab", sep = "\t", header = F)
+arpfc_arranged_tsne_tab <- read.table(file = "/Users/Warren.Sink/github/facial-polyphenism/CSVs/tsne_schoeller_all_ratio_pheno_fc.tab", sep = "\t", header = F)
+arpdabs_arranged_tsne_tab <- read.table(file = "/Users/Warren.Sink/github/facial-polyphenism/CSVs/tsne_schoeller_all_ratio_pheno_absdelta.tab", sep = "\t", header = F)
+arpd_arranged_tsne_tab_pplx10 <- read.table(file = "/Users/Warren.Sink/github/facial-polyphenism/CSVs/tsne_schoeller_all_ratio_pheno_delta_pplx10.tab", sep = "\t", header = F)
+arpfc_arranged_tsne_tab_pplx10 <- read.table(file = "/Users/Warren.Sink/github/facial-polyphenism/CSVs/tsne_schoeller_all_ratio_pheno_fc_pplx10.tab", sep = "\t", header = F)
+arpd_arranged_tsne_tab_pplx20 <- read.table(file = "/Users/Warren.Sink/github/facial-polyphenism/CSVs/tsne_schoeller_all_ratio_pheno_delta_pplx20.tab", sep = "\t", header = F)
+arpfc_arranged_tsne_tab_pplx20 <- read.table(file = "/Users/Warren.Sink/github/facial-polyphenism/CSVs/tsne_schoeller_all_ratio_pheno_fc_pplx20.tab", sep = "\t", header = F)
+arpd_arranged_tsne_tab_pplx40 <- read.table(file = "/Users/Warren.Sink/github/facial-polyphenism/CSVs/tsne_schoeller_all_ratio_pheno_delta_pplx40.tab", sep = "\t", header = F)
+arpfc_arranged_tsne_tab_pplx40 <- read.table(file = "/Users/Warren.Sink/github/facial-polyphenism/CSVs/tsne_schoeller_all_ratio_pheno_fc_pplx40.tab", sep = "\t", header = F)
 
-#all_ratio_pheno_delta_tsne<-cbind(all_dist_pheno_fc[c(1,406:411)],tab_all_ratio_pheno_absdelta)
-#all_ratio_pheno_fc_tsne<-cbind(all_dist_pheno_fc[c(1,407:413)],tab_all_ratio_pheno_fc)
-all_ratio_pheno_delta_nops_tsne<-cbind(all_dist_pheno_fc[c(1,353:358)],tab_all_ratio_pheno_delta_nops)
-all_ratio_pheno_fc_nops_tsne<-cbind(all_dist_pheno_fc[1:83,c(1,353:358)],tab_all_ratio_pheno_fc_nops)
 
-all_ratio_pheno_fc_nops_tsne_male<-all_ratio_pheno_fc_nops_tsne%>%filter(.,Sex=="M")
-all_ratio_pheno_fc_nops_tsne_female<-all_ratio_pheno_fc_nops_tsne%>%filter(.,Sex=="F")
-all_ratio_pheno_delta_nops_tsne_male<-all_ratio_pheno_delta_nops_tsne%>%filter(.,Sex.x=='M')
-all_ratio_pheno_delta_nops_tsne_female<-all_ratio_pheno_delta_nops_tsne%>%filter(.,Sex.x=='F')
+arpd_tsne <- cbind(all_dist_pheno_delta[,1:9], arpd_arranged_tsne_tab)
+arpfc_tsne_pplx10 <- cbind(all_dist_pheno_fc[,1:9], arpfc_arranged_tsne_tab_pplx10)
+arpd_tsne_pplx10 <- cbind(all_dist_pheno_delta[,1:9], arpd_arranged_tsne_tab_pplx10)
+arpfc_tsne_pplx20 <- cbind(all_dist_pheno_fc[,1:9], arpfc_arranged_tsne_tab_pplx20)
+arpd_tsne_pplx20 <- cbind(all_dist_pheno_delta[,1:9], arpd_arranged_tsne_tab_pplx20)
+arpfc_tsne_pplx40 <- cbind(all_dist_pheno_fc[,1:9], arpfc_arranged_tsne_tab_pplx40)
+arpd_tsne_pplx40 <- cbind(all_dist_pheno_delta[,1:9], arpd_arranged_tsne_tab_pplx40)
+arpfc_tsne <- cbind(all_dist_pheno_fc[,1:9], arpfc_arranged_tsne_tab)arpdabs_tsne <- cbind(all_dist_pheno_absdelta[,1:9], arpdabs_arranged_tsne_tab)
 
-#ratio matrix tsne unranked/uncorrelated
-ggplot(all_ratio_pheno_delta_nops_tsne[,8:9]) + 
-  geom_point(aes(x=all_ratio_pheno_delta_nops_tsne[,8], 
-                 y=all_ratio_pheno_delta_nops_tsne[,9], 
-                 color=all_ratio_pheno_delta_nops_tsne[,7], 
-                 fill=all_ratio_pheno_delta_nops_tsne[,7]), 
-             alpha = 0.3, 
-             size = 10, shape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,
-                                  21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                                  21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                                  21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,22,22,22,22,22,
-                                  24,24,24,24,24,25,25,25,25,25)) + 
-  theme_classic() +# alpha is the opacity 
-  geom_text(aes(x=all_ratio_pheno_delta_nops_tsne[,8], y=all_ratio_pheno_delta_nops_tsne[,9], label=all_ratio_pheno_delta_nops_tsne[,1])) +
-  labs(title = "t-SNE of ratio distances", x="tSNE dim1", y="tSNE dim2", color=all_ratio_pheno_delta_nops_tsne[,7], fill=all_ratio_pheno_delta_nops_tsne[,7]) + # labs = labels
-  scale_colour_gradientn(aesthetics = c("colour", "fill"), colors =rev(heat.colors(10))) + # this is to use a color scale rather then discrete colors ## heat.colors = palette
-  theme(plot.title = element_text(hjust = 0.5, size = 25), ## all these are just sixe of texts, position of title
-        axis.title.x = element_text(size = 25),
-        axis.title.y = element_text(size = 25),
-        axis.text.x= element_text(size = 22),
-        axis.text.y= element_text(size = 22), 
-        legend.title=element_blank(), 
-        legend.text=element_text(size=20))#, 
-#legend.position = "none") 
 
-#delta ratio matrix tsne: only males, colored by age
-ggplot(all_ratio_pheno_delta_nops_tsne_male[,8:9]) + 
-  geom_point(aes(x=all_ratio_pheno_delta_nops_tsne_male[,8], y=all_ratio_pheno_delta_nops_tsne_male[,9], color=all_ratio_pheno_delta_nops_tsne_male[,8], fill=all_ratio_pheno_delta_nops_tsne_male[,7]), alpha = 0.3, size = 10, shape=21) + 
-  theme_classic() +# alpha is the opacity 
-  geom_text(aes(x=all_ratio_pheno_delta_nops_tsne_male[,8], y=all_ratio_pheno_delta_nops_tsne_male[,9], label=all_ratio_pheno_delta_nops_tsne_male[,1])) +
-  labs(title = "t-SNE of ratio distances", x="tSNE dim1", y="tSNE dim2", color=all_ratio_pheno_delta_nops_tsne_male[,7], fill=all_ratio_pheno_delta_nops_tsne_male[,7]) + # labs = labels
-  scale_colour_gradientn(aesthetics = c("colour", "fill"), colors =rev(heat.colors(10))) + # this is to use a color scale rather then discrete colors ## heat.colors = palette
-  theme(plot.title = element_text(hjust = 0.5, size = 25), ## all these are just sixe of texts, position of title
-        axis.title.x = element_text(size = 25),
-        axis.title.y = element_text(size = 25),
-        axis.text.x= element_text(size = 22),
-        axis.text.y= element_text(size = 22), 
-        legend.title=element_blank(), 
-        legend.text=element_text(size=20))#, 
-#legend.position = "none") 
+arpd_tsne_male <- arpd_tsne%>%filter(.,Sex=="M")
+arpd_tsne_female <- arpd_tsne%>%filter(.,Sex=="F")
+#arpfc_tsne<-arpd_tsne%>%filter(.,Sex.x=='M')
+#arpfc_tsne<-arpd_tsne%>%filter(.,Sex.x=='F')
 
-#delta ratio matrix tsne: only females, colored by age
-ggplot(all_ratio_pheno_delta_nops_tsne_female[,8:9]) + 
-  geom_point(aes(x=all_ratio_pheno_delta_nops_tsne_female[,8], y=all_ratio_pheno_delta_nops_tsne_female[,9], color=all_ratio_pheno_delta_nops_tsne_female[,8], fill=all_ratio_pheno_delta_nops_tsne_female[,7]), alpha = 0.3, size = 10, shape=21) + 
-  theme_classic() +# alpha is the opacity 
-  geom_text(aes(x=all_ratio_pheno_delta_nops_tsne_female[,8], y=all_ratio_pheno_delta_nops_tsne_female[,9], label=all_ratio_pheno_delta_nops_tsne_female[,1])) +
-  labs(title = "t-SNE of ratio distances", x="tSNE dim1", y="tSNE dim2", color=all_ratio_pheno_delta_nops_tsne_female[,7], fill=all_ratio_pheno_delta_nops_tsne_female[,7]) + # labs = labels
-  scale_colour_gradientn(aesthetics = c("colour", "fill"), colors =rev(heat.colors(10))) + # this is to use a color scale rather then discrete colors ## heat.colors = palette
-  theme(plot.title = element_text(hjust = 0.5, size = 25), ## all these are just sixe of texts, position of title
-        axis.title.x = element_text(size = 25),
-        axis.title.y = element_text(size = 25),
-        axis.text.x= element_text(size = 22),
-        axis.text.y= element_text(size = 22), 
-        legend.title=element_blank(), 
-        legend.text=element_text(size=20))#, 
-#legend.position = "none") 
-
-#all ratio pheno fc coloring just the controls
-ggplot(all_ratio_pheno_fc_nops_tsne[,8:9]) + 
-  geom_point(aes(x=all_ratio_pheno_fc_nops_tsne[,8], 
-                 y=all_ratio_pheno_fc_nops_tsne[,9],
+#ratio delta tsne
+pdf("schoeller_rtsne_ratio_delta_controls_arranged_pplx30.pdf", w=10, h=8)
+ggplot(arpd_tsne[,10:11]) + 
+  geom_point(aes(x=arpd_tsne[,10], 
+                 y=arpd_tsne[,11],
                  color=c("none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
-                        "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
-                        "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
-                        "none","none","none","none","none","none","none","none","none","none","none","none","none",
-                        "#FF0000","#FF0000","#FF0000","#FF0000","#FF0000","#668d3c","#668d3c","#668d3c","#668d3c","#668d3c"),
+                         "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                         "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                         "none","none","none","none","none","none","none","none","none","none","none","none","none",
+                         "#FF0000","#FF0000","#FF0000","#FF0000","#FF0000","#668d3c","#668d3c","#668d3c","#668d3c","#668d3c"),
                  fill=c("none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
                         "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
                         "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
                         "none","none","none","none","none","none","none","none","none","none","none","none","none",
                         "#FF0000","#FF0000","#FF0000","#FF0000","#FF0000",
                         "#668d3c","#668d3c","#668d3c","#668d3c","#668d3c")),
-             alpha = 0.8, size = 20, shape= c(21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+             alpha = 0.8, size = 15, shape= c(21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
                                               21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
                                               21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
                                               21,21,21,21,21,21,21,21,21,21,21,21,21,
                                               24,24,24,24,24,
-                                              22,22,22,22,22)) +  
+                                              25,25,25,25,25)) +  
   theme_classic() +# alpha is the opacity 
-  geom_text(aes(x=all_ratio_pheno_fc_nops_tsne[,8], y=all_ratio_pheno_fc_nops_tsne[,9], label=all_ratio_pheno_fc_nops_tsne[,1])) +
-  labs(title = "t-SNE of ratio distances", x="tSNE dim1", y="tSNE dim2", color=all_ratio_pheno_fc_nops_tsne[,7], fill=all_ratio_pheno_fc_nops_tsne[,7]) + # labs = labels
+  geom_text(aes(x=arpd_tsne[,10], y=arpd_tsne[,11], label=arpd_tsne$Co_twins_ID)) +
+  labs(title = "t-SNE of Delta of Ratio Distances", x="tSNE dim1", y="tSNE dim2", color=arpd_tsne[,7], fill=arpd_tsne[,7]) + # labs = labels
+  #scale_colour_gradientn(aesthetics = c("colour", "fill"), colors =rev(heat.colors(10))) + # this is to use a color scale rather then discrete colors ## heat.colors = palette
+  theme(plot.title = element_text(hjust = 0.5, size = 25), ## all these are just sixe of texts, position of title
+        axis.title.x = element_text(size = 25),
+        axis.title.y = element_text(size = 25),
+        axis.text.x= element_text(size = 22),
+        axis.text.y= element_text(size = 22),
+        legend.position = "none",
+        legend.title=element_blank(), 
+        legend.text=element_text(size=20))
+dev.off()
+
+#ratio delta sex
+pdf("schoeller_rtsne_ratio_delta_sex_arranged_pplx30.pdf", w=10, h=8)
+ggplot(arpd_tsne[,10:11]) + 
+  geom_point(aes(x=arpd_tsne[,10], 
+                 y=arpd_tsne[,11], 
+                 color=arpd_tsne$Sex, 
+                 fill=arpd_tsne$Sex), 
+             alpha = 0.8, 
+             size = 15, shape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                  21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                  21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                  21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                  24,24,24,24,24,25,25,25,25,25)) + 
+  theme_classic() +# alpha is the opacity 
+  #geom_text(aes(x=arpd_tsne[,8], y=arpd_tsne[,9], label=arpd_tsne$Co_twins_ID)) +
+  labs(title = "t-SNE of Delta of Ratio Distances", x="tSNE dim1", y="tSNE dim2", color=arpd_tsne[,7], fill=arpd_tsne[,7]) + # labs = labels
+  #scale_colour_gradientn(aesthetics = c("colour", "fill"), colors =rev(heat.colors(10))) + # this is to use a color scale rather then discrete colors ## heat.colors = palette
+  theme(plot.title = element_text(hjust = 0.5, size = 25), ## all these are just sixe of texts, position of title
+        axis.title.x = element_text(size = 25),
+        axis.title.y = element_text(size = 25),
+        axis.text.x= element_text(size = 22),
+        axis.text.y= element_text(size = 22),
+        legend.position = "none",
+        legend.title=element_blank(), 
+        legend.text=element_text(size=20))#, 
+#legend.position = "none") 
+dev.off()
+
+# age
+pdf("schoeller_rtsne_ratio_delta_age-gradient_arranged_pplx30.pdf", w=10, h=8)
+ggplot(arpd_tsne[,10:11]) + 
+  geom_point(aes(x=arpd_tsne[,10], y=arpd_tsne[,11], 
+                 color=arpd_tsne$Age, fill=arpd_tsne$Age), 
+             alpha = 0.8, size = 15, shape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                               21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                               21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                               21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                               24,24,24,24,24,25,25,25,25,25)) + 
+  theme_classic() +# alpha is the opacity 
+  #geom_text(aes(x=arpd_tsne[,10], y=arpd_tsne[,11], label=arpd_tsne[,3])) +
+  labs(title = "t-SNE of Delta of Ratio Distances", x="tSNE dim1", y="tSNE dim2", color=arpd_tsne$Age, fill=arpd_tsne$Age) + # labs = labels
+  scale_colour_gradientn(aesthetics = c("colour", "fill"), colors =rev(heat.colors(10))) + # this is to use a color scale rather then discrete colors ## heat.colors = palette
+  theme(plot.title = element_text(hjust = 0.5, size = 25), ## all these are just sixe of texts, position of title
+        axis.title.x = element_text(size = 25),
+        axis.title.y = element_text(size = 25),
+        axis.text.x= element_text(size = 22),
+        axis.text.y= element_text(size = 22), 
+        legend.title=element_blank(), 
+        legend.text=element_text(size=20))#, 
+#legend.position = "none") 
+dev.off()
+
+pdf("schoeller_rtsne_ratio_delta_controls_arranged_pplx10.pdf", w=10, h=8)
+ggplot(arpd_tsne_pplx10[,10:11]) + 
+  geom_point(aes(x=arpd_tsne_pplx10[,10], 
+                 y=arpd_tsne_pplx10[,11],
+                 color=c("none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                         "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                         "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                         "none","none","none","none","none","none","none","none","none","none","none","none","none",
+                         "#FF0000","#FF0000","#FF0000","#FF0000","#FF0000","#668d3c","#668d3c","#668d3c","#668d3c","#668d3c"),
+                 fill=c("none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                        "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                        "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                        "none","none","none","none","none","none","none","none","none","none","none","none","none",
+                        "#FF0000","#FF0000","#FF0000","#FF0000","#FF0000",
+                        "#668d3c","#668d3c","#668d3c","#668d3c","#668d3c")),
+             alpha = 0.8, size = 15, shape= c(21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                              21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                              21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                              21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                              24,24,24,24,24,
+                                              25,25,25,25,25)) +  
+  theme_classic() +# alpha is the opacity 
+  geom_text(aes(x=arpd_tsne_pplx10[,10], y=arpd_tsne_pplx10[,11], label=arpd_tsne_pplx10$Co_twins_ID)) +
+  labs(title = "t-SNE of Delta of Ratio Distances", x="tSNE dim1", y="tSNE dim2", color=arpd_tsne_pplx10[,7], fill=arpd_tsne_pplx10[,7]) + # labs = labels
+  #scale_colour_gradientn(aesthetics = c("colour", "fill"), colors =rev(heat.colors(10))) + # this is to use a color scale rather then discrete colors ## heat.colors = palette
+  theme(plot.title = element_text(hjust = 0.5, size = 25), ## all these are just sixe of texts, position of title
+        axis.title.x = element_text(size = 25),
+        axis.title.y = element_text(size = 25),
+        axis.text.x= element_text(size = 22),
+        axis.text.y= element_text(size = 22),
+        legend.position = "none",
+        legend.title=element_blank(), 
+        legend.text=element_text(size=20))
+dev.off()
+
+#ratio delta sex
+pdf("schoeller_rtsne_ratio_delta_sex_arranged_pplx10.pdf", w=10, h=8)
+ggplot(arpd_tsne_pplx10[,10:11]) + 
+  geom_point(aes(x=arpd_tsne_pplx10[,10], 
+                 y=arpd_tsne_pplx10[,11], 
+                 color=arpd_tsne_pplx10$Sex, 
+                 fill=arpd_tsne_pplx10$Sex), 
+             alpha = 0.8, 
+             size = 15, shape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                  21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                  21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                  21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                  24,24,24,24,24,25,25,25,25,25)) + 
+  theme_classic() +# alpha is the opacity 
+  #geom_text(aes(x=arpd_tsne[,8], y=arpd_tsne[,9], label=arpd_tsne$Co_twins_ID)) +
+  labs(title = "t-SNE of Delta of Ratio Distances", x="tSNE dim1", y="tSNE dim2", color=arpd_tsne_pplx10[,7], fill=arpd_tsne_pplx10[,7]) + # labs = labels
+  #scale_colour_gradientn(aesthetics = c("colour", "fill"), colors =rev(heat.colors(10))) + # this is to use a color scale rather then discrete colors ## heat.colors = palette
+  theme(plot.title = element_text(hjust = 0.5, size = 25), ## all these are just sixe of texts, position of title
+        axis.title.x = element_text(size = 25),
+        axis.title.y = element_text(size = 25),
+        axis.text.x= element_text(size = 22),
+        axis.text.y= element_text(size = 22),
+        legend.position = "none",
+        legend.title=element_blank(), 
+        legend.text=element_text(size=20))#, 
+#legend.position = "none") 
+dev.off()
+
+# age
+pdf("schoeller_rtsne_ratio_delta_age-gradient_arranged_pplx10.pdf", w=10, h=8)
+ggplot(arpd_tsne_pplx10[,10:11]) + 
+  geom_point(aes(x=arpd_tsne_pplx10[,10], y=arpd_tsne_pplx10[,11], 
+                 color=arpd_tsne_pplx10$Age, fill=arpd_tsne_pplx10$Age), 
+             alpha = 0.8, size = 15, shape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                               21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                               21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                               21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                               24,24,24,24,24,25,25,25,25,25)) + 
+  theme_classic() +# alpha is the opacity 
+  #geom_text(aes(x=arpd_tsne[,10], y=arpd_tsne[,11], label=arpd_tsne[,3])) +
+  labs(title = "t-SNE of Delta of Ratio Distances", x="tSNE dim1", y="tSNE dim2", color=arpd_tsne_pplx10$Age, fill=arpd_tsne_pplx10$Age) + # labs = labels
+  scale_colour_gradientn(aesthetics = c("colour", "fill"), colors =rev(heat.colors(10))) + # this is to use a color scale rather then discrete colors ## heat.colors = palette
+  theme(plot.title = element_text(hjust = 0.5, size = 25), ## all these are just sixe of texts, position of title
+        axis.title.x = element_text(size = 25),
+        axis.title.y = element_text(size = 25),
+        axis.text.x= element_text(size = 22),
+        axis.text.y= element_text(size = 22), 
+        legend.title=element_blank(), 
+        legend.text=element_text(size=20))#, 
+#legend.position = "none") 
+dev.off()
+
+pdf("schoeller_rtsne_ratio_delta_controls_arranged_pplx20.pdf", w=10, h=8)
+ggplot(arpd_tsne_pplx20[,10:11]) + 
+  geom_point(aes(x=arpd_tsne_pplx20[,10], 
+                 y=arpd_tsne_pplx20[,11],
+                 color=c("none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                         "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                         "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                         "none","none","none","none","none","none","none","none","none","none","none","none","none",
+                         "#FF0000","#FF0000","#FF0000","#FF0000","#FF0000","#668d3c","#668d3c","#668d3c","#668d3c","#668d3c"),
+                 fill=c("none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                        "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                        "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                        "none","none","none","none","none","none","none","none","none","none","none","none","none",
+                        "#FF0000","#FF0000","#FF0000","#FF0000","#FF0000",
+                        "#668d3c","#668d3c","#668d3c","#668d3c","#668d3c")),
+             alpha = 0.8, size = 15, shape= c(21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                              21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                              21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                              21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                              24,24,24,24,24,
+                                              25,25,25,25,25)) +  
+  theme_classic() +# alpha is the opacity 
+  geom_text(aes(x=arpd_tsne_pplx20[,10], y=arpd_tsne_pplx20[,11], label=arpd_tsne_pplx20$Co_twins_ID)) +
+  labs(title = "t-SNE of Delta of Ratio Distances", x="tSNE dim1", y="tSNE dim2", color=arpd_tsne_pplx20[,7], fill=arpd_tsne_pplx20[,7]) + # labs = labels
+  #scale_colour_gradientn(aesthetics = c("colour", "fill"), colors =rev(heat.colors(10))) + # this is to use a color scale rather then discrete colors ## heat.colors = palette
+  theme(plot.title = element_text(hjust = 0.5, size = 25), ## all these are just sixe of texts, position of title
+        axis.title.x = element_text(size = 25),
+        axis.title.y = element_text(size = 25),
+        axis.text.x= element_text(size = 22),
+        axis.text.y= element_text(size = 22),
+        legend.position = "none",
+        legend.title=element_blank(), 
+        legend.text=element_text(size=20))
+dev.off()
+
+#ratio delta sex
+pdf("schoeller_rtsne_ratio_delta_sex_arranged_pplx20.pdf", w=10, h=8)
+ggplot(arpd_tsne_pplx20[,10:11]) + 
+  geom_point(aes(x=arpd_tsne_pplx20[,10], 
+                 y=arpd_tsne_pplx20[,11], 
+                 color=arpd_tsne_pplx20$Sex, 
+                 fill=arpd_tsne_pplx20$Sex), 
+             alpha = 0.8, 
+             size = 15, shape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                  21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                  21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                  21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                  24,24,24,24,24,25,25,25,25,25)) + 
+  theme_classic() +# alpha is the opacity 
+  #geom_text(aes(x=arpd_tsne[,8], y=arpd_tsne[,9], label=arpd_tsne$Co_twins_ID)) +
+  labs(title = "t-SNE of Delta of Ratio Distances", x="tSNE dim1", y="tSNE dim2", color=arpd_tsne_pplx20[,7], fill=arpd_tsne_pplx20[,7]) + # labs = labels
+  #scale_colour_gradientn(aesthetics = c("colour", "fill"), colors =rev(heat.colors(10))) + # this is to use a color scale rather then discrete colors ## heat.colors = palette
+  theme(plot.title = element_text(hjust = 0.5, size = 25), ## all these are just sixe of texts, position of title
+        axis.title.x = element_text(size = 25),
+        axis.title.y = element_text(size = 25),
+        axis.text.x= element_text(size = 22),
+        axis.text.y= element_text(size = 22),
+        legend.position = "none",
+        legend.title=element_blank(), 
+        legend.text=element_text(size=20))#, 
+#legend.position = "none") 
+dev.off()
+
+# age
+pdf("schoeller_rtsne_ratio_delta_age-gradient_arranged_pplx20.pdf", w=10, h=8)
+ggplot(arpd_tsne_pplx20[,10:11]) + 
+  geom_point(aes(x=arpd_tsne_pplx20[,10], y=arpd_tsne_pplx20[,11], 
+                 color=arpd_tsne_pplx20$Age, fill=arpd_tsne_pplx20$Age), 
+             alpha = 0.8, size = 15, shape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                               21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                               21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                               21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                               24,24,24,24,24,25,25,25,25,25)) + 
+  theme_classic() +# alpha is the opacity 
+  #geom_text(aes(x=arpd_tsne[,10], y=arpd_tsne[,11], label=arpd_tsne[,3])) +
+  labs(title = "t-SNE of Delta of Ratio Distances", x="tSNE dim1", y="tSNE dim2", color=arpd_tsne_pplx20$Age, fill=arpd_tsne_pplx20$Age) + # labs = labels
+  scale_colour_gradientn(aesthetics = c("colour", "fill"), colors =rev(heat.colors(10))) + # this is to use a color scale rather then discrete colors ## heat.colors = palette
+  theme(plot.title = element_text(hjust = 0.5, size = 25), ## all these are just sixe of texts, position of title
+        axis.title.x = element_text(size = 25),
+        axis.title.y = element_text(size = 25),
+        axis.text.x= element_text(size = 22),
+        axis.text.y= element_text(size = 22), 
+        legend.title=element_blank(), 
+        legend.text=element_text(size=20))#, 
+#legend.position = "none") 
+dev.off()
+
+pdf("schoeller_rtsne_ratio_delta_controls_arranged_pplx40.pdf", w=10, h=8)
+ggplot(arpd_tsne_pplx40[,10:11]) + 
+  geom_point(aes(x=arpd_tsne_pplx40[,10], 
+                 y=arpd_tsne_pplx40[,11],
+                 color=c("none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                         "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                         "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                         "none","none","none","none","none","none","none","none","none","none","none","none","none",
+                         "#FF0000","#FF0000","#FF0000","#FF0000","#FF0000","#668d3c","#668d3c","#668d3c","#668d3c","#668d3c"),
+                 fill=c("none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                        "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                        "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                        "none","none","none","none","none","none","none","none","none","none","none","none","none",
+                        "#FF0000","#FF0000","#FF0000","#FF0000","#FF0000",
+                        "#668d3c","#668d3c","#668d3c","#668d3c","#668d3c")),
+             alpha = 0.8, size = 15, shape= c(21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                              21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                              21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                              21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                              24,24,24,24,24,
+                                              25,25,25,25,25)) +  
+  theme_classic() +# alpha is the opacity 
+  geom_text(aes(x=arpd_tsne_pplx40[,10], y=arpd_tsne_pplx40[,11], label=arpd_tsne_pplx40$Co_twins_ID)) +
+  labs(title = "t-SNE of Delta of Ratio Distances", x="tSNE dim1", y="tSNE dim2", color=arpd_tsne_pplx40[,7], fill=arpd_tsne_pplx40[,7]) + # labs = labels
+  #scale_colour_gradientn(aesthetics = c("colour", "fill"), colors =rev(heat.colors(10))) + # this is to use a color scale rather then discrete colors ## heat.colors = palette
+  theme(plot.title = element_text(hjust = 0.5, size = 25), ## all these are just sixe of texts, position of title
+        axis.title.x = element_text(size = 25),
+        axis.title.y = element_text(size = 25),
+        axis.text.x= element_text(size = 22),
+        axis.text.y= element_text(size = 22),
+        legend.position = "none",
+        legend.title=element_blank(), 
+        legend.text=element_text(size=20))
+dev.off()
+
+#ratio delta sex
+pdf("schoeller_rtsne_ratio_delta_sex_arranged_pplx40.pdf", w=10, h=8)
+ggplot(arpd_tsne_pplx40[,10:11]) + 
+  geom_point(aes(x=arpd_tsne_pplx40[,10], 
+                 y=arpd_tsne_pplx40[,11], 
+                 color=arpd_tsne_pplx40$Sex, 
+                 fill=arpd_tsne_pplx40$Sex), 
+             alpha = 0.8, 
+             size = 15, shape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                  21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                  21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                  21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                  24,24,24,24,24,25,25,25,25,25)) + 
+  theme_classic() +# alpha is the opacity 
+  #geom_text(aes(x=arpd_tsne[,8], y=arpd_tsne[,9], label=arpd_tsne$Co_twins_ID)) +
+  labs(title = "t-SNE of Delta of Ratio Distances", x="tSNE dim1", y="tSNE dim2", color=arpd_tsne_pplx40[,7], fill=arpd_tsne_pplx40[,7]) + # labs = labels
+  #scale_colour_gradientn(aesthetics = c("colour", "fill"), colors =rev(heat.colors(10))) + # this is to use a color scale rather then discrete colors ## heat.colors = palette
+  theme(plot.title = element_text(hjust = 0.5, size = 25), ## all these are just sixe of texts, position of title
+        axis.title.x = element_text(size = 25),
+        axis.title.y = element_text(size = 25),
+        axis.text.x= element_text(size = 22),
+        axis.text.y= element_text(size = 22),
+        legend.position = "none",
+        legend.title=element_blank(), 
+        legend.text=element_text(size=20))#, 
+#legend.position = "none") 
+dev.off()
+# age
+pdf("schoeller_rtsne_ratio_delta_age-gradient_arranged_pplx40.pdf", w=10, h=8)
+ggplot(arpd_tsne_pplx40[,10:11]) + 
+  geom_point(aes(x=arpd_tsne_pplx40[,10], y=arpd_tsne_pplx40[,11], 
+                 color=arpd_tsne_pplx40$Age, fill=arpd_tsne_pplx40$Age), 
+             alpha = 0.8, size = 15, shape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                               21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                               21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                               21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                               24,24,24,24,24,25,25,25,25,25)) + 
+  theme_classic() +# alpha is the opacity 
+  #geom_text(aes(x=arpd_tsne[,10], y=arpd_tsne[,11], label=arpd_tsne[,3])) +
+  labs(title = "t-SNE of Delta of Ratio Distances", x="tSNE dim1", y="tSNE dim2", color=arpd_tsne_pplx40$Age, fill=arpd_tsne_pplx40$Age) + # labs = labels
+  scale_colour_gradientn(aesthetics = c("colour", "fill"), colors =rev(heat.colors(10))) + # this is to use a color scale rather then discrete colors ## heat.colors = palette
+  theme(plot.title = element_text(hjust = 0.5, size = 25), ## all these are just sixe of texts, position of title
+        axis.title.x = element_text(size = 25),
+        axis.title.y = element_text(size = 25),
+        axis.text.x= element_text(size = 22),
+        axis.text.y= element_text(size = 22), 
+        legend.title=element_blank(), 
+        legend.text=element_text(size=20))#, 
+#legend.position = "none") 
+dev.off()
+
+cluster.tsne.arpd.1.2 <- Mclust(arpd_tsne[,10:11], prior = priorControl())
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.tsne.arpd.1.2.BIC.pdf", w=6, h=4)
+plot(cluster.tsne.arpd.1.2, what = "BIC")
+dev.off()
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.tsne.arpd.1.2.density.pdf", w=4, h=4)
+plot(cluster.tsne.arpd.1.2, what = "density")
+dev.off()
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.tsne.arpd.1.2.plot.classification.pdf", w=4, h=4)
+plot(cluster.tsne.arpd.1.2, what = "classification")
+dev.off()
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.tsne.arpd.1.2.plot.uncertainty.pdf", w=4, h=4)
+plot(cluster.tsne.arpd.1.2, what = "uncertainty")
+dev.off()
+
+
+#all ratio pheno fc coloring just the controls
+ggplot(arpfc_tsne[,10:11]) + 
+  geom_point(aes(x=arpfc_tsne[,10], 
+                 y=arpfc_tsne[,11],
+                 color=c("none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                         "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                         "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                         "none","none","none","none","none","none","none","none","none","none","none","none","none",
+                         "#FF0000","#FF0000","#FF0000","#FF0000","#FF0000","#668d3c","#668d3c","#668d3c","#668d3c","#668d3c"),
+                 fill=c("none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                        "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                        "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                        "none","none","none","none","none","none","none","none","none","none","none","none","none",
+                        "#FF0000","#FF0000","#FF0000","#FF0000","#FF0000",
+                        "#668d3c","#668d3c","#668d3c","#668d3c","#668d3c")),
+             alpha = 0.8, size = 15, shape= c(21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                              21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                              21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                              21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                              24,24,24,24,24,
+                                              25,25,25,25,25)) +  
+  theme_classic() +# alpha is the opacity 
+  geom_text(aes(x=arpfc_tsne[,10], y=arpfc_tsne[,11], label=arpfc_tsne$Co_twins_ID)) +
+  labs(title = "t-SNE of FC of Ratio Distances", x="tSNE dim1", y="tSNE dim2") + # labs = labels
   #scale_colour_gradientn(aesthetics = c("colour", "fill"), colors =rev(heat.colors(10))) + # this is to use a color scale rather then discrete colors ## heat.colors = palette
   theme(plot.title = element_text(hjust = 0.5, size = 25), ## all these are just sixe of texts, position of title
         axis.title.x = element_text(size = 25),
@@ -1953,457 +2852,432 @@ ggplot(all_ratio_pheno_fc_nops_tsne[,8:9]) +
         legend.title=element_blank(), 
         legend.text=element_text(size=20))
 
-#fc ratio matrix tsne: both sexes, colored by age
-ggplot(all_ratio_pheno_fc_nops_tsne[,8:9]) + 
-  geom_point(aes(x=all_ratio_pheno_fc_nops_tsne[,8], y=all_ratio_pheno_fc_nops_tsne[,9], color=all_ratio_pheno_fc_nops_tsne[,7], fill=all_ratio_pheno_fc_nops_tsne[,7]), alpha = 0.3, size = 10, shape=21) + 
+#ratio delta sex
+ggplot(arpfc_tsne[,10:11]) + 
+  geom_point(aes(x=arpfc_tsne[,10], 
+                 y=arpfc_tsne[,11], 
+                 color=arpfc_tsne$Sex, 
+                 fill=arpfc_tsne$Sex), 
+             alpha = 0.8, 
+             size = 15, shape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                  21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                  21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                  21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                  24,24,24,24,24,25,25,25,25,25)) + 
   theme_classic() +# alpha is the opacity 
-  geom_text(aes(x=all_ratio_pheno_fc_nops_tsne[,8], y=all_ratio_pheno_fc_nops_tsne[,9], label=all_ratio_pheno_fc_nops_tsne[,1])) +
-  labs(title = "t-SNE of ratio distances", x="tSNE dim1", y="tSNE dim2", color=all_ratio_pheno_fc_nops_tsne[,7], fill=all_ratio_pheno_fc_nops_tsne[,7]) + # labs = labels
-  scale_colour_gradientn(aesthetics = c("colour", "fill"), colors =rev(heat.colors(10))) + # this is to use a color scale rather then discrete colors ## heat.colors = palette
-  theme(plot.title = element_text(hjust = 0.5, size = 25), ## all these are just sixe of texts, position of title
-        axis.title.x = element_text(size = 25),
-        axis.title.y = element_text(size = 25),
-        axis.text.x= element_text(size = 22),
-        axis.text.y= element_text(size = 22), 
-        legend.title=element_blank(), 
-        legend.text=element_text(size=20))#, 
-#legend.position = "none") 
-
-#all ratio pheno fc by sex
-ggplot(all_ratio_pheno_fc_nops_tsne[,8:9]) + 
-  geom_point(aes(x=all_ratio_pheno_fc_nops_tsne[,8], y=all_ratio_pheno_fc_nops_tsne[,9], fill=all_ratio_pheno_fc_nops_tsne[,2]), alpha = 0.3, size = 10, shape=21) + 
-  theme_classic() +# alpha is the opacity 
-  geom_text(aes(x=all_ratio_pheno_fc_nops_tsne[,8], y=all_ratio_pheno_fc_nops_tsne[,9], label=all_ratio_pheno_fc_nops_tsne[,1])) +
-  labs(title = "t-SNE of ratio distances", x="tSNE dim1", y="tSNE dim2", color=all_ratio_pheno_fc_nops_tsne[,7], fill=all_ratio_pheno_fc_nops_tsne[,7]) + # labs = labels
+  #geom_text(aes(x=arpd_tsne[,8], y=arpd_tsne[,9], label=arpd_tsne$Co_twins_ID)) +
+  labs(title = "t-SNE of FC of Ratio Distances", x="tSNE dim1", y="tSNE dim2") + # labs = labels
   #scale_colour_gradientn(aesthetics = c("colour", "fill"), colors =rev(heat.colors(10))) + # this is to use a color scale rather then discrete colors ## heat.colors = palette
   theme(plot.title = element_text(hjust = 0.5, size = 25), ## all these are just sixe of texts, position of title
         axis.title.x = element_text(size = 25),
         axis.title.y = element_text(size = 25),
         axis.text.x= element_text(size = 22),
+        axis.text.y= element_text(size = 22),
+        legend.position = "none",
+        legend.title=element_blank(), 
+        legend.text=element_text(size=20))#, 
+#legend.position = "none") 
+
+# age
+ggplot(arpfc_tsne[,10:11]) + 
+  geom_point(aes(x=arpfc_tsne[,10], y=arpfc_tsne[,11], 
+                 color=arpfc_tsne$Age, fill=arpfc_tsne$Age), 
+             alpha = 0.8, size = 15, shape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                               21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                               21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                               21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                               24,24,24,24,24,25,25,25,25,25)) + 
+  theme_classic() +# alpha is the opacity 
+  #geom_text(aes(x=arpfc_tsne[,10], y=arpfc_tsne[,11], label=arpfc_tsne[,3])) +
+  labs(title = "t-SNE of FC of Ratio Distances", x="tSNE dim1", y="tSNE dim2", color=arpfc_tsne$Age, fill=arpfc_tsne$Age) + # labs = labels
+  scale_colour_gradientn(aesthetics = c("colour", "fill"), colors =rev(heat.colors(10))) + # this is to use a color scale rather then discrete colors ## heat.colors = palette
+  theme(plot.title = element_text(hjust = 0.5, size = 25), ## all these are just sixe of texts, position of title
+        axis.title.x = element_text(size = 25),
+        axis.title.y = element_text(size = 25),
+        axis.text.x= element_text(size = 22),
+        axis.text.y= element_text(size = 22),
+        legend.position = "none",
+        legend.title=element_blank(), 
+        legend.text=element_text(size=20))#, 
+#legend.position = "none") 
+
+pdf("schoeller_rtsne_ratio_fc_controls_arranged_pplx10.pdf", w=10, h=8)
+ggplot(arpfc_tsne_pplx10[,10:11]) + 
+  geom_point(aes(x=arpfc_tsne_pplx10[,10], 
+                 y=arpfc_tsne_pplx10[,11],
+                 color=c("none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                         "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                         "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                         "none","none","none","none","none","none","none","none","none","none","none","none","none",
+                         "#FF0000","#FF0000","#FF0000","#FF0000","#FF0000","#668d3c","#668d3c","#668d3c","#668d3c","#668d3c"),
+                 fill=c("none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                        "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                        "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                        "none","none","none","none","none","none","none","none","none","none","none","none","none",
+                        "#FF0000","#FF0000","#FF0000","#FF0000","#FF0000",
+                        "#668d3c","#668d3c","#668d3c","#668d3c","#668d3c")),
+             alpha = 0.8, size = 15, shape= c(21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                              21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                              21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                              21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                              24,24,24,24,24,
+                                              25,25,25,25,25)) +  
+  theme_classic() +# alpha is the opacity 
+  geom_text(aes(x=arpfc_tsne_pplx10[,10], y=arpfc_tsne_pplx10[,11], label=arpfc_tsne_pplx10$Co_twins_ID)) +
+  labs(title = "t-SNE of Delta of Ratio Distances", x="tSNE dim1", y="tSNE dim2", color=arpfc_tsne_pplx10[,7], fill=arpfc_tsne_pplx10[,7]) + # labs = labels
+  #scale_colour_gradientn(aesthetics = c("colour", "fill"), colors =rev(heat.colors(10))) + # this is to use a color scale rather then discrete colors ## heat.colors = palette
+  theme(plot.title = element_text(hjust = 0.5, size = 25), ## all these are just sixe of texts, position of title
+        axis.title.x = element_text(size = 25),
+        axis.title.y = element_text(size = 25),
+        axis.text.x= element_text(size = 22),
+        axis.text.y= element_text(size = 22),
+        legend.position = "none",
+        legend.title=element_blank(), 
+        legend.text=element_text(size=20))
+dev.off()
+
+#ratio delta sex
+pdf("schoeller_rtsne_ratio_fc_sex_arranged_pplx10.pdf", w=10, h=8)
+ggplot(arpfc_tsne_pplx10[,10:11]) + 
+  geom_point(aes(x=arpfc_tsne_pplx10[,10], 
+                 y=arpfc_tsne_pplx10[,11], 
+                 color=arpfc_tsne_pplx10$Sex, 
+                 fill=arpfc_tsne_pplx10$Sex), 
+             alpha = 0.8, 
+             size = 15, shape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                  21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                  21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                  21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                  24,24,24,24,24,25,25,25,25,25)) + 
+  theme_classic() +# alpha is the opacity 
+  #geom_text(aes(x=arpd_tsne[,8], y=arpd_tsne[,9], label=arpd_tsne$Co_twins_ID)) +
+  labs(title = "t-SNE of Delta of Ratio Distances", x="tSNE dim1", y="tSNE dim2", color=arpd_tsne_pplx10[,7], fill=arpd_tsne_pplx10[,7]) + # labs = labels
+  #scale_colour_gradientn(aesthetics = c("colour", "fill"), colors =rev(heat.colors(10))) + # this is to use a color scale rather then discrete colors ## heat.colors = palette
+  theme(plot.title = element_text(hjust = 0.5, size = 25), ## all these are just sixe of texts, position of title
+        axis.title.x = element_text(size = 25),
+        axis.title.y = element_text(size = 25),
+        axis.text.x= element_text(size = 22),
+        axis.text.y= element_text(size = 22),
+        legend.position = "none",
+        legend.title=element_blank(), 
+        legend.text=element_text(size=20))#, 
+#legend.position = "none") 
+dev.off()
+
+# age
+pdf("schoeller_rtsne_ratio_fc_age-gradient_arranged_pplx10.pdf", w=10, h=8)
+ggplot(arpfc_tsne_pplx10[,10:11]) + 
+  geom_point(aes(x=arpfc_tsne_pplx10[,10], y=arpfc_tsne_pplx10[,11], 
+                 color=arpfc_tsne_pplx10$Age, fill=arpfc_tsne_pplx10$Age), 
+             alpha = 0.8, size = 15, shape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                               21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                               21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                               21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                               24,24,24,24,24,25,25,25,25,25)) + 
+  theme_classic() +# alpha is the opacity 
+  #geom_text(aes(x=arpd_tsne[,10], y=arpd_tsne[,11], label=arpd_tsne[,3])) +
+  labs(title = "t-SNE of Delta of Ratio Distances", x="tSNE dim1", y="tSNE dim2", color=arpfc_tsne_pplx10$Age, fill=arpfc_tsne_pplx10$Age) + # labs = labels
+  scale_colour_gradientn(aesthetics = c("colour", "fill"), colors =rev(heat.colors(10))) + # this is to use a color scale rather then discrete colors ## heat.colors = palette
+  theme(plot.title = element_text(hjust = 0.5, size = 25), ## all these are just sixe of texts, position of title
+        axis.title.x = element_text(size = 25),
+        axis.title.y = element_text(size = 25),
+        axis.text.x= element_text(size = 22),
         axis.text.y= element_text(size = 22), 
+        legend.title=element_blank(), 
+        legend.text=element_text(size=20))#, 
+#legend.position = "none") 
+dev.off()
+
+pdf("schoeller_rtsne_ratio_fc_controls_arranged_pplx20.pdf", w=10, h=8)
+ggplot(arpfc_tsne_pplx20[,10:11]) + 
+  geom_point(aes(x=arpfc_tsne_pplx20[,10], 
+                 y=arpfc_tsne_pplx20[,11],
+                 color=c("none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                         "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                         "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                         "none","none","none","none","none","none","none","none","none","none","none","none","none",
+                         "#FF0000","#FF0000","#FF0000","#FF0000","#FF0000","#668d3c","#668d3c","#668d3c","#668d3c","#668d3c"),
+                 fill=c("none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                        "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                        "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                        "none","none","none","none","none","none","none","none","none","none","none","none","none",
+                        "#FF0000","#FF0000","#FF0000","#FF0000","#FF0000",
+                        "#668d3c","#668d3c","#668d3c","#668d3c","#668d3c")),
+             alpha = 0.8, size = 15, shape= c(21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                              21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                              21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                              21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                              24,24,24,24,24,
+                                              25,25,25,25,25)) +  
+  theme_classic() +# alpha is the opacity 
+  geom_text(aes(x=arpfc_tsne_pplx20[,10], y=arpfc_tsne_pplx20[,11], label=arpfc_tsne_pplx20$Co_twins_ID)) +
+  labs(title = "t-SNE of Delta of Ratio Distances", x="tSNE dim1", y="tSNE dim2", color=arpfc_tsne_pplx20[,7], fill=arpfc_tsne_pplx20[,7]) + # labs = labels
+  #scale_colour_gradientn(aesthetics = c("colour", "fill"), colors =rev(heat.colors(10))) + # this is to use a color scale rather then discrete colors ## heat.colors = palette
+  theme(plot.title = element_text(hjust = 0.5, size = 25), ## all these are just sixe of texts, position of title
+        axis.title.x = element_text(size = 25),
+        axis.title.y = element_text(size = 25),
+        axis.text.x= element_text(size = 22),
+        axis.text.y= element_text(size = 22),
+        legend.position = "none",
+        legend.title=element_blank(), 
+        legend.text=element_text(size=20))
+dev.off()
+
+#ratio delta sex
+pdf("schoeller_rtsne_ratio_fc_sex_arranged_pplx20.pdf", w=10, h=8)
+ggplot(arpfc_tsne_pplx20[,10:11]) + 
+  geom_point(aes(x=arpfc_tsne_pplx20[,10], 
+                 y=arpfc_tsne_pplx20[,11], 
+                 color=arpfc_tsne_pplx20$Sex, 
+                 fill=arpfc_tsne_pplx20$Sex), 
+             alpha = 0.8, 
+             size = 15, shape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                  21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                  21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                  21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                  24,24,24,24,24,25,25,25,25,25)) + 
+  theme_classic() +# alpha is the opacity 
+  #geom_text(aes(x=arpd_tsne[,8], y=arpd_tsne[,9], label=arpd_tsne$Co_twins_ID)) +
+  labs(title = "t-SNE of Delta of Ratio Distances", x="tSNE dim1", y="tSNE dim2", color=arpd_tsne_pplx20[,7], fill=arpd_tsne_pplx20[,7]) + # labs = labels
+  #scale_colour_gradientn(aesthetics = c("colour", "fill"), colors =rev(heat.colors(10))) + # this is to use a color scale rather then discrete colors ## heat.colors = palette
+  theme(plot.title = element_text(hjust = 0.5, size = 25), ## all these are just sixe of texts, position of title
+        axis.title.x = element_text(size = 25),
+        axis.title.y = element_text(size = 25),
+        axis.text.x= element_text(size = 22),
+        axis.text.y= element_text(size = 22),
+        legend.position = "none",
+        legend.title=element_blank(), 
+        legend.text=element_text(size=20))#, 
+#legend.position = "none") 
+dev.off()
+
+# age
+pdf("schoeller_rtsne_ratio_fc_age-gradient_arranged_pplx20.pdf", w=10, h=8)
+ggplot(arpfc_tsne_pplx20[,10:11]) + 
+  geom_point(aes(x=arpfc_tsne_pplx20[,10], y=arpfc_tsne_pplx20[,11], 
+                 color=arpfc_tsne_pplx20$Age, fill=arpfc_tsne_pplx20$Age), 
+             alpha = 0.8, size = 15, shape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                               21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                               21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                               21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                               24,24,24,24,24,25,25,25,25,25)) + 
+  theme_classic() +# alpha is the opacity 
+  #geom_text(aes(x=arpd_tsne[,10], y=arpd_tsne[,11], label=arpd_tsne[,3])) +
+  labs(title = "t-SNE of Delta of Ratio Distances", x="tSNE dim1", y="tSNE dim2", color=arpfc_tsne_pplx20$Age, fill=arpfc_tsne_pplx20$Age) + # labs = labels
+  scale_colour_gradientn(aesthetics = c("colour", "fill"), colors =rev(heat.colors(10))) + # this is to use a color scale rather then discrete colors ## heat.colors = palette
+  theme(plot.title = element_text(hjust = 0.5, size = 25), ## all these are just sixe of texts, position of title
+        axis.title.x = element_text(size = 25),
+        axis.title.y = element_text(size = 25),
+        axis.text.x= element_text(size = 22),
+        axis.text.y= element_text(size = 22), 
+        legend.title=element_blank(), 
+        legend.text=element_text(size=20))#, 
+#legend.position = "none") 
+dev.off()
+
+pdf("schoeller_rtsne_ratio_fc_controls_arranged_pplx40.pdf", w=10, h=8)
+ggplot(arpfc_tsne_pplx40[,10:11]) + 
+  geom_point(aes(x=arpfc_tsne_pplx40[,10], 
+                 y=arpfc_tsne_pplx40[,11],
+                 color=c("none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                         "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                         "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                         "none","none","none","none","none","none","none","none","none","none","none","none","none",
+                         "#FF0000","#FF0000","#FF0000","#FF0000","#FF0000","#668d3c","#668d3c","#668d3c","#668d3c","#668d3c"),
+                 fill=c("none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                        "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                        "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                        "none","none","none","none","none","none","none","none","none","none","none","none","none",
+                        "#FF0000","#FF0000","#FF0000","#FF0000","#FF0000",
+                        "#668d3c","#668d3c","#668d3c","#668d3c","#668d3c")),
+             alpha = 0.8, size = 15, shape= c(21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                              21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                              21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                              21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                              24,24,24,24,24,
+                                              25,25,25,25,25)) +  
+  theme_classic() +# alpha is the opacity 
+  geom_text(aes(x=arpfc_tsne_pplx40[,10], y=arpfc_tsne_pplx40[,11], label=arpfc_tsne_pplx40$Co_twins_ID)) +
+  labs(title = "t-SNE of Delta of Ratio Distances", x="tSNE dim1", y="tSNE dim2", color=arpfc_tsne_pplx40[,7], fill=arpfc_tsne_pplx40[,7]) + # labs = labels
+  #scale_colour_gradientn(aesthetics = c("colour", "fill"), colors =rev(heat.colors(10))) + # this is to use a color scale rather then discrete colors ## heat.colors = palette
+  theme(plot.title = element_text(hjust = 0.5, size = 25), ## all these are just sixe of texts, position of title
+        axis.title.x = element_text(size = 25),
+        axis.title.y = element_text(size = 25),
+        axis.text.x= element_text(size = 22),
+        axis.text.y= element_text(size = 22),
+        legend.position = "none",
+        legend.title=element_blank(), 
+        legend.text=element_text(size=20))
+dev.off()
+
+#ratio delta sex
+pdf("schoeller_rtsne_ratio_fc_sex_arranged_pplx40.pdf", w=10, h=8)
+ggplot(arpfc_tsne_pplx40[,10:11]) + 
+  geom_point(aes(x=arpfc_tsne_pplx40[,10], 
+                 y=arpfc_tsne_pplx40[,11], 
+                 color=arpfc_tsne_pplx40$Sex, 
+                 fill=arpfc_tsne_pplx40$Sex), 
+             alpha = 0.8, 
+             size = 15, shape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                  21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                  21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                  21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                  24,24,24,24,24,25,25,25,25,25)) + 
+  theme_classic() +# alpha is the opacity 
+  #geom_text(aes(x=arpd_tsne[,8], y=arpd_tsne[,9], label=arpd_tsne$Co_twins_ID)) +
+  labs(title = "t-SNE of Delta of Ratio Distances", x="tSNE dim1", y="tSNE dim2", color=arpfc_tsne_pplx40[,7], fill=arpfc_tsne_pplx40[,7]) + # labs = labels
+  #scale_colour_gradientn(aesthetics = c("colour", "fill"), colors =rev(heat.colors(10))) + # this is to use a color scale rather then discrete colors ## heat.colors = palette
+  theme(plot.title = element_text(hjust = 0.5, size = 25), ## all these are just sixe of texts, position of title
+        axis.title.x = element_text(size = 25),
+        axis.title.y = element_text(size = 25),
+        axis.text.x= element_text(size = 22),
+        axis.text.y= element_text(size = 22),
+        legend.position = "none",
+        legend.title=element_blank(), 
+        legend.text=element_text(size=20))#, 
+#legend.position = "none") 
+dev.off()
+# age
+pdf("schoeller_rtsne_ratio_fc_age-gradient_arranged_pplx40.pdf", w=10, h=8)
+ggplot(arpfc_tsne_pplx40[,10:11]) + 
+  geom_point(aes(x=arpfc_tsne_pplx40[,10], y=arpfc_tsne_pplx40[,11], 
+                 color=arpfc_tsne_pplx40$Age, fill=arpfc_tsne_pplx40$Age), 
+             alpha = 0.8, size = 15, shape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                               21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                               21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                               21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                               24,24,24,24,24,25,25,25,25,25)) + 
+  theme_classic() +# alpha is the opacity 
+  #geom_text(aes(x=arpd_tsne[,10], y=arpd_tsne[,11], label=arpd_tsne[,3])) +
+  labs(title = "t-SNE of Delta of Ratio Distances", x="tSNE dim1", y="tSNE dim2", color=arpfc_tsne_pplx40$Age, fill=arpfc_tsne_pplx40$Age) + # labs = labels
+  scale_colour_gradientn(aesthetics = c("colour", "fill"), colors =rev(heat.colors(10))) + # this is to use a color scale rather then discrete colors ## heat.colors = palette
+  theme(plot.title = element_text(hjust = 0.5, size = 25), ## all these are just sixe of texts, position of title
+        axis.title.x = element_text(size = 25),
+        axis.title.y = element_text(size = 25),
+        axis.text.x= element_text(size = 22),
+        axis.text.y= element_text(size = 22), 
+        legend.title=element_blank(), 
+        legend.text=element_text(size=20))#, 
+#legend.position = "none") 
+dev.off()
+
+#Mclust w/ tSNE dimensions
+cluster.tsne.arpfc.1.2 <- Mclust(arpd_tsne[,10:11], prior = priorControl())
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.tsne.arpfc.1.2.BIC.pdf", w=6, h=4)
+plot(cluster.tsne.arpfc.1.2, what = "BIC")
+dev.off()
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.tsne.arpfc.1.2.density.pdf", w=4, h=4)
+plot(cluster.tsne.arpfc.1.2, what = "density")
+dev.off()
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.tsne.arpfc.1.2.plot.classification.pdf", w=4, h=4)
+plot(cluster.tsne.arpfc.1.2, what = "classification")
+dev.off()
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.tsne.arpfc.1.2.uncertainty.pdf", w=4, h=4)
+plot(cluster.tsne.arpfc.1.2, what = "uncertainty")
+dev.off()
+
+# ratio absdelta 
+
+ggplot(arpdabs_tsne[,10:11]) + 
+  geom_point(aes(x=arpdabs_tsne[,10], 
+                 y=arpdabs_tsne[,11],
+                 color=c("none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                         "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                         "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                         "none","none","none","none","none","none","none","none","none","none","none","none","none",
+                         "#FF0000","#FF0000","#FF0000","#FF0000","#FF0000","#668d3c","#668d3c","#668d3c","#668d3c","#668d3c"),
+                 fill=c("none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                        "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                        "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                        "none","none","none","none","none","none","none","none","none","none","none","none","none",
+                        "#FF0000","#FF0000","#FF0000","#FF0000","#FF0000",
+                        "#668d3c","#668d3c","#668d3c","#668d3c","#668d3c")),
+             alpha = 0.8, size = 15, shape= c(21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                              21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                              21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                              21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                              24,24,24,24,24,
+                                              25,25,25,25,25)) +  
+  theme_classic() +# alpha is the opacity 
+  geom_text(aes(x=arpdabs_tsne[,10], y=arpdabs_tsne[,11], label=arpdabs_tsne$Co_twins_ID)) +
+  labs(title = "t-SNE of Delta of Ratio Distances", x="tSNE dim1", y="tSNE dim2", color=arpdabs_tsne[,7], fill=arpdabs_tsne[,7]) + # labs = labels
+  #scale_colour_gradientn(aesthetics = c("colour", "fill"), colors =rev(heat.colors(10))) + # this is to use a color scale rather then discrete colors ## heat.colors = palette
+  theme(plot.title = element_text(hjust = 0.5, size = 25), ## all these are just sixe of texts, position of title
+        axis.title.x = element_text(size = 25),
+        axis.title.y = element_text(size = 25),
+        axis.text.x= element_text(size = 22),
+        axis.text.y= element_text(size = 22),
+        legend.position = "none",
         legend.title=element_blank(), 
         legend.text=element_text(size=20))
 
-#fc ratio matrix tsne: only males, colored by age
-ggplot(all_ratio_pheno_fc_nops_tsne_male[,8:9]) + 
-  geom_point(aes(x=all_ratio_pheno_fc_nops_tsne_male[,8], y=all_ratio_pheno_fc_nops_tsne_male[,9], color=all_ratio_pheno_fc_nops_tsne_male[,7], fill=all_ratio_pheno_fc_nops_tsne_male[,7]), alpha = 0.3, size = 10, shape=21) + 
+#ratio delta sex
+ggplot(arpdabs_tsne[,10:11]) + 
+  geom_point(aes(x=arpdabs_tsne[,10], 
+                 y=arpdabs_tsne[,11], 
+                 color=arpdabs_tsne$Sex, 
+                 fill=arpdabs_tsne$Sex), 
+             alpha = 0.8, 
+             size = 15, shape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                  21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                  21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                  21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                  24,24,24,24,24,25,25,25,25,25)) + 
   theme_classic() +# alpha is the opacity 
-  geom_text(aes(x=all_ratio_pheno_fc_nops_tsne_male[,8], y=all_ratio_pheno_fc_nops_tsne_male[,9], label=all_ratio_pheno_fc_nops_tsne_male[,1])) +
-  labs(title = "t-SNE of ratio distances", x="tSNE dim1", y="tSNE dim2", color=all_ratio_pheno_fc_nops_tsne_male[,2], fill=all_ratio_pheno_fc_nops_tsne_male[,7]) + # labs = labels
-  scale_colour_gradientn(aesthetics = c("colour", "fill"), colors =rev(heat.colors(10))) + # this is to use a color scale rather then discrete colors ## heat.colors = palette
+  #geom_text(aes(x=arpd_tsne[,8], y=arpd_tsne[,9], label=arpd_tsne$Co_twins_ID)) +
+  labs(title = "t-SNE of Delta of Ratio Distances", x="tSNE dim1", y="tSNE dim2", color=arpd_tsne[,7], fill=arpd_tsne[,7]) + # labs = labels
+  #scale_colour_gradientn(aesthetics = c("colour", "fill"), colors =rev(heat.colors(10))) + # this is to use a color scale rather then discrete colors ## heat.colors = palette
   theme(plot.title = element_text(hjust = 0.5, size = 25), ## all these are just sixe of texts, position of title
         axis.title.x = element_text(size = 25),
         axis.title.y = element_text(size = 25),
         axis.text.x= element_text(size = 22),
-        axis.text.y= element_text(size = 22), 
-        legend.title=element_blank(), 
-        legend.text=element_text(size=20))#, 
-#legend.position = "none") 
-
-ggplot(all_ratio_pheno_fc_nops_tsne_female[,8:9]) + 
-  geom_point(aes(x=all_ratio_pheno_fc_nops_tsne_female[,8], y=all_ratio_pheno_fc_nops_tsne_female[,9], color=all_ratio_pheno_fc_nops_tsne_female[,7], fill=all_ratio_pheno_fc_nops_tsne_female[,7]), alpha = 0.3, size = 10, shape=21) + 
-  theme_classic() +# alpha is the opacity 
-  geom_text(aes(x=all_ratio_pheno_fc_nops_tsne_female[,8], y=all_ratio_pheno_fc_nops_tsne_female[,9], label=all_ratio_pheno_fc_nops_tsne_female[,1])) +
-  labs(title = "t-SNE of ratio distances", x="tSNE dim1", y="tSNE dim2", color=all_ratio_pheno_fc_nops_tsne_female[,2], fill=all_ratio_pheno_fc_nops_tsne_female[,7]) + # labs = labels
-  scale_colour_gradientn(aesthetics = c("colour", "fill"), colors =rev(heat.colors(10))) + # this is to use a color scale rather then discrete colors ## heat.colors = palette
-  theme(plot.title = element_text(hjust = 0.5, size = 25), ## all these are just sixe of texts, position of title
-        axis.title.x = element_text(size = 25),
-        axis.title.y = element_text(size = 25),
-        axis.text.x= element_text(size = 22),
-        axis.text.y= element_text(size = 22), 
-        legend.title=element_blank(), 
-        legend.text=element_text(size=20))#, 
-#legend.position = "none") 
-
-#####Density#####
-
-# skip until next hashtag comment
-obama<-read.csv(file = "Obama_cf.csv", header = T, stringsAsFactors = FALSE)
-andrew<-read.csv(file = "Andrew_cf.csv", header = T, stringsAsFactors = FALSE)
-
-andrew<-slice(andrew, 1)
-obama<-slice(obama, 2)
-andrew_obama<-rbind(andrew, obama)
-andrew_obama[2,c(2,3)]<-c("Barack_2","Barack_1")
-andrew_obama = andrew_obama %>% rename(.,status = X)
-andrew_obama = andrew_obama %>% rename(.,Names = target)
-andrew_obama = left_join(andrew_obama, pheno_data,by = "Names")
-andrew_obama = andrew_obama %>% 
-  rename(., target = Names) %>%
-  rename(., Names = source)
-andrew_obama = left_join(andrew_obama, pheno_data,by = "Names")
-andrew_obama = andrew_obama %>% 
-  rename(., source = Names)
-andrew_obama$status<-c("negative_ctrl","negative_ctrl")
-similarity_scores_pheno_aldi<-rbind(andrew_obama,similarity_scores_pheno_aldi)
-
-rd_0 <- read.csv(file = 'pos_ctrl_all_cf.csv', header = TRUE, stringsAsFactors = FALSE)
-
-status <- c("positive_ctrl","positive_ctrl","positive_ctrl",'positive_ctrl',"positive_ctrl")
-
-rd_0 = rd_0 %>% rename(.,status = X)
-rd_0 = rd_0 %>% rename(.,Names = target)
-rd_0 = left_join(rd_0, cf_phenotype_data,by = "Names")
-rd_0 = rd_0 %>% 
-  rename(., target = Names) %>%
-  rename(., Names = source)
-rd_0 = left_join(rd_0, cf_phenotype_data,by = "Names")
-rd_0 = rd_0 %>% 
-  rename(., source = Names)
-
-similarity_scores_3<-mutate(similarity_scores,target=as.character(target))
-similarity_scores_3<-mutate(similarity_scores_3,target=sapply(strsplit(similarity_scores_3$target, split='.', fixed=TRUE),function(x) (x[1])))
-similarity_scores_3<-mutate(similarity_scores_3,source=as.character(source))
-similarity_scores_3<-mutate(similarity_scores_3,source=sapply(strsplit(similarity_scores_3$source, split='.', fixed=TRUE),function(x) (x[1])))
-similarity_scores_3$target <- ifelse(similarity_scores_3$target %in% c('Prijatel', 'Martin_emily'), c('Prijatel_Karen',"Martin_Emily"), similarity_scores_3$target)
-similarity_scores_3$source <- ifelse(similarity_scores_3$source %in% c('Prijatel', 'Martin_emily'), c('Prijatel_Karen',"Martin_Emily"), similarity_scores_3$source)
-
-similarity_scores_3 = similarity_scores_3[,-5]
-
-similarity_scores_3 = similarity_scores_3 %>% rename(.,Names = target)
-
-similarity_scores_pheno = left_join(similarity_scores_3, cf_phenotype_data,by = "Names")
-
-similarity_scores_pheno = similarity_scores_pheno %>% 
-  rename(., target = Names) %>%
-  rename(., Names = source)
-
-similarity_scores_pheno = left_join(similarity_scores_pheno, cf_phenotype_data,by = "Names")
-
-similarity_scores_pheno = similarity_scores_pheno %>% 
-  rename(., source = Names)
-
-similarity_scores_pheno<-similarity_scores_pheno[!(similarity_scores_pheno$target=="Parks_Katie copy"),]
-similarity_scores_pheno = left_join(similarity_scores_pheno, phenotype_data,by = "Names")
-similarity_scores_pheno<-distinct(similarity_scores_pheno)
-
-similarity_scores_pheno<-similarity_scores_pheno[-c(6482:6485),]
-similarity_scores_pheno_aldi <- bind_rows(similarity_scores_pheno,rd_0)
-library("plyr")
-similarity_scores_pheno_aldi <- transform(similarity_scores_pheno_aldi,
-                status=revalue(status,c("positive_ctrl"="pos_ctrl")))
-
-#begin here for density plots
-
-similarity_scores_pheno_aldi_sex<-similarity_scores_pheno_aldi[!(similarity_scores_pheno_aldi$Sex.x=="M" & similarity_scores_pheno_aldi$Sex.y=="F"),]
-similarity_scores_pheno_aldi_sex<-similarity_scores_pheno_aldi_sex[!(similarity_scores_pheno_aldi_sex$Sex.x=="F" & similarity_scores_pheno_aldi_sex$Sex.y=="M"),]
-similarity_scores_pheno_aldi_sex_female<-similarity_scores_pheno_aldi_sex[!(similarity_scores_pheno_aldi_sex$Sex.x=="M"),]
-similarity_scores_pheno_aldi_sex_male<-similarity_scores_pheno_aldi_sex[!(similarity_scores_pheno_aldi_sex$Sex.x=="F"),]
-
-similarity_scores_pheno_aldi_sex_ethnicity<-similarity_scores_pheno_aldi_sex[!(similarity_scores_pheno_aldi_sex$Ethnicity.x=="caucasian" & similarity_scores_pheno_aldi_sex$Ethnicity.y=="hispanic"),]
-similarity_scores_pheno_aldi_sex_ethnicity<-similarity_scores_pheno_aldi_sex_ethnicity[!(similarity_scores_pheno_aldi_sex_ethnicity$Ethnicity.x=="hispanic" & similarity_scores_pheno_aldi_sex_ethnicity$Ethnicity.y=="caucasian"),]
-similarity_scores_pheno_aldi_sex_ethnicity<-similarity_scores_pheno_aldi_sex_ethnicity[!(similarity_scores_pheno_aldi_sex_ethnicity$Ethnicity.x=="caucasian" & similarity_scores_pheno_aldi_sex_ethnicity$Ethnicity.y=="black"),]
-similarity_scores_pheno_aldi_sex_ethnicity<-similarity_scores_pheno_aldi_sex_ethnicity[!(similarity_scores_pheno_aldi_sex_ethnicity$Ethnicity.x=="black" & similarity_scores_pheno_aldi_sex_ethnicity$Ethnicity.y=="caucasian"),]
-similarity_scores_pheno_aldi_sex_ethnicity<-similarity_scores_pheno_aldi_sex_ethnicity[!(similarity_scores_pheno_aldi_sex_ethnicity$Ethnicity.x=="caucasian" & similarity_scores_pheno_aldi_sex_ethnicity$Ethnicity.y=="asian"),]
-similarity_scores_pheno_aldi_sex_ethnicity<-similarity_scores_pheno_aldi_sex_ethnicity[!(similarity_scores_pheno_aldi_sex_ethnicity$Ethnicity.x=="asian" & similarity_scores_pheno_aldi_sex_ethnicity$Ethnicity.y=="caucasian"),]
-similarity_scores_pheno_aldi_sex_ethnicity<-similarity_scores_pheno_aldi_sex_ethnicity[!(similarity_scores_pheno_aldi_sex_ethnicity$Ethnicity.x=="black" & similarity_scores_pheno_aldi_sex_ethnicity$Ethnicity.y=="asian"),]
-similarity_scores_pheno_aldi_sex_ethnicity<-similarity_scores_pheno_aldi_sex_ethnicity[!(similarity_scores_pheno_aldi_sex_ethnicity$Ethnicity.x=="black" & similarity_scores_pheno_aldi_sex_ethnicity$Ethnicity.y=="hispanic"),]
-similarity_scores_pheno_aldi_sex_ethnicity<-similarity_scores_pheno_aldi_sex_ethnicity[!(similarity_scores_pheno_aldi_sex_ethnicity$Ethnicity.x=="asian" & similarity_scores_pheno_aldi_sex_ethnicity$Ethnicity.y=="black"),]
-similarity_scores_pheno_aldi_sex_ethnicity<-similarity_scores_pheno_aldi_sex_ethnicity[!(similarity_scores_pheno_aldi_sex_ethnicity$Ethnicity.x=="hispanic" & similarity_scores_pheno_aldi_sex_ethnicity$Ethnicity.y=="black"),]
-similarity_scores_pheno_aldi_sex_ethnicity<-similarity_scores_pheno_aldi_sex_ethnicity[!(similarity_scores_pheno_aldi_sex_ethnicity$Ethnicity.x=="hispanic" & similarity_scores_pheno_aldi_sex_ethnicity$Ethnicity.y=="asian"),]
-similarity_scores_pheno_aldi_sex_ethnicity<-similarity_scores_pheno_aldi_sex_ethnicity[!(similarity_scores_pheno_aldi_sex_ethnicity$Ethnicity.x=="asian" & similarity_scores_pheno_aldi_sex_ethnicity$Ethnicity.y=="hispanic"),]
-
-similarity_scores_pheno_aldi_sex_ethnicity_black<-similarity_scores_pheno_aldi_sex_ethnicity[!(similarity_scores_pheno_aldi_sex_ethnicity$Ethnicity.x=="caucasian" | similarity_scores_pheno_aldi_sex_ethnicity$Ethnicity.x=="hispanic" | similarity_scores_pheno_aldi_sex_ethnicity$Ethnicity.x=="asian"),]
-similarity_scores_pheno_aldi_sex_ethnicity_white<-similarity_scores_pheno_aldi_sex_ethnicity[!(similarity_scores_pheno_aldi_sex_ethnicity$Ethnicity.x=="black" | similarity_scores_pheno_aldi_sex_ethnicity$Ethnicity.x=="hispanic" | similarity_scores_pheno_aldi_sex_ethnicity$Ethnicity.x=="asian"),]
-
-
-similarity_scores_pheno_aldi_ethnicity<-similarity_scores_pheno_aldi[!(similarity_scores_pheno_aldi$Ethnicity.x=="caucasian" & similarity_scores_pheno_aldi$Ethnicity.y=="hispanic"),]
-similarity_scores_pheno_aldi_ethnicity<-similarity_scores_pheno_aldi_ethnicity[!(similarity_scores_pheno_aldi_ethnicity$Ethnicity.x=="hispanic" & similarity_scores_pheno_aldi_ethnicity$Ethnicity.y=="caucasian"),]
-similarity_scores_pheno_aldi_ethnicity<-similarity_scores_pheno_aldi_ethnicity[!(similarity_scores_pheno_aldi_ethnicity$Ethnicity.x=="caucasian" & similarity_scores_pheno_aldi_ethnicity$Ethnicity.y=="black"),]
-similarity_scores_pheno_aldi_ethnicity<-similarity_scores_pheno_aldi_ethnicity[!(similarity_scores_pheno_aldi_ethnicity$Ethnicity.x=="black" & similarity_scores_pheno_aldi_ethnicity$Ethnicity.y=="caucasian"),]
-similarity_scores_pheno_aldi_ethnicity<-similarity_scores_pheno_aldi_ethnicity[!(similarity_scores_pheno_aldi_ethnicity$Ethnicity.x=="caucasian" & similarity_scores_pheno_aldi_ethnicity$Ethnicity.y=="asian"),]
-similarity_scores_pheno_aldi_ethnicity<-similarity_scores_pheno_aldi_ethnicity[!(similarity_scores_pheno_aldi_ethnicity$Ethnicity.x=="asian" & similarity_scores_pheno_aldi_ethnicity$Ethnicity.y=="caucasian"),]
-similarity_scores_pheno_aldi_ethnicity<-similarity_scores_pheno_aldi_ethnicity[!(similarity_scores_pheno_aldi_ethnicity$Ethnicity.x=="black" & similarity_scores_pheno_aldi_ethnicity$Ethnicity.y=="asian"),]
-similarity_scores_pheno_aldi_ethnicity<-similarity_scores_pheno_aldi_ethnicity[!(similarity_scores_pheno_aldi_ethnicity$Ethnicity.x=="black" & similarity_scores_pheno_aldi_ethnicity$Ethnicity.y=="hispanic"),]
-similarity_scores_pheno_aldi_ethnicity<-similarity_scores_pheno_aldi_ethnicity[!(similarity_scores_pheno_aldi_ethnicity$Ethnicity.x=="asian" & similarity_scores_pheno_aldi_ethnicity$Ethnicity.y=="black"),]
-similarity_scores_pheno_aldi_ethnicity<-similarity_scores_pheno_aldi_ethnicity[!(similarity_scores_pheno_aldi_ethnicity$Ethnicity.x=="hispanic" & similarity_scores_pheno_aldi_ethnicity$Ethnicity.y=="black"),]
-similarity_scores_pheno_aldi_ethnicity<-similarity_scores_pheno_aldi_ethnicity[!(similarity_scores_pheno_aldi_ethnicity$Ethnicity.x=="hispanic" & similarity_scores_pheno_aldi_ethnicity$Ethnicity.y=="asian"),]
-similarity_scores_pheno_aldi_ethnicity<-similarity_scores_pheno_aldi_ethnicity[!(similarity_scores_pheno_aldi_ethnicity$Ethnicity.x=="asian" & similarity_scores_pheno_aldi_ethnicity$Ethnicity.y=="hispanic"),]
-
-similarity_scores_pheno_aldi_ethnicity_black<-similarity_scores_pheno_aldi_ethnicity[!(similarity_scores_pheno_aldi_ethnicity$Ethnicity.x=="asian" & similarity_scores_pheno_aldi_ethnicity$Ethnicity.y=="hispanic"),]
-similarity_scores_pheno_aldi_ethnicity_white<-similarity_scores_pheno_aldi_ethnicity[!(similarity_scores_pheno_aldi_ethnicity$Ethnicity.x=="asian" & similarity_scores_pheno_aldi_ethnicity$Ethnicity.y=="hispanic"),]
-
-similarity_scores_pheno_aldi_ethnicity_white_sex<-similarity_scores_pheno_aldi_ethnicity_white[!(similarity_scores_pheno_aldi_ethnicity_white$Sex.x=="M" & similarity_scores_pheno_aldi_ethnicity_white$Sex.y=="F"),]
-similarity_scores_pheno_aldi_ethnicity_white_sex<-similarity_scores_pheno_aldi_ethnicity_white_sex[!(similarity_scores_pheno_aldi_ethnicity_white_sex$Sex.x=="F" & similarity_scores_pheno_aldi_ethnicity_white_sex$Sex.y=="M"),]
-similarity_scores_pheno_aldi_ethnicity_white_sex_male<-similarity_scores_pheno_aldi_ethnicity_white_sex[!(similarity_scores_pheno_aldi_ethnicity_white_sex$Sex.x=="F"),]
-similarity_scores_pheno_aldi_ethnicity_white_sex_female<-similarity_scores_pheno_aldi_ethnicity_white_sex[!(similarity_scores_pheno_aldi_ethnicity_white_sex$Sex.x=="M"),]
-
-similarity_scores_pheno_aldi_ethnicity_black_sex<-similarity_scores_pheno_aldi_ethnicity_black[!(similarity_scores_pheno_aldi_ethnicity_white$Sex.x=="M" & similarity_scores_pheno_aldi_ethnicity_white$Sex.y=="F"),]
-similarity_scores_pheno_aldi_ethnicity_black_sex<-similarity_scores_pheno_aldi_ethnicity_black_sex[!(similarity_scores_pheno_aldi_ethnicity_white$Sex.x=="F" & similarity_scores_pheno_aldi_ethnicity_white$Sex.y=="M"),]
-similarity_scores_pheno_aldi_ethnicity_black_sex_male<-similarity_scores_pheno_aldi_ethnicity_black_sex[!(similarity_scores_pheno_aldi_ethnicity_white$Sex.x=="F"),]
-similarity_scores_pheno_aldi_ethnicity_black_sex_female<-similarity_scores_pheno_aldi_ethnicity_black_sex[!(similarity_scores_pheno_aldi_ethnicity_white$Sex.x=="M"),]
-
-similarity_scores_pheno_aldi_ethnicity_sex<-similarity_scores_pheno_aldi_ethnicity[!(similarity_scores_pheno_aldi_ethnicity$Sex.x=="M" & similarity_scores_pheno_aldi_ethnicity$Sex.y=="F"),]
-similarity_scores_pheno_aldi_ethnicity_sex<-similarity_scores_pheno_aldi_ethnicity_sex[!(similarity_scores_pheno_aldi_ethnicity_sex$Sex.x=="F" & similarity_scores_pheno_aldi_ethnicity_sex$Sex.y=="M"),]
-similarity_scores_pheno_aldi_ethnicity_sex_male<-similarity_scores_pheno_aldi_ethnicity_sex[!(similarity_scores_pheno_aldi_ethnicity_sex$Sex.x=="F"),]
-similarity_scores_pheno_aldi_ethnicity_sex_female<-similarity_scores_pheno_aldi_ethnicity_sex[!(similarity_scores_pheno_aldi_ethnicity_sex$Sex.x=="M"),]
-
-similarity_scores_pheno_aldi_ethnicity<-na.omit(similarity_scores_pheno_aldi_ethnicity)
-similarity_scores_pheno_aldi_ethnicity_black<-na.omit(similarity_scores_pheno_aldi_ethnicity_black)
-similarity_scores_pheno_aldi_ethnicity_white<-na.omit(similarity_scores_pheno_aldi_ethnicity_white)
-similarity_scores_pheno_aldi_ethnicity_sex<-na.omit(similarity_scores_pheno_aldi_ethnicity_sex)
-similarity_scores_pheno_aldi_sex_ethnicity<-na.omit(similarity_scores_pheno_aldi_sex_ethnicity)
-
-library(facetscales)
-library(ggplot2)
-library(cowplot)
-library(ggpubr)
-
-theme <- theme(plot.title = element_text(hjust = 1, size = 20), 
-               axis.title.x = element_text(size = 20),
-               axis.title.y = element_text(size = 20),  
-               axis.text.x= element_text(size = 10), 
-               axis.text.y= element_blank(), 
-               panel.grid.major = element_blank(), 
-               panel.grid.minor = element_blank(), 
-               legend.position = "none")
-
-scales_y <- list(
-  `co-twins` = scale_y_continuous(limits = c(0, 0.7), breaks = NULL),
-  `negative_ctrl` = scale_y_continuous(limits = c(0, 0.1), breaks = NULL),
-  `positive_ctrl` = scale_y_continuous(limits = c(0, 1500), breaks = NULL)
-)
-
-
-
-levels(similarity_scores_pheno$Compared)
-levels(similarity_scores_pheno$Compared) <- c("co-twins" ,   "negative_ctrl" ,  "pos_ctrl" ,  "neg_ctrl_*", "positive_ctrl")
-similarity_scores_pheno$Compared = factor(similarity_scores_pheno$status, levels=c('negative_ctrl','co-twins','positive_ctrl','neg_ctrl_*', 'pos_ctrl'))
-levels(similarity_scores_pheno$Compared)
-
-
-ggplot(subset(similarity_scores_pheno_aldi, status == 'negative_ctrl' |status == 'co-twins'| status == 'pos_ctrl'), 
-       aes(x=Similarity, color=status)) +
-  stat_density(aes(x=Similarity, y=..scaled..,color=status), position=position_dodge(width = .1), geom="line") +
-  scale_color_manual(values = c( "#615292", "#EA5454","#AEC960")) +
-  scale_x_continuous(expand = c(0, 0)) + scale_y_continuous(expand = c(0, 0)) +
-  scale_fill_discrete(name= "Similarity Scores",labels = c("cowtins",'negative control','positive control'))+
-  labs(title = "AWS-Rekognition controls", y = "Density",color = "Similarity Scores")+
-  expand_limits(x=102)+
-  theme_classic()+
-  theme(#legend.position=c(0.1,-0.1),
+        axis.text.y= element_text(size = 22),
         legend.position = "none",
-        plot.title = element_text(hjust = 0.5, size = 30), 
-        axis.title.x = element_text(size = 40),
-        axis.title.y = element_text(size = 40),  
-        axis.text.x= element_text(size = 15, angle = 0), 
-        axis.text.y= element_blank(), 
-        axis.line = element_line(colour = "black"),
-        panel.grid.major = element_blank(), 
-        panel.grid.minor = element_blank())
-#y = "Density"
+        legend.title=element_blank(), 
+        legend.text=element_text(size=20))#, 
+#legend.position = "none") 
 
+# age
+ggplot(arpdabs_tsne[,10:11]) + 
+  geom_point(aes(x=arpdabs_tsne[,10], y=arpdabs_tsne[,11], 
+                 color=arpdabs_tsne$Age, fill=arpdabs_tsne$Age), 
+             alpha = 0.8, size = 15, shape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                               21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                               21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                               21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                               24,24,24,24,24,25,25,25,25,25)) + 
+  theme_classic() +# alpha is the opacity 
+  #geom_text(aes(x=arpdabs_tsne[,10], y=arpdabs_tsne[,11], label=arpdabs_tsne[,3])) +
+  labs(title = "t-SNE of Delta of Ratio Distances", x="tSNE dim1", y="tSNE dim2", color=arpdabs_tsne$Age, fill=arpdabs_tsne$Age) + # labs = labels
+  scale_colour_gradientn(aesthetics = c("colour", "fill"), colors =rev(heat.colors(10))) + # this is to use a color scale rather then discrete colors ## heat.colors = palette
+  theme(plot.title = element_text(hjust = 0.5, size = 25), ## all these are just sixe of texts, position of title
+        axis.title.x = element_text(size = 25),
+        axis.title.y = element_text(size = 25),
+        axis.text.x= element_text(size = 22),
+        axis.text.y= element_text(size = 22), 
+        legend.title=element_blank(), 
+        legend.text=element_text(size=20))#, 
+#legend.position = "none") 
 
-ggplot(subset(similarity_scores_pheno_aldi_sex, status == 'negative_ctrl' |status == 'co-twins'| status == 'pos_ctrl'), 
-       aes(x=Similarity, color=status)) +
-  stat_density(aes(x=Similarity, y=..scaled..,color=status), position=position_dodge(width = .1), geom="line") +
-  scale_color_manual(values = c( "#615292", "#EA5454","#AEC960")) +
-  scale_x_continuous(expand = c(0, 0)) + scale_y_continuous(expand = c(0, 0)) +
-  scale_fill_discrete(name= "Similarity Scores",labels = c("cowtins",'negative control','positive control'))+
-  labs(title = "AWS-Rekognition controls", y = "Density",color = "Similarity Scores")+
-  expand_limits(x=102)+
-  theme_classic()+
-  theme(#legend.position=c(0.1,-0.1),
-    legend.position = "none",
-    plot.title = element_text(hjust = 0.5, size = 30), 
-    axis.title.x = element_text(size = 40),
-    axis.title.y = element_text(size = 40),  
-    axis.text.x= element_text(size = 15, angle = 0), 
-    axis.text.y= element_blank(), 
-    axis.line = element_line(colour = "black"),
-    panel.grid.major = element_blank(), 
-    panel.grid.minor = element_blank())
-
-ggplot(subset(similarity_scores_pheno_aldi_sex_male, status == 'negative_ctrl' |status == 'co-twins'| status == 'pos_ctrl'), 
-       aes(x=Similarity, color=status)) +
-  stat_density(aes(x=Similarity, y=..scaled..,color=status), position=position_dodge(width = .1), geom="line") +
-  scale_color_manual(values = c( "#615292", "#EA5454","#AEC960")) +
-  scale_x_continuous(expand = c(0, 0)) + scale_y_continuous(expand = c(0, 0)) +
-  scale_fill_discrete(name= "Similarity Scores",labels = c("cowtins",'negative control','positive control'))+
-  labs(title = "AWS-Rekognition controls", y = "Density",color = "Similarity Scores")+
-  expand_limits(x=102)+
-  theme_classic()+
-  theme(#legend.position=c(0.1,-0.1),
-    legend.position = "none",
-    plot.title = element_text(hjust = 0.5, size = 30), 
-    axis.title.x = element_text(size = 40),
-    axis.title.y = element_text(size = 40),  
-    axis.text.x= element_text(size = 15, angle = 0), 
-    axis.text.y= element_blank(), 
-    axis.line = element_line(colour = "black"),
-    panel.grid.major = element_blank(), 
-    panel.grid.minor = element_blank())
-
-ggplot(subset(similarity_scores_pheno_aldi_sex_female, status == 'negative_ctrl' |status == 'co-twins'| status == 'pos_ctrl'), 
-       aes(x=Similarity, color=status)) +
-  stat_density(aes(x=Similarity, y=..scaled..,color=status), position=position_dodge(width = .1), geom="line") +
-  scale_color_manual(values = c( "#615292", "#EA5454","#AEC960")) +
-  scale_x_continuous(expand = c(0, 0)) + scale_y_continuous(expand = c(0, 0)) +
-  scale_fill_discrete(name= "Similarity Scores",labels = c("cowtins",'negative control','positive control'))+
-  labs(title = "AWS-Rekognition controls", y = "Density",color = "Similarity Scores")+
-  expand_limits(x=102)+
-  theme_classic()+
-  theme(#legend.position=c(0.1,-0.1),
-    legend.position = "none",
-    plot.title = element_text(hjust = 0.5, size = 30), 
-    axis.title.x = element_text(size = 40),
-    axis.title.y = element_text(size = 40),  
-    axis.text.x= element_text(size = 15, angle = 0), 
-    axis.text.y= element_blank(), 
-    axis.line = element_line(colour = "black"),
-    panel.grid.major = element_blank(), 
-    panel.grid.minor = element_blank())
-
-ggplot(subset(similarity_scores_pheno_aldi_ethnicity, status == 'negative_ctrl' |status == 'co-twins'| status == 'pos_ctrl'), 
-       aes(x=Similarity, color=status)) +
-  stat_density(aes(x=Similarity, y=..scaled..,color=status), position=position_dodge(width = .1), geom="line") +
-  scale_color_manual(values = c( "#615292", "#EA5454","#AEC960")) +
-  scale_x_continuous(expand = c(0, 0)) + scale_y_continuous(expand = c(0, 0)) +
-  scale_fill_discrete(name= "Similarity Scores",labels = c("cowtins",'negative control','positive control'))+
-  labs(title = "AWS-Rekognition controls", y = "Density",color = "Similarity Scores")+
-  expand_limits(x=102)+
-  theme_classic()+
-  theme(#legend.position=c(0.1,-0.1),
-    legend.position = "none",
-    plot.title = element_text(hjust = 0.5, size = 30), 
-    axis.title.x = element_text(size = 40),
-    axis.title.y = element_text(size = 40),  
-    axis.text.x= element_text(size = 15, angle = 0), 
-    axis.text.y= element_blank(), 
-    axis.line = element_line(colour = "black"),
-    panel.grid.major = element_blank(), 
-    panel.grid.minor = element_blank())
-
-ggplot(subset(similarity_scores_pheno_aldi_ethnicity_sex, status == 'negative_ctrl' |status == 'co-twins'| status == 'pos_ctrl'), 
-       aes(x=Similarity, color=status)) +
-  stat_density(aes(x=Similarity, y=..scaled..,color=status), position=position_dodge(width = .1), geom="line") +
-  scale_color_manual(values = c( "#615292", "#EA5454","#AEC960")) +
-  scale_x_continuous(expand = c(0, 0)) + scale_y_continuous(expand = c(0, 0)) +
-  scale_fill_discrete(name= "Similarity Scores",labels = c("cowtins",'negative control','positive control'))+
-  labs(title = "AWS-Rekognition controls", y = "Density",color = "Similarity Scores")+
-  expand_limits(x=102)+
-  theme_classic()+
-  theme(#legend.position=c(0.1,-0.1),
-    legend.position = "none",
-    plot.title = element_text(hjust = 0.5, size = 30), 
-    axis.title.x = element_text(size = 40),
-    axis.title.y = element_text(size = 40),  
-    axis.text.x= element_text(size = 15, angle = 0), 
-    axis.text.y= element_blank(), 
-    axis.line = element_line(colour = "black"),
-    panel.grid.major = element_blank(), 
-    panel.grid.minor = element_blank())
-
-ggplot(subset(similarity_scores_pheno_aldi_ethnicity_white, status == 'negative_ctrl' |status == 'co-twins'| status == 'pos_ctrl'), 
-       aes(x=Similarity, color=status)) +
-  stat_density(aes(x=Similarity, y=..scaled..,color=status), position=position_dodge(width = .1), geom="line") +
-  scale_color_manual(values = c( "#615292", "#EA5454","#AEC960")) +
-  scale_x_continuous(expand = c(0, 0)) + scale_y_continuous(expand = c(0, 0)) +
-  scale_fill_discrete(name= "Similarity Scores",labels = c("cowtins",'negative control','positive control'))+
-  labs(title = "AWS-Rekognition controls", y = "Density",color = "Similarity Scores")+
-  expand_limits(x=102)+
-  theme_classic()+
-  theme(#legend.position=c(0.1,-0.1),
-    legend.position = "none",
-    plot.title = element_text(hjust = 0.5, size = 30), 
-    axis.title.x = element_text(size = 40),
-    axis.title.y = element_text(size = 40),  
-    axis.text.x= element_text(size = 15, angle = 0), 
-    axis.text.y= element_blank(), 
-    axis.line = element_line(colour = "black"),
-    panel.grid.major = element_blank(), 
-    panel.grid.minor = element_blank())
-
-ggplot(subset(similarity_scores_pheno_aldi_ethnicity_black, status == 'negative_ctrl' |status == 'co-twins'| status == 'pos_ctrl'), 
-       aes(x=Similarity, color=status)) +
-  stat_density(aes(x=Similarity, y=..scaled..,color=status), position=position_dodge(width = .1), geom="line") +
-  scale_color_manual(values = c( "#615292", "#EA5454","#AEC960")) +
-  scale_x_continuous(expand = c(0, 0)) + scale_y_continuous(expand = c(0, 0)) +
-  scale_fill_discrete(name= "Similarity Scores",labels = c("cowtins",'negative control','positive control'))+
-  labs(title = "AWS-Rekognition controls", y = "Density",color = "Similarity Scores")+
-  expand_limits(x=102)+
-  theme_classic()+
-  theme(#legend.position=c(0.1,-0.1),
-    legend.position = "none",
-    plot.title = element_text(hjust = 0.5, size = 30), 
-    axis.title.x = element_text(size = 40),
-    axis.title.y = element_text(size = 40),  
-    axis.text.x= element_text(size = 15, angle = 0), 
-    axis.text.y= element_blank(), 
-    axis.line = element_line(colour = "black"),
-    panel.grid.major = element_blank(), 
-    panel.grid.minor = element_blank())
+cluster.tsne.arpdabs.1.2 <- Mclust(arpdabs_tsne[,10:11], prior = priorControl())
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.tsne.arpdabs.1.2.BIC.pdf", w=6, h=4)
+plot(cluster.tsne.arpdabs.1.2, what = "BIC")
+dev.off()
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.tsne.arpdabs.1.2.density.pdf", w=4, h=4)
+plot(cluster.tsne.arpdabs.1.2, what = "density")
+dev.off()
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.tsne.arpdabs.1.2.plot.classification.pdf", w=4, h=4)
+plot(cluster.tsne.arpdabs.1.2, what = "classification")
+dev.off()
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.tsne.arpdabs.1.2.plot.uncertainty.pdf", w=4, h=4)
+plot(cluster.tsne.arpdabs.1.2, what = "uncertainty")
+dev.off()
 
 #######UMAP#######
 
 library(umap)
 
-scaled_adpd<-scale(all_dist_pheno_delta)
-umap_scaled_adpd<-umap(scaled_adpd)
-View(umap_scaled_adpd)
-
 library(M3C)
-
-pheno_data_paired = pheno_data[,c(3:9)]
-Co_twins_ID <- c('1','1','1','2','3','4','5','6','7','8','8','8','8','8','8','9','10','11','12','13','14','15','16','17','18','18','18','18',
-                 '18','18','19','20','21','22','23','23','23','24','24','24','24','24',
-                 '24','25','26','27','28','29','30','31','32','33','34','35','36','37','38',
-                 '39','40','41','42','43','44','45','46','47','48','49','50','51','52','53',
-                 '54',
-                 'pos1','pos2','pos3','pos4','pos5','neg1','neg2','neg3','neg4','neg5','55','56')
-
-rtc_df<-rownames_to_column(all_dist_pheno_fc)
-rowname<-rtc_df[,1]
-
-all_dist_pheno_fc <- data.frame(all_dist_pheno_fc)
-all_dist_pheno_fc <- cbind(Co_twins_ID, all_dist_pheno_fc)
-all_dist_pheno_fc <- left_join(all_dist_pheno_fc, pheno_data_paired,by = "Co_twins_ID")
-all_dist_pheno_fc <- distinct(all_dist_pheno_fc,ChinBottom_LeftPupil,.keep_all= TRUE)
-all_dist_pheno_fc <- cbind(pairwise_rownames,all_dist_pheno_fc)
-all_dist_pheno_fc <- column_to_rownames(all_dist_pheno_fc,var="pairwise_rownames")
-
-all_dist_pheno_delta<-data.frame(all_dist_pheno_delta)
-all_dist_pheno_delta<- cbind(Co_twins_ID, all_dist_pheno_delta)
-all_dist_pheno_delta<-left_join(all_dist_pheno_delta, pheno_data_paired,by = "Co_twins_ID")
-all_dist_pheno_delta <- distinct(all_dist_pheno_delta,ChinBottom_LeftPupil,.keep_all= TRUE)
-all_dist_pheno_delta <- cbind(pairwise_rownames,all_dist_pheno_delta)
-all_dist_pheno_delta <- column_to_rownames(all_dist_pheno_delta,var="pairwise_rownames")
-
-all_ratio_pheno_delta<-data.frame(all_ratio_pheno_delta)
-all_ratio_pheno_delta<- cbind(Co_twins_ID, all_ratio_pheno_delta)
-all_ratio_pheno_delta<-left_join(all_ratio_pheno_delta, pheno_data_paired,by = "Co_twins_ID")
-all_ratio_pheno_delta <- distinct(all_ratio_pheno_delta,ChinBottom_LeftPupil__ChinBottom_RightPupil,.keep_all= TRUE)
-all_ratio_pheno_delta <- cbind(pairwise_rownames,all_ratio_pheno_delta)
-all_ratio_pheno_delta <- column_to_rownames(all_ratio_pheno_delta,var="pairwise_rownames")
-
-all_ratio_pheno_fc<-data.frame(all_ratio_pheno_fc)
-all_ratio_pheno_fc<- cbind(Co_twins_ID, all_ratio_pheno_fc)
-all_ratio_pheno_fc<-left_join(all_ratio_pheno_fc, pheno_data_paired,by = "Co_twins_ID")
-all_ratio_pheno_fc <- distinct(all_ratio_pheno_fc,ChinBottom_LeftPupil__ChinBottom_RightPupil,.keep_all= TRUE)
-all_ratio_pheno_fc <- cbind(pairwise_rownames,all_ratio_pheno_fc)
-all_ratio_pheno_fc <- column_to_rownames(all_ratio_pheno_fc,var="pairwise_rownames")
-
-scaled_adpfc<-scale(all_dist_pheno_fc[,2:352])
-scaled_adpfc<-cbind(all_dist_pheno_fc[,c(1,353:358)],scaled_adpfc)
-umap(scaled_adpfc[,8:358],colvec=c('skyblue'))
-umap(t(scaled_adpfc[,8:358]),labels=as.factor(scaled_adpfc[,2]), text = as.character(scaled_adpfc[,1]),)
-
-scaled_adpd<-scale(all_dist_pheno_delta[,2:352])
-scaled_adpd<-cbind(all_dist_pheno_delta[,c(1,353:358)],scaled_adpd)
-umap(t(scaled_adpd[,8:358]),labels=as.factor(scaled_adpd[,2]), text = as.character(scaled_adpd[,1]))
-
-umap(t(all_ratio_pheno_delta[,2:61426]),labels=as.factor(all_ratio_pheno_delta[,61427]), text = as.character(all_ratio_pheno_delta[,1]))
-umap(t(all_ratio_pheno_fc[,2:61426]),labels=as.factor(all_ratio_pheno_fc[,61427]), text = as.character(all_ratio_pheno_delta[,1]))
-
-scaled_arpd<-scale(all_ratio_pheno_delta[,2:61426])
-scaled_arpd<-cbind(all_dist_pheno_delta[,c(1,353:358)],scaled_arpd)
-
-scaled_arpfc<-scale(all_ratio_pheno_fc[,2:61426])
-scaled_arpfc<-cbind(all_dist_pheno_delta[,c(1,353:358)],scaled_arpfc)
-
-umap(t(scaled_arpd[,8:61432]),labels=as.factor(scaled_arpd[,2]), text = as.character(scaled_arpd[,1]))
-umap(t(scaled_arpfc[,8:61432]),labels=as.factor(scaled_arpfc[,2]), text = as.character(scaled_arpfc[,1]))
-
 
 library(uwot)
 
@@ -2416,89 +3290,252 @@ t <- theme(plot.title = element_text(hjust = 0.5, size = 25),
            legend.title = element_text(size = 15), 
            legend.text = element_text(size = 15))
 
-umap_arpd <- umap(all_ratio_pheno_delta[,c(2:61426)])
-umap_arpd<-as.data.frame(umap_arpd)
-pdf("UMAP_arpd.pdf", w=10, h=8)
-ggplot(umap_arpd) + 
+# dist delta
+
+umap_adpd <- umap(all_dist_pheno_delta[,c(10:360)])
+umap_adpd<-as.data.frame(umap_adpd)
+
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-UMAP/schoeller_umap_dist_delta_controls_arranged.pdf", w=10, h=8)
+ggplot(umap_adpd) + 
   geom_point(aes(x=V1, y=V2, 
                  color=c("none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
                          "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
                          "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
                          "none","none","none","none","none","none","none","none","none","none","none","none","none",
                          "#FF0000","#FF0000","#FF0000","#FF0000","#FF0000",
-                         "#668d3c","#668d3c","#668d3c","#668d3c","#668d3c","none","none"),
+                         "#668d3c","#668d3c","#668d3c","#668d3c","#668d3c"),
                  fill=c("none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
                         "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
                         "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
                         "none","none","none","none","none","none","none","none","none","none","none","none","none",
                         "#FF0000","#FF0000","#FF0000","#FF0000","#FF0000",
-                        "#668d3c","#668d3c","#668d3c","#668d3c","#668d3c","none","none")),
-             alpha = 0.8, size = 20, shape= c(21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                        "#668d3c","#668d3c","#668d3c","#668d3c","#668d3c")),
+             alpha = 0.8, size = 15, shape= c(21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
                                               21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
                                               21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
                                               21,21,21,21,21,21,21,21,21,21,21,21,21,
                                               24,24,24,24,24,
-                                              22,22,22,22,22,23,23)) + 
-  geom_text(aes(x=V1, y=V2, label=all_ratio_pheno_delta$Co_twins_ID), size = 3) +
+                                              25,25,25,25,25)) + 
+  geom_text(aes(x=V1, y=V2, label=all_dist_pheno_delta$Co_twins_ID), size = 3) +
   labs(title = "UMAP - individuals", x="UMAP x", y="UMAP y") + theme_classic() + t+
   scale_color_manual(values=c( "#EA5454", "#AEC960", "#615292"), guide=FALSE) +
   scale_fill_manual(values=c( "#EA5454", "#AEC960", "white"), guide=FALSE)
 dev.off()
 
-pdf("UMAP_arpd_noName.pdf", w=10, h=8)
-ggplot(umap_arpd) + 
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-UMAP/schoeller_umap_dist_delta_sex_arranged.pdf", w=10, h=8)
+ggplot(umap_adpd) + 
   geom_point(aes(x=V1, y=V2, 
-                            color=c("none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
-                                    "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
-                                    "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
-                                    "none","none","none","none","none","none","none","none","none","none","none","none","none",
-                                    "#FF0000","#FF0000","#FF0000","#FF0000","#FF0000",
-                                    "#668d3c","#668d3c","#668d3c","#668d3c","#668d3c","none","none"),
-                            fill=c("none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
-                                   "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
-                                   "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
-                                   "none","none","none","none","none","none","none","none","none","none","none","none","none",
-                                   "#FF0000","#FF0000","#FF0000","#FF0000","#FF0000",
-                                   "#668d3c","#668d3c","#668d3c","#668d3c","#668d3c","none","none")),
-                        alpha = 0.8, size = 20, shape= c(21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                                                         21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                                                         21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
-                                                         21,21,21,21,21,21,21,21,21,21,21,21,21,
-                                                         24,24,24,24,24,
-                                                         22,22,22,22,22,23,23)) + 
-  #geom_text(aes(x=V1, y=V2, label=dist_matrix_tot_scaled$Individual_ID), size = 3) +
-  labs(title = "UMAP - individuals", x="UMAP x", y="UMAP y") + theme_classic() +t+
+                 color=all_dist_pheno_delta$Sex_Diff,
+                 fill=all_dist_pheno_delta$Sex_Diff),
+             alpha = 0.8, size = 20, shape= c(21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                              21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                              21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                              21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                              24,24,24,24,24,
+                                              25,25,25,25,25)) + 
+  geom_text(aes(x=V1, y=V2, label=all_dist_pheno_delta$Co_twins_ID), size = 3) +
+  labs(title = "UMAP - individuals", x="UMAP x", y="UMAP y") + theme_classic() + t +
   scale_color_manual(values=c( "#EA5454", "#AEC960", "#615292"), guide=FALSE) +
   scale_fill_manual(values=c( "#EA5454", "#AEC960", "white"), guide=FALSE)
 dev.off()
 
-pdf("UMAP_arpd_noName_TWINS.pdf", w=10, h=8)
-ggplot(umap_arpd) + 
+
+
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-UMAP/schoeller_umap_dist_delta_age-gradient_arranged.pdf", w=10, h=8)
+ggplot(umap_adpd) + 
+  geom_point(aes(x=V1, y=V2, 
+                 color=all_dist_pheno_delta$Age,
+                 fill=all_dist_pheno_delta$Age),
+             alpha = 0.8, size = 20, shape= c(21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                              21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                              21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                              21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                              24,24,24,24,24,
+                                              25,25,25,25,25)) + 
+  geom_text(aes(x=V1, y=V2, label=all_dist_pheno_delta$Co_twins_ID), size = 3) +
+  labs(title = "UMAP - individuals", x="UMAP x", y="UMAP y") + theme_classic() + 
+  scale_colour_gradientn(aesthetics = c("colour", "fill"), colors =rev(heat.colors(10))) +
+  t + theme(legend.position = "none")
+dev.off()
+
+cluster.umap.adpd.1.2 <- Mclust(umap_adpd[,1:2], prior = priorControl())
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.umap.adpd.1.2.BIC.pdf", w=6, h=4)
+plot(cluster.umap.adpd.1.2, what = "BIC")
+dev.off()
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.umap.adpd.1.2.density.pdf", w=4, h=4)
+plot(cluster.umap.adpd.1.2, what = "density")
+dev.off()
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.umap.adpd.1.2.plot.classification.pdf", w=4, h=4)
+plot(cluster.umap.adpd.1.2, what = "classification")
+dev.off()
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.umap.adpd.1.2.plot.uncertainty.pdf", w=4, h=4)
+plot(cluster.umap.adpd.1.2, what = "uncertainty")
+dev.off()
+
+# dist absdelta
+
+umap_adpdabs <- umap(all_dist_pheno_absdelta[,c(10:360)])
+umap_adpdabs<-as.data.frame(umap_adpdabs)
+setwd("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-UMAP/")
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-UMAP/schoeller_umap_dist_absdelta_controls_arranged.pdf", w=10, h=8)
+ggplot(umap_adpdabs) + 
   geom_point(aes(x=V1, y=V2, 
                  color=c("none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
                          "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
                          "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
                          "none","none","none","none","none","none","none","none","none","none","none","none","none",
                          "#FF0000","#FF0000","#FF0000","#FF0000","#FF0000",
-                         "#668d3c","#668d3c","#668d3c","#668d3c","#668d3c","none","none"),
+                         "#668d3c","#668d3c","#668d3c","#668d3c","#668d3c"),
                  fill=c("none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
                         "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
                         "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
                         "none","none","none","none","none","none","none","none","none","none","none","none","none",
                         "#FF0000","#FF0000","#FF0000","#FF0000","#FF0000",
-                        "#668d3c","#668d3c","#668d3c","#668d3c","#668d3c","none","none")),
+                        "#668d3c","#668d3c","#668d3c","#668d3c","#668d3c")),
+             alpha = 0.8, size = 15, shape= c(21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                              21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                              21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                              21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                              24,24,24,24,24,
+                                              25,25,25,25,25)) + 
+  geom_text(aes(x=V1, y=V2, label=all_dist_pheno_absdelta$Co_twins_ID), size = 3) +
+  labs(title = "UMAP - individuals", x="UMAP x", y="UMAP y") + theme_classic() + t+
+  scale_color_manual(values=c( "#EA5454", "#AEC960", "#615292"), guide=FALSE) +
+  scale_fill_manual(values=c( "#EA5454", "#AEC960", "white"), guide=FALSE)
+dev.off()
+
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-UMAP/schoeller_umap_dist_absdelta_sex_arranged.pdf", w=10, h=8)
+ggplot(umap_adpdabs) + 
+  geom_point(aes(x=V1, y=V2, 
+                 color=all_dist_pheno_absdelta$Sex_Diff,
+                 fill=all_dist_pheno_absdelta$Sex_Diff),
+             alpha = 0.8, size = 15, shape= c(21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                              21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                              21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                              21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                              24,24,24,24,24,
+                                              25,25,25,25,25)) + 
+  geom_text(aes(x=V1, y=V2, label=all_dist_pheno_absdelta$Co_twins_ID), size = 3) +
+  labs(title = "UMAP - individuals", x="UMAP x", y="UMAP y") + theme_classic() + t +
+  scale_color_manual(values=c( "#EA5454", "#AEC960", "#615292"), guide=FALSE) +
+  scale_fill_manual(values=c( "#EA5454", "#AEC960", "white"), guide=FALSE)
+dev.off()
+
+
+
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-UMAP/schoeller_umap_dist_absdelta_age-gradient_arranged.pdf", w=10, h=8)
+ggplot(umap_adpdabs) + 
+  geom_point(aes(x=V1, y=V2, 
+                 color=all_dist_pheno_absdelta$Age,
+                 fill=all_dist_pheno_absdelta$Age),
+             alpha = 0.8, size = 15, shape= c(21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                              21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                              21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                              21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                              24,24,24,24,24,
+                                              25,25,25,25,25)) + 
+  geom_text(aes(x=V1, y=V2, label=all_dist_pheno_absdelta$Co_twins_ID), size = 3) +
+  labs(title = "UMAP - individuals", x="UMAP x", y="UMAP y") + theme_classic() + 
+  scale_colour_gradientn(aesthetics = c("colour", "fill"), colors =rev(heat.colors(10))) +
+  t + theme(legend.position = "none")
+dev.off()
+
+cluster.umap.adpdabs.1.2 <- Mclust(umap_adpdabs[,1:2], prior = priorControl())
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.umap.adpdabs.1.2.BIC.pdf", w=6, h=4)
+plot(cluster.umap.adpdabs.1.2, what = "BIC")
+dev.off()
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.umap.adpdabs.1.2.density.pdf", w=4, h=4)
+plot(cluster.umap.adpdabs.1.2, what = "density")
+dev.off()
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.umap.adpdabs.1.2.plot.classification.pdf", w=4, h=4)
+plot(cluster.umap.adpdabs.1.2, what = "classification")
+dev.off()
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.umap.adpdabs.1.2.plot.uncertainty.pdf", w=4, h=4)
+plot(cluster.umap.adpdabs.1.2, what = "uncertainty")
+dev.off()
+
+# dist fc
+umap_adpfc <- umap(all_dist_pheno_fc[,c(10:360)])
+umap_adpfc<-as.data.frame(umap_adpfc)
+
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-UMAP/schoeller_umap_dist_fc_controls_arranged.pdf", w=10, h=8)
+ggplot(umap_adpfc) + 
+  geom_point(aes(x=V1, y=V2, 
+                 color=c("none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                         "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                         "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                         "none","none","none","none","none","none","none","none","none","none","none","none","none",
+                         "#FF0000","#FF0000","#FF0000","#FF0000","#FF0000",
+                         "#668d3c","#668d3c","#668d3c","#668d3c","#668d3c"),
+                 fill=c("none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                        "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                        "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                        "none","none","none","none","none","none","none","none","none","none","none","none","none",
+                        "#FF0000","#FF0000","#FF0000","#FF0000","#FF0000",
+                        "#668d3c","#668d3c","#668d3c","#668d3c","#668d3c")),
+             alpha = 0.8, size = 15, shape= c(21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                              21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                              21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                              21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                              24,24,24,24,24,
+                                              25,25,25,25,25)) + 
+  geom_text(aes(x=V1, y=V2, label=all_dist_pheno_fc$Co_twins_ID), size = 3) +
+  labs(title = "UMAP - individuals", x="UMAP x", y="UMAP y") + theme_classic() + t+
+  scale_color_manual(values=c( "#EA5454", "#AEC960", "#615292"), guide=FALSE) +
+  scale_fill_manual(values=c( "#EA5454", "#AEC960", "white"), guide=FALSE)
+dev.off()
+
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-UMAP/schoeller_umap_dist_fc_sex_arranged.pdf", w=10, h=8)
+ggplot(umap_adpfc) + 
+  geom_point(aes(x=V1, y=V2, 
+                 color=all_dist_pheno_fc$Sex_Diff,
+                 fill=all_dist_pheno_fc$Sex_Diff),
              alpha = 0.8, size = 20, shape= c(21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
                                               21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
                                               21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
                                               21,21,21,21,21,21,21,21,21,21,21,21,21,
                                               24,24,24,24,24,
-                                              22,22,22,22,22,23,23)) + 
-  #geom_text(aes(x=V1, y=V2, label=dist_matrix_tot_scaled$Individual_ID), size = 3) +
-  labs(title = "UMAP - individuals", x="UMAP x", y="UMAP y") + theme_classic() +t+
-  scale_color_manual(values=c("#0727f5","#76EEC6" ,"#FF0000", "#FF7F24" , "#615292", "#AEC960", "#EE1289", "#615292"), guide=FALSE) +
-  scale_fill_manual(values=c("#0727f5","#76EEC6","#FF0000" , "#FF7F24" ,"#615292", "#AEC960", "#EE1289","white"), guide=FALSE)
+                                              25,25,25,25,25)) + 
+  geom_text(aes(x=V1, y=V2, label=all_dist_pheno_fc$Co_twins_ID), size = 3) +
+  labs(title = "UMAP - individuals", x="UMAP x", y="UMAP y") + theme_classic() + t +
+  scale_color_manual(values=c( "#EA5454", "#AEC960", "#615292"), guide=FALSE) +
+  scale_fill_manual(values=c( "#EA5454", "#AEC960", "white"), guide=FALSE)
 dev.off()
 
+
+
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-UMAP/schoeller_umap_dist_fc_age-gradient_arranged.pdf", w=10, h=8)
+ggplot(umap_adpfc) + 
+  geom_point(aes(x=V1, y=V2, 
+                 color=all_dist_pheno_fc$Age,
+                 fill=all_dist_pheno_fc$Age),
+             alpha = 0.8, size = 20, shape= c(21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                              21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                              21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                              21,21,21,21,21,21,21,21,21,21,21,21,21,
+                                              24,24,24,24,24,
+                                              25,25,25,25,25)) + 
+  geom_text(aes(x=V1, y=V2, label=all_dist_pheno_fc$Co_twins_ID), size = 3) +
+  labs(title = "UMAP - individuals", x="UMAP x", y="UMAP y") + theme_classic() + 
+  scale_colour_gradientn(aesthetics = c("colour", "fill"), colors =rev(heat.colors(10))) +
+  t + theme(legend.position = "none")
+dev.off()
+
+cluster.umap.adpfc.1.2 <- Mclust(umap_adpfc[,1:2], prior = priorControl())
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.umap.adpfc.1.22.BIC.pdf", w=6, h=4)
+plot(cluster.umap.adpfc.1.2, what = "BIC")
+dev.off()
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.umap.adpfc.1.2.density.pdf", w=4, h=4)
+plot(cluster.umap.adpfc.1.2, what = "density")
+dev.off()
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.umap.adpfc.1.2.plot.classification.pdf", w=4, h=4)
+plot(cluster.umap.adpfc.1.2, what = "classification")
+dev.off()
+pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.umap.adpfc.1.2.plot.uncertainty.pdf", w=4, h=4)
+plot(cluster.umap.adpfc.1.2, what = "uncertainty")
+dev.off()
+
+#for umap plots of ratio dfs, go to lab server and use node 
 
 goodnames=colnames(dist_matrix_tot_scaled)[4:8]
 plot_list = list()
