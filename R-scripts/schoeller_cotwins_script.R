@@ -964,14 +964,15 @@ library(ggpmisc)
 
 scaled_all_dist_pheno_fc<-scale(all_dist_pheno_fc[,8:358])
 scaled_all_dist_pheno_fc<-cbind(all_dist_pheno_fc[c(1:7)],scaled_all_dist_pheno_fc)
-res.pca <- prcomp(scaled_all_dist_pheno_fc[8:358])
+res.pca <- prcomp(scaled_all_dist_pheno_fc[,8:358], scale. = TRUE)
+res.pca <- FactoMineR::PCA(scaled_all_dist_pheno_fc[,8:358], scale. = TRUE)
 
 #ggfortify
 
 library(ggfortify)
 
-autoplot(res.pca, data = all_dist_pheno_fc, colour = 'Sex', loadings = TRUE, loadings.colour = 'blue',
-         loadings.label = TRUE, loadings.label.size = 3)
+autoplot(res.pca, data = all_dist_pheno_fc, colour = 'Sex', loadings = F, loadings.colour = 'blue',
+         loadings.label = F, loadings.label.size = 3)
 
 
 
@@ -984,18 +985,17 @@ fviz_pca_ind(res.pca, pointsize = 10, axes = c(1, 2), repel = TRUE, geom = "text
                             21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
                             21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
                             24,24,24,24,24,25,25,25,25,25),
-             col.ind = "black", fill.ind = c("none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+             col.ind = "black", 
+             fill.ind = c("none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
                                              "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
                                              "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
                                              "none","none","none","none","none","none","none","none","none","none","none","none","none",
                                              "#FF0000","#FF0000","#FF0000","#FF0000","#FF0000","#668d3c","#668d3c","#668d3c","#668d3c","#668d3c"), 
              alpha.ind = 0.4 , 
              palette = c(), 
-             #legend.title = "Age" ) #+ theme(legend.position = "none") 
-             title = "PCA of FC of Feature Distance") + 
-  theme(legend.position = "none") 
-  #stat_dens2d_filter(geom = "text_repel", keep.fraction = 0.1)
-  #geom_text_repel(aes(label = scaled_all_dist_pheno_fc$Co_twins_ID)) +
+             title = "PCA of FC of Feature Distance") +
+  theme(legend.position = "none",
+        plot.title = element_text(size=30)) #+ geom_text(aes(label = scaled_all_dist_pheno_fc$Co_twins_ID))
 
 #sex
 groups <- as.factor(scaled_all_dist_pheno_fc$Sex) # group by Sex
@@ -1007,16 +1007,22 @@ fviz_pca_ind(res.pca, pointsize = 10, axes = c(1, 2), repel = T,
                             21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
                             21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
                             24,24,24,24,24,25,25,25,25,25),
-             col.ind = groups, fill.ind = groups, 
+             col.ind = groups, fill.ind = groups,
+             #addEllipses = TRUE,
              alpha.ind = 0.4 , 
              #habillage = groups,# color by groups
              palette = c(), 
              legend.title = "Sex", #theme(legend.position = "none") + 
-             title = "PCA of FC of Feature Distance") 
+             title = "PCA of FC of Feature Distance") +
+  theme(plot.title = element_text(size=30))
   #theme(legend.position = "none") +   
   #geom_text(aes(label = scaled_all_dist_pheno_fc$Co_twins_ID)) 
 
 #age
+
+all_dist_pheno_fc_age <- all_dist_pheno_fc %>%
+  mutate(FortyPlus = ifelse(Age > 40, 1, 0)) 
+
 fviz_pca_ind(res.pca, pointsize = 10, 
              axes = c(1, 2), repel = F, 
              geom.ind = "point", 
@@ -1026,8 +1032,31 @@ fviz_pca_ind(res.pca, pointsize = 10,
                             21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
                             21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,22,22,22,
                             24,24,24,24,24,25,25,25,25,25),
-             col.ind = scaled_all_dist_pheno_fc$Age, 
-             fill.ind = scaled_all_dist_pheno_fc$Age,
+             #col.ind = as.character(all_dist_pheno_fc_age$FortyPlus), 
+             fill.ind = as.character(all_dist_pheno_fc_age$FortyPlus),
+             #gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+             alpha.ind = 0.4 , 
+             #habillage = groups,# color by groups
+             #palette = c(), 
+             #legend.title = "Age" ) #+ theme(legend.position = "none")
+             title = "PCA of FC of Feature Distance") +
+  #scale_fill_gradientn(colours = heat.colors(5))+
+  #theme_classic()+
+  #scale_fill_discrete(name= "",labels = c("cowtins",'negative control','positive control'))+
+  theme(plot.title = element_text(size=30),
+        legend.position = "none") 
+
+fviz_pca_ind(res.pca, pointsize = 10, 
+             axes = c(1, 2), repel = F, 
+             geom.ind = "point", 
+             mean.point = F, 
+             pointshape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            24,24,24,24,24,25,25,25,25,25),
+             #col.ind = all_dist_pheno_fc$Age, 
+             fill.ind = all_dist_pheno_fc$Age,
              #gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
              alpha.ind = 0.4 , 
              #habillage = groups,# color by groups
@@ -1035,8 +1064,16 @@ fviz_pca_ind(res.pca, pointsize = 10,
              #legend.title = "Age" ) #+ theme(legend.position = "none")
              title = "PCA of FC of Feature Distance") +
   scale_fill_gradientn(colours = heat.colors(5))+
-  #theme_classic()+
-  theme(legend.position = "none")
+  theme_classic() +
+  labs(title = "PCA of FC of Feature Distance", fill = "Age") +
+  theme(plot.title = element_text(size=30)) 
+  #theme(legend.position = "none")
+
+fviz_screeplot(res.pca, addlabels = TRUE, ylim = c(0, 50))
+
+fviz_eig(res.pca, choice = c("variance"), geom = c("bar"))
+
+fviz_eig(res.pca, choice = c("eigenvalue"), geom = c("bar"))
 
 fviz_contrib(res.pca, choice = "var", axes = 1, top = 30)  +
   theme(axis.text.x = element_text(angle=90))
@@ -2015,324 +2052,6 @@ ggplot(all_ratio_pheno_fc_nops_tsne_female[,8:9]) +
         legend.text=element_text(size=20))#, 
 #legend.position = "none") 
 
-#####Density#####
-
-# skip until next hashtag comment
-obama<-read.csv(file = "Obama_cf.csv", header = T, stringsAsFactors = FALSE)
-andrew<-read.csv(file = "Andrew_cf.csv", header = T, stringsAsFactors = FALSE)
-
-andrew<-slice(andrew, 1)
-obama<-slice(obama, 2)
-andrew_obama<-rbind(andrew, obama)
-andrew_obama[2,c(2,3)]<-c("Barack_2","Barack_1")
-andrew_obama = andrew_obama %>% rename(.,status = X)
-andrew_obama = andrew_obama %>% rename(.,Names = target)
-andrew_obama = left_join(andrew_obama, pheno_data,by = "Names")
-andrew_obama = andrew_obama %>% 
-  rename(., target = Names) %>%
-  rename(., Names = source)
-andrew_obama = left_join(andrew_obama, pheno_data,by = "Names")
-andrew_obama = andrew_obama %>% 
-  rename(., source = Names)
-andrew_obama$status<-c("negative_ctrl","negative_ctrl")
-similarity_scores_pheno_aldi<-rbind(andrew_obama,similarity_scores_pheno_aldi)
-
-rd_0 <- read.csv(file = 'pos_ctrl_all_cf.csv', header = TRUE, stringsAsFactors = FALSE)
-
-status <- c("positive_ctrl","positive_ctrl","positive_ctrl",'positive_ctrl',"positive_ctrl")
-
-rd_0 = rd_0 %>% rename(.,status = X)
-rd_0 = rd_0 %>% rename(.,Names = target)
-rd_0 = left_join(rd_0, cf_phenotype_data,by = "Names")
-rd_0 = rd_0 %>% 
-  rename(., target = Names) %>%
-  rename(., Names = source)
-rd_0 = left_join(rd_0, cf_phenotype_data,by = "Names")
-rd_0 = rd_0 %>% 
-  rename(., source = Names)
-
-similarity_scores_3<-mutate(similarity_scores,target=as.character(target))
-similarity_scores_3<-mutate(similarity_scores_3,target=sapply(strsplit(similarity_scores_3$target, split='.', fixed=TRUE),function(x) (x[1])))
-similarity_scores_3<-mutate(similarity_scores_3,source=as.character(source))
-similarity_scores_3<-mutate(similarity_scores_3,source=sapply(strsplit(similarity_scores_3$source, split='.', fixed=TRUE),function(x) (x[1])))
-similarity_scores_3$target <- ifelse(similarity_scores_3$target %in% c('Prijatel', 'Martin_emily'), c('Prijatel_Karen',"Martin_Emily"), similarity_scores_3$target)
-similarity_scores_3$source <- ifelse(similarity_scores_3$source %in% c('Prijatel', 'Martin_emily'), c('Prijatel_Karen',"Martin_Emily"), similarity_scores_3$source)
-
-similarity_scores_3 = similarity_scores_3[,-5]
-
-similarity_scores_3 = similarity_scores_3 %>% rename(.,Names = target)
-
-similarity_scores_pheno = left_join(similarity_scores_3, cf_phenotype_data,by = "Names")
-
-similarity_scores_pheno = similarity_scores_pheno %>% 
-  rename(., target = Names) %>%
-  rename(., Names = source)
-
-similarity_scores_pheno = left_join(similarity_scores_pheno, cf_phenotype_data,by = "Names")
-
-similarity_scores_pheno = similarity_scores_pheno %>% 
-  rename(., source = Names)
-
-similarity_scores_pheno<-similarity_scores_pheno[!(similarity_scores_pheno$target=="Parks_Katie copy"),]
-similarity_scores_pheno = left_join(similarity_scores_pheno, phenotype_data,by = "Names")
-similarity_scores_pheno<-distinct(similarity_scores_pheno)
-
-similarity_scores_pheno<-similarity_scores_pheno[-c(6482:6485),]
-similarity_scores_pheno_aldi <- bind_rows(similarity_scores_pheno,rd_0)
-library("plyr")
-similarity_scores_pheno_aldi <- transform(similarity_scores_pheno_aldi,
-                status=revalue(status,c("positive_ctrl"="pos_ctrl")))
-
-#begin here for density plots
-
-similarity_scores_pheno_aldi_sex<-similarity_scores_pheno_aldi[!(similarity_scores_pheno_aldi$Sex.x=="M" & similarity_scores_pheno_aldi$Sex.y=="F"),]
-similarity_scores_pheno_aldi_sex<-similarity_scores_pheno_aldi_sex[!(similarity_scores_pheno_aldi_sex$Sex.x=="F" & similarity_scores_pheno_aldi_sex$Sex.y=="M"),]
-similarity_scores_pheno_aldi_sex_female<-similarity_scores_pheno_aldi_sex[!(similarity_scores_pheno_aldi_sex$Sex.x=="M"),]
-similarity_scores_pheno_aldi_sex_male<-similarity_scores_pheno_aldi_sex[!(similarity_scores_pheno_aldi_sex$Sex.x=="F"),]
-
-similarity_scores_pheno_aldi_sex_ethnicity<-similarity_scores_pheno_aldi_sex[!(similarity_scores_pheno_aldi_sex$Ethnicity.x=="caucasian" & similarity_scores_pheno_aldi_sex$Ethnicity.y=="hispanic"),]
-similarity_scores_pheno_aldi_sex_ethnicity<-similarity_scores_pheno_aldi_sex_ethnicity[!(similarity_scores_pheno_aldi_sex_ethnicity$Ethnicity.x=="hispanic" & similarity_scores_pheno_aldi_sex_ethnicity$Ethnicity.y=="caucasian"),]
-similarity_scores_pheno_aldi_sex_ethnicity<-similarity_scores_pheno_aldi_sex_ethnicity[!(similarity_scores_pheno_aldi_sex_ethnicity$Ethnicity.x=="caucasian" & similarity_scores_pheno_aldi_sex_ethnicity$Ethnicity.y=="black"),]
-similarity_scores_pheno_aldi_sex_ethnicity<-similarity_scores_pheno_aldi_sex_ethnicity[!(similarity_scores_pheno_aldi_sex_ethnicity$Ethnicity.x=="black" & similarity_scores_pheno_aldi_sex_ethnicity$Ethnicity.y=="caucasian"),]
-similarity_scores_pheno_aldi_sex_ethnicity<-similarity_scores_pheno_aldi_sex_ethnicity[!(similarity_scores_pheno_aldi_sex_ethnicity$Ethnicity.x=="caucasian" & similarity_scores_pheno_aldi_sex_ethnicity$Ethnicity.y=="asian"),]
-similarity_scores_pheno_aldi_sex_ethnicity<-similarity_scores_pheno_aldi_sex_ethnicity[!(similarity_scores_pheno_aldi_sex_ethnicity$Ethnicity.x=="asian" & similarity_scores_pheno_aldi_sex_ethnicity$Ethnicity.y=="caucasian"),]
-similarity_scores_pheno_aldi_sex_ethnicity<-similarity_scores_pheno_aldi_sex_ethnicity[!(similarity_scores_pheno_aldi_sex_ethnicity$Ethnicity.x=="black" & similarity_scores_pheno_aldi_sex_ethnicity$Ethnicity.y=="asian"),]
-similarity_scores_pheno_aldi_sex_ethnicity<-similarity_scores_pheno_aldi_sex_ethnicity[!(similarity_scores_pheno_aldi_sex_ethnicity$Ethnicity.x=="black" & similarity_scores_pheno_aldi_sex_ethnicity$Ethnicity.y=="hispanic"),]
-similarity_scores_pheno_aldi_sex_ethnicity<-similarity_scores_pheno_aldi_sex_ethnicity[!(similarity_scores_pheno_aldi_sex_ethnicity$Ethnicity.x=="asian" & similarity_scores_pheno_aldi_sex_ethnicity$Ethnicity.y=="black"),]
-similarity_scores_pheno_aldi_sex_ethnicity<-similarity_scores_pheno_aldi_sex_ethnicity[!(similarity_scores_pheno_aldi_sex_ethnicity$Ethnicity.x=="hispanic" & similarity_scores_pheno_aldi_sex_ethnicity$Ethnicity.y=="black"),]
-similarity_scores_pheno_aldi_sex_ethnicity<-similarity_scores_pheno_aldi_sex_ethnicity[!(similarity_scores_pheno_aldi_sex_ethnicity$Ethnicity.x=="hispanic" & similarity_scores_pheno_aldi_sex_ethnicity$Ethnicity.y=="asian"),]
-similarity_scores_pheno_aldi_sex_ethnicity<-similarity_scores_pheno_aldi_sex_ethnicity[!(similarity_scores_pheno_aldi_sex_ethnicity$Ethnicity.x=="asian" & similarity_scores_pheno_aldi_sex_ethnicity$Ethnicity.y=="hispanic"),]
-
-similarity_scores_pheno_aldi_sex_ethnicity_black<-similarity_scores_pheno_aldi_sex_ethnicity[!(similarity_scores_pheno_aldi_sex_ethnicity$Ethnicity.x=="caucasian" | similarity_scores_pheno_aldi_sex_ethnicity$Ethnicity.x=="hispanic" | similarity_scores_pheno_aldi_sex_ethnicity$Ethnicity.x=="asian"),]
-similarity_scores_pheno_aldi_sex_ethnicity_white<-similarity_scores_pheno_aldi_sex_ethnicity[!(similarity_scores_pheno_aldi_sex_ethnicity$Ethnicity.x=="black" | similarity_scores_pheno_aldi_sex_ethnicity$Ethnicity.x=="hispanic" | similarity_scores_pheno_aldi_sex_ethnicity$Ethnicity.x=="asian"),]
-
-
-similarity_scores_pheno_aldi_ethnicity<-similarity_scores_pheno_aldi[!(similarity_scores_pheno_aldi$Ethnicity.x=="caucasian" & similarity_scores_pheno_aldi$Ethnicity.y=="hispanic"),]
-similarity_scores_pheno_aldi_ethnicity<-similarity_scores_pheno_aldi_ethnicity[!(similarity_scores_pheno_aldi_ethnicity$Ethnicity.x=="hispanic" & similarity_scores_pheno_aldi_ethnicity$Ethnicity.y=="caucasian"),]
-similarity_scores_pheno_aldi_ethnicity<-similarity_scores_pheno_aldi_ethnicity[!(similarity_scores_pheno_aldi_ethnicity$Ethnicity.x=="caucasian" & similarity_scores_pheno_aldi_ethnicity$Ethnicity.y=="black"),]
-similarity_scores_pheno_aldi_ethnicity<-similarity_scores_pheno_aldi_ethnicity[!(similarity_scores_pheno_aldi_ethnicity$Ethnicity.x=="black" & similarity_scores_pheno_aldi_ethnicity$Ethnicity.y=="caucasian"),]
-similarity_scores_pheno_aldi_ethnicity<-similarity_scores_pheno_aldi_ethnicity[!(similarity_scores_pheno_aldi_ethnicity$Ethnicity.x=="caucasian" & similarity_scores_pheno_aldi_ethnicity$Ethnicity.y=="asian"),]
-similarity_scores_pheno_aldi_ethnicity<-similarity_scores_pheno_aldi_ethnicity[!(similarity_scores_pheno_aldi_ethnicity$Ethnicity.x=="asian" & similarity_scores_pheno_aldi_ethnicity$Ethnicity.y=="caucasian"),]
-similarity_scores_pheno_aldi_ethnicity<-similarity_scores_pheno_aldi_ethnicity[!(similarity_scores_pheno_aldi_ethnicity$Ethnicity.x=="black" & similarity_scores_pheno_aldi_ethnicity$Ethnicity.y=="asian"),]
-similarity_scores_pheno_aldi_ethnicity<-similarity_scores_pheno_aldi_ethnicity[!(similarity_scores_pheno_aldi_ethnicity$Ethnicity.x=="black" & similarity_scores_pheno_aldi_ethnicity$Ethnicity.y=="hispanic"),]
-similarity_scores_pheno_aldi_ethnicity<-similarity_scores_pheno_aldi_ethnicity[!(similarity_scores_pheno_aldi_ethnicity$Ethnicity.x=="asian" & similarity_scores_pheno_aldi_ethnicity$Ethnicity.y=="black"),]
-similarity_scores_pheno_aldi_ethnicity<-similarity_scores_pheno_aldi_ethnicity[!(similarity_scores_pheno_aldi_ethnicity$Ethnicity.x=="hispanic" & similarity_scores_pheno_aldi_ethnicity$Ethnicity.y=="black"),]
-similarity_scores_pheno_aldi_ethnicity<-similarity_scores_pheno_aldi_ethnicity[!(similarity_scores_pheno_aldi_ethnicity$Ethnicity.x=="hispanic" & similarity_scores_pheno_aldi_ethnicity$Ethnicity.y=="asian"),]
-similarity_scores_pheno_aldi_ethnicity<-similarity_scores_pheno_aldi_ethnicity[!(similarity_scores_pheno_aldi_ethnicity$Ethnicity.x=="asian" & similarity_scores_pheno_aldi_ethnicity$Ethnicity.y=="hispanic"),]
-
-similarity_scores_pheno_aldi_ethnicity_black<-similarity_scores_pheno_aldi_ethnicity[!(similarity_scores_pheno_aldi_ethnicity$Ethnicity.x=="asian" & similarity_scores_pheno_aldi_ethnicity$Ethnicity.y=="hispanic"),]
-similarity_scores_pheno_aldi_ethnicity_white<-similarity_scores_pheno_aldi_ethnicity[!(similarity_scores_pheno_aldi_ethnicity$Ethnicity.x=="asian" & similarity_scores_pheno_aldi_ethnicity$Ethnicity.y=="hispanic"),]
-
-similarity_scores_pheno_aldi_ethnicity_white_sex<-similarity_scores_pheno_aldi_ethnicity_white[!(similarity_scores_pheno_aldi_ethnicity_white$Sex.x=="M" & similarity_scores_pheno_aldi_ethnicity_white$Sex.y=="F"),]
-similarity_scores_pheno_aldi_ethnicity_white_sex<-similarity_scores_pheno_aldi_ethnicity_white_sex[!(similarity_scores_pheno_aldi_ethnicity_white_sex$Sex.x=="F" & similarity_scores_pheno_aldi_ethnicity_white_sex$Sex.y=="M"),]
-similarity_scores_pheno_aldi_ethnicity_white_sex_male<-similarity_scores_pheno_aldi_ethnicity_white_sex[!(similarity_scores_pheno_aldi_ethnicity_white_sex$Sex.x=="F"),]
-similarity_scores_pheno_aldi_ethnicity_white_sex_female<-similarity_scores_pheno_aldi_ethnicity_white_sex[!(similarity_scores_pheno_aldi_ethnicity_white_sex$Sex.x=="M"),]
-
-similarity_scores_pheno_aldi_ethnicity_black_sex<-similarity_scores_pheno_aldi_ethnicity_black[!(similarity_scores_pheno_aldi_ethnicity_white$Sex.x=="M" & similarity_scores_pheno_aldi_ethnicity_white$Sex.y=="F"),]
-similarity_scores_pheno_aldi_ethnicity_black_sex<-similarity_scores_pheno_aldi_ethnicity_black_sex[!(similarity_scores_pheno_aldi_ethnicity_white$Sex.x=="F" & similarity_scores_pheno_aldi_ethnicity_white$Sex.y=="M"),]
-similarity_scores_pheno_aldi_ethnicity_black_sex_male<-similarity_scores_pheno_aldi_ethnicity_black_sex[!(similarity_scores_pheno_aldi_ethnicity_white$Sex.x=="F"),]
-similarity_scores_pheno_aldi_ethnicity_black_sex_female<-similarity_scores_pheno_aldi_ethnicity_black_sex[!(similarity_scores_pheno_aldi_ethnicity_white$Sex.x=="M"),]
-
-similarity_scores_pheno_aldi_ethnicity_sex<-similarity_scores_pheno_aldi_ethnicity[!(similarity_scores_pheno_aldi_ethnicity$Sex.x=="M" & similarity_scores_pheno_aldi_ethnicity$Sex.y=="F"),]
-similarity_scores_pheno_aldi_ethnicity_sex<-similarity_scores_pheno_aldi_ethnicity_sex[!(similarity_scores_pheno_aldi_ethnicity_sex$Sex.x=="F" & similarity_scores_pheno_aldi_ethnicity_sex$Sex.y=="M"),]
-similarity_scores_pheno_aldi_ethnicity_sex_male<-similarity_scores_pheno_aldi_ethnicity_sex[!(similarity_scores_pheno_aldi_ethnicity_sex$Sex.x=="F"),]
-similarity_scores_pheno_aldi_ethnicity_sex_female<-similarity_scores_pheno_aldi_ethnicity_sex[!(similarity_scores_pheno_aldi_ethnicity_sex$Sex.x=="M"),]
-
-similarity_scores_pheno_aldi_ethnicity<-na.omit(similarity_scores_pheno_aldi_ethnicity)
-similarity_scores_pheno_aldi_ethnicity_black<-na.omit(similarity_scores_pheno_aldi_ethnicity_black)
-similarity_scores_pheno_aldi_ethnicity_white<-na.omit(similarity_scores_pheno_aldi_ethnicity_white)
-similarity_scores_pheno_aldi_ethnicity_sex<-na.omit(similarity_scores_pheno_aldi_ethnicity_sex)
-similarity_scores_pheno_aldi_sex_ethnicity<-na.omit(similarity_scores_pheno_aldi_sex_ethnicity)
-
-library(facetscales)
-library(ggplot2)
-library(cowplot)
-library(ggpubr)
-
-theme <- theme(plot.title = element_text(hjust = 1, size = 20), 
-               axis.title.x = element_text(size = 20),
-               axis.title.y = element_text(size = 20),  
-               axis.text.x= element_text(size = 10), 
-               axis.text.y= element_blank(), 
-               panel.grid.major = element_blank(), 
-               panel.grid.minor = element_blank(), 
-               legend.position = "none")
-
-scales_y <- list(
-  `co-twins` = scale_y_continuous(limits = c(0, 0.7), breaks = NULL),
-  `negative_ctrl` = scale_y_continuous(limits = c(0, 0.1), breaks = NULL),
-  `positive_ctrl` = scale_y_continuous(limits = c(0, 1500), breaks = NULL)
-)
-
-
-
-levels(similarity_scores_pheno$Compared)
-levels(similarity_scores_pheno$Compared) <- c("co-twins" ,   "negative_ctrl" ,  "pos_ctrl" ,  "neg_ctrl_*", "positive_ctrl")
-similarity_scores_pheno$Compared = factor(similarity_scores_pheno$status, levels=c('negative_ctrl','co-twins','positive_ctrl','neg_ctrl_*', 'pos_ctrl'))
-levels(similarity_scores_pheno$Compared)
-
-
-ggplot(subset(similarity_scores_pheno_aldi, status == 'negative_ctrl' |status == 'co-twins'| status == 'pos_ctrl'), 
-       aes(x=Similarity, color=status)) +
-  stat_density(aes(x=Similarity, y=..scaled..,color=status), position=position_dodge(width = .1), geom="line") +
-  scale_color_manual(values = c( "#615292", "#EA5454","#AEC960")) +
-  scale_x_continuous(expand = c(0, 0)) + scale_y_continuous(expand = c(0, 0)) +
-  scale_fill_discrete(name= "Similarity Scores",labels = c("cowtins",'negative control','positive control'))+
-  labs(title = "AWS-Rekognition controls", y = "Density",color = "Similarity Scores")+
-  expand_limits(x=102)+
-  theme_classic()+
-  theme(#legend.position=c(0.1,-0.1),
-        legend.position = "none",
-        plot.title = element_text(hjust = 0.5, size = 30), 
-        axis.title.x = element_text(size = 40),
-        axis.title.y = element_text(size = 40),  
-        axis.text.x= element_text(size = 15, angle = 0), 
-        axis.text.y= element_blank(), 
-        axis.line = element_line(colour = "black"),
-        panel.grid.major = element_blank(), 
-        panel.grid.minor = element_blank())
-#y = "Density"
-
-
-ggplot(subset(similarity_scores_pheno_aldi_sex, status == 'negative_ctrl' |status == 'co-twins'| status == 'pos_ctrl'), 
-       aes(x=Similarity, color=status)) +
-  stat_density(aes(x=Similarity, y=..scaled..,color=status), position=position_dodge(width = .1), geom="line") +
-  scale_color_manual(values = c( "#615292", "#EA5454","#AEC960")) +
-  scale_x_continuous(expand = c(0, 0)) + scale_y_continuous(expand = c(0, 0)) +
-  scale_fill_discrete(name= "Similarity Scores",labels = c("cowtins",'negative control','positive control'))+
-  labs(title = "AWS-Rekognition controls", y = "Density",color = "Similarity Scores")+
-  expand_limits(x=102)+
-  theme_classic()+
-  theme(#legend.position=c(0.1,-0.1),
-    legend.position = "none",
-    plot.title = element_text(hjust = 0.5, size = 30), 
-    axis.title.x = element_text(size = 40),
-    axis.title.y = element_text(size = 40),  
-    axis.text.x= element_text(size = 15, angle = 0), 
-    axis.text.y= element_blank(), 
-    axis.line = element_line(colour = "black"),
-    panel.grid.major = element_blank(), 
-    panel.grid.minor = element_blank())
-
-ggplot(subset(similarity_scores_pheno_aldi_sex_male, status == 'negative_ctrl' |status == 'co-twins'| status == 'pos_ctrl'), 
-       aes(x=Similarity, color=status)) +
-  stat_density(aes(x=Similarity, y=..scaled..,color=status), position=position_dodge(width = .1), geom="line") +
-  scale_color_manual(values = c( "#615292", "#EA5454","#AEC960")) +
-  scale_x_continuous(expand = c(0, 0)) + scale_y_continuous(expand = c(0, 0)) +
-  scale_fill_discrete(name= "Similarity Scores",labels = c("cowtins",'negative control','positive control'))+
-  labs(title = "AWS-Rekognition controls", y = "Density",color = "Similarity Scores")+
-  expand_limits(x=102)+
-  theme_classic()+
-  theme(#legend.position=c(0.1,-0.1),
-    legend.position = "none",
-    plot.title = element_text(hjust = 0.5, size = 30), 
-    axis.title.x = element_text(size = 40),
-    axis.title.y = element_text(size = 40),  
-    axis.text.x= element_text(size = 15, angle = 0), 
-    axis.text.y= element_blank(), 
-    axis.line = element_line(colour = "black"),
-    panel.grid.major = element_blank(), 
-    panel.grid.minor = element_blank())
-
-ggplot(subset(similarity_scores_pheno_aldi_sex_female, status == 'negative_ctrl' |status == 'co-twins'| status == 'pos_ctrl'), 
-       aes(x=Similarity, color=status)) +
-  stat_density(aes(x=Similarity, y=..scaled..,color=status), position=position_dodge(width = .1), geom="line") +
-  scale_color_manual(values = c( "#615292", "#EA5454","#AEC960")) +
-  scale_x_continuous(expand = c(0, 0)) + scale_y_continuous(expand = c(0, 0)) +
-  scale_fill_discrete(name= "Similarity Scores",labels = c("cowtins",'negative control','positive control'))+
-  labs(title = "AWS-Rekognition controls", y = "Density",color = "Similarity Scores")+
-  expand_limits(x=102)+
-  theme_classic()+
-  theme(#legend.position=c(0.1,-0.1),
-    legend.position = "none",
-    plot.title = element_text(hjust = 0.5, size = 30), 
-    axis.title.x = element_text(size = 40),
-    axis.title.y = element_text(size = 40),  
-    axis.text.x= element_text(size = 15, angle = 0), 
-    axis.text.y= element_blank(), 
-    axis.line = element_line(colour = "black"),
-    panel.grid.major = element_blank(), 
-    panel.grid.minor = element_blank())
-
-ggplot(subset(similarity_scores_pheno_aldi_ethnicity, status == 'negative_ctrl' |status == 'co-twins'| status == 'pos_ctrl'), 
-       aes(x=Similarity, color=status)) +
-  stat_density(aes(x=Similarity, y=..scaled..,color=status), position=position_dodge(width = .1), geom="line") +
-  scale_color_manual(values = c( "#615292", "#EA5454","#AEC960")) +
-  scale_x_continuous(expand = c(0, 0)) + scale_y_continuous(expand = c(0, 0)) +
-  scale_fill_discrete(name= "Similarity Scores",labels = c("cowtins",'negative control','positive control'))+
-  labs(title = "AWS-Rekognition controls", y = "Density",color = "Similarity Scores")+
-  expand_limits(x=102)+
-  theme_classic()+
-  theme(#legend.position=c(0.1,-0.1),
-    legend.position = "none",
-    plot.title = element_text(hjust = 0.5, size = 30), 
-    axis.title.x = element_text(size = 40),
-    axis.title.y = element_text(size = 40),  
-    axis.text.x= element_text(size = 15, angle = 0), 
-    axis.text.y= element_blank(), 
-    axis.line = element_line(colour = "black"),
-    panel.grid.major = element_blank(), 
-    panel.grid.minor = element_blank())
-
-ggplot(subset(similarity_scores_pheno_aldi_ethnicity_sex, status == 'negative_ctrl' |status == 'co-twins'| status == 'pos_ctrl'), 
-       aes(x=Similarity, color=status)) +
-  stat_density(aes(x=Similarity, y=..scaled..,color=status), position=position_dodge(width = .1), geom="line") +
-  scale_color_manual(values = c( "#615292", "#EA5454","#AEC960")) +
-  scale_x_continuous(expand = c(0, 0)) + scale_y_continuous(expand = c(0, 0)) +
-  scale_fill_discrete(name= "Similarity Scores",labels = c("cowtins",'negative control','positive control'))+
-  labs(title = "AWS-Rekognition controls", y = "Density",color = "Similarity Scores")+
-  expand_limits(x=102)+
-  theme_classic()+
-  theme(#legend.position=c(0.1,-0.1),
-    legend.position = "none",
-    plot.title = element_text(hjust = 0.5, size = 30), 
-    axis.title.x = element_text(size = 40),
-    axis.title.y = element_text(size = 40),  
-    axis.text.x= element_text(size = 15, angle = 0), 
-    axis.text.y= element_blank(), 
-    axis.line = element_line(colour = "black"),
-    panel.grid.major = element_blank(), 
-    panel.grid.minor = element_blank())
-
-ggplot(subset(similarity_scores_pheno_aldi_ethnicity_white, status == 'negative_ctrl' |status == 'co-twins'| status == 'pos_ctrl'), 
-       aes(x=Similarity, color=status)) +
-  stat_density(aes(x=Similarity, y=..scaled..,color=status), position=position_dodge(width = .1), geom="line") +
-  scale_color_manual(values = c( "#615292", "#EA5454","#AEC960")) +
-  scale_x_continuous(expand = c(0, 0)) + scale_y_continuous(expand = c(0, 0)) +
-  scale_fill_discrete(name= "Similarity Scores",labels = c("cowtins",'negative control','positive control'))+
-  labs(title = "AWS-Rekognition controls", y = "Density",color = "Similarity Scores")+
-  expand_limits(x=102)+
-  theme_classic()+
-  theme(#legend.position=c(0.1,-0.1),
-    legend.position = "none",
-    plot.title = element_text(hjust = 0.5, size = 30), 
-    axis.title.x = element_text(size = 40),
-    axis.title.y = element_text(size = 40),  
-    axis.text.x= element_text(size = 15, angle = 0), 
-    axis.text.y= element_blank(), 
-    axis.line = element_line(colour = "black"),
-    panel.grid.major = element_blank(), 
-    panel.grid.minor = element_blank())
-
-ggplot(subset(similarity_scores_pheno_aldi_ethnicity_black, status == 'negative_ctrl' |status == 'co-twins'| status == 'pos_ctrl'), 
-       aes(x=Similarity, color=status)) +
-  stat_density(aes(x=Similarity, y=..scaled..,color=status), position=position_dodge(width = .1), geom="line") +
-  scale_color_manual(values = c( "#615292", "#EA5454","#AEC960")) +
-  scale_x_continuous(expand = c(0, 0)) + scale_y_continuous(expand = c(0, 0)) +
-  scale_fill_discrete(name= "Similarity Scores",labels = c("cowtins",'negative control','positive control'))+
-  labs(title = "AWS-Rekognition controls", y = "Density",color = "Similarity Scores")+
-  expand_limits(x=102)+
-  theme_classic()+
-  theme(#legend.position=c(0.1,-0.1),
-    legend.position = "none",
-    plot.title = element_text(hjust = 0.5, size = 30), 
-    axis.title.x = element_text(size = 40),
-    axis.title.y = element_text(size = 40),  
-    axis.text.x= element_text(size = 15, angle = 0), 
-    axis.text.y= element_blank(), 
-    axis.line = element_line(colour = "black"),
-    panel.grid.major = element_blank(), 
-    panel.grid.minor = element_blank())
 
 #######UMAP#######
 

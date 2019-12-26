@@ -136,7 +136,7 @@ ggplot(subset(schoeller_cf, ctrl_id == 'neg_ctrl' |ctrl_id == 'co-twins'| ctrl_i
   scale_color_manual(values = c( "#615292", "#EA5454","#AEC960")) +
   scale_x_continuous(expand = c(0, 0)) + scale_y_continuous(expand = c(0, 0)) +
   scale_fill_discrete(name= "Similarity Scores",labels = c("cowtins",'negative control','positive control'))+
-  labs(title = "AWS-Rekognition controls", y = "Density",color = "Similarity Scores")+
+  labs(title = "Similarity Scores w.r.t controls", y = "Density",color = "Similarity Scores")+
   expand_limits(x=102)+
   theme(legend.position=c(0.5,0.9),
         plot.title = element_text(hjust = 0.5, size = 30),
@@ -155,7 +155,7 @@ ggplot(subset(schoeller_cf_ethnicity, ctrl_id == 'neg_ctrl' |ctrl_id == 'co-twin
   scale_color_manual(values = c( "#615292", "#EA5454","#AEC960")) +
   scale_x_continuous(expand = c(0, 0)) + scale_y_continuous(expand = c(0, 0)) +
   scale_fill_discrete(name= "Similarity Scores",labels = c("cowtins",'negative control','positive control'))+
-  labs(title = "AWS-Rekognition w.r.t. Ethnicity", y = "Density",color = "Similarity Scores")+
+  labs(title = "Similarity Scores w.r.t. Ethnicity", y = "Density",color = "Similarity Scores")+
   expand_limits(x=102)+
   theme(legend.position=c(0.5,0.9),
         plot.title = element_text(hjust = 0.5, size = 30),
@@ -173,7 +173,7 @@ ggplot(subset(schoeller_cf_ethnicity_black, ctrl_id == 'neg_ctrl' |ctrl_id == 'c
   scale_color_manual(values = c( "#615292", "#EA5454","#AEC960")) +
   scale_x_continuous(expand = c(0, 0)) + scale_y_continuous(expand = c(0, 0)) +
   scale_fill_discrete(name= "Similarity Scores",labels = c("cowtins",'negative control','positive control'))+
-  labs(title = "AWS-Rekognition w.r.t. African Americans", y = "Density",color = "Similarity Scores")+
+  labs(title = "Similarity Scores w.r.t. African Americans", y = "Density",color = "Similarity Scores")+
   expand_limits(x=102)+
   theme(legend.position=c(0.5,0.9),
         plot.title = element_text(hjust = 0.5, size = 30),
@@ -191,7 +191,7 @@ ggplot(subset(schoeller_cf_ethnicity_white, ctrl_id == 'neg_ctrl' |ctrl_id == 'c
   scale_color_manual(values = c( "#615292", "#EA5454","#AEC960")) +
   scale_x_continuous(expand = c(0, 0)) + scale_y_continuous(expand = c(0, 0)) +
   scale_fill_discrete(name= "Similarity Scores",labels = c("cowtins",'negative control','positive control'))+
-  labs(title = "AWS-Rekognition w.r.t. Caucasians", y = "Density",color = "Similarity Scores")+
+  labs(title = "Similarity Scores w.r.t. Caucasians", y = "Density",color = "Similarity Scores")+
   expand_limits(x=102)+
   theme(legend.position=c(0.5,0.9),
         plot.title = element_text(hjust = 0.5, size = 30),
@@ -209,7 +209,7 @@ ggplot(subset(schoeller_cf_sex, ctrl_id == 'neg_ctrl' |ctrl_id == 'co-twins'| ct
   scale_color_manual(values = c( "#615292", "#EA5454","#AEC960")) +
   scale_x_continuous(expand = c(0, 0)) + scale_y_continuous(expand = c(0, 0)) +
   scale_fill_discrete(name= "Similarity Scores",labels = c("cowtins",'negative control','positive control'))+
-  labs(title = "AWS-Rekognition w.r.t. Sex", y = "Density",color = "Similarity Scores")+
+  labs(title = "Similarity Scores w.r.t. Sex", y = "Density",color = "Similarity Scores")+
   expand_limits(x=102)+
   theme(legend.position=c(0.5,0.9),
         plot.title = element_text(hjust = 0.5, size = 30),
@@ -226,7 +226,7 @@ ggplot(subset(schoeller_cf_sex_male, ctrl_id == 'neg_ctrl' |ctrl_id == 'co-twins
   scale_color_manual(values = c( "#615292", "#EA5454","#AEC960")) +
   scale_x_continuous(expand = c(0, 0)) + scale_y_continuous(expand = c(0, 0)) +
   scale_fill_discrete(name= "Similarity Scores",labels = c("cowtins",'negative control','positive control'))+
-  labs(title = "AWS-Rekognition w.r.t. Males", y = "Density",color = "Similarity Scores")+
+  labs(title = "Similarity Scores w.r.t. Males", y = "Density",color = "Similarity Scores")+
   expand_limits(x=102)+
   theme(legend.position=c(0.5,0.9),
         plot.title = element_text(hjust = 0.5, size = 30),
@@ -243,7 +243,7 @@ ggplot(subset(schoeller_cf_sex_female, ctrl_id == 'neg_ctrl' |ctrl_id == 'co-twi
   scale_color_manual(values = c( "#615292", "#EA5454","#AEC960")) +
   scale_x_continuous(expand = c(0, 0)) + scale_y_continuous(expand = c(0, 0)) +
   scale_fill_discrete(name= "Similarity Scores",labels = c("cowtins",'negative control','positive control'))+
-  labs(title = "AWS-Rekognition w.r.t. Females", y = "Density",color = "Similarity Scores")+
+  labs(title = "Similarity Scores w.r.t. Females", y = "Density",color = "Similarity Scores")+
   expand_limits(x=102)+
   theme(legend.position=c(0.5,0.9),
         plot.title = element_text(hjust = 0.5, size = 30),
