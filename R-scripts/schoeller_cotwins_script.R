@@ -1085,10 +1085,26 @@ library("FactoMineR")
 library("factoextra")
 library(ggrepel)
 library(ggpmisc)
+<<<<<<< HEAD
+=======
+#all dist pheno fc
+
+scaled_all_dist_pheno_fc<-scale(all_dist_pheno_fc[,8:358])
+scaled_all_dist_pheno_fc<-cbind(all_dist_pheno_fc[c(1:7)],scaled_all_dist_pheno_fc)
+res.pca <- prcomp(scaled_all_dist_pheno_fc[,8:358], scale. = TRUE)
+res.pca <- FactoMineR::PCA(scaled_all_dist_pheno_fc[,8:358], scale. = TRUE)
+
+#ggfortify
+>>>>>>> 3004de4d5d7ecfd71d56dce0a9823df563cccf48
 
 #dist
 
+<<<<<<< HEAD
 all_dist_pheno$Co_twins_ID <- as.integer(as.character(all_dist_pheno$Co_twins_ID))
+=======
+autoplot(res.pca, data = all_dist_pheno_fc, colour = 'Sex', loadings = F, loadings.colour = 'blue',
+         loadings.label = F, loadings.label.size = 3)
+>>>>>>> 3004de4d5d7ecfd71d56dce0a9823df563cccf48
 
 all_dist_pheno %<>% arrange(Co_twins_ID)
 
@@ -1104,6 +1120,7 @@ fviz_pca_ind(res.pca, pointsize = 10, axes = c(1, 2), repel = TRUE, geom = "text
              pointshape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
                             21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
                             21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+<<<<<<< HEAD
                             21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
                             21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
                             21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
@@ -1132,6 +1149,21 @@ fviz_pca_ind(res.pca, pointsize = 10, axes = c(1, 2), repel = TRUE, geom = "text
         plot.title = element_text(size=30)) + 
   geom_text(aes(label = all_dist_pheno$Co_twins_ID))
 #dev.off()
+=======
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            24,24,24,24,24,25,25,25,25,25),
+             col.ind = "black", 
+             fill.ind = c("none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                                             "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                                             "none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none",
+                                             "none","none","none","none","none","none","none","none","none","none","none","none","none",
+                                             "#FF0000","#FF0000","#FF0000","#FF0000","#FF0000","#668d3c","#668d3c","#668d3c","#668d3c","#668d3c"), 
+             alpha.ind = 0.4 , 
+             palette = c(), 
+             title = "PCA of FC of Feature Distance") +
+  theme(legend.position = "none",
+        plot.title = element_text(size=30)) #+ geom_text(aes(label = scaled_all_dist_pheno_fc$Co_twins_ID))
+>>>>>>> 3004de4d5d7ecfd71d56dce0a9823df563cccf48
 
 #sex
 groups <- as.factor(all_dist_pheno$Sex) # group by Sex
@@ -1141,17 +1173,23 @@ fviz_pca_ind(res.pca, pointsize = 10, axes = c(1, 2), repel = T,
              pointshape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
                             21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
                             21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+<<<<<<< HEAD
                             21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
                             21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
                             21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
                             24,24,24,24,24,24,24,24,24,24,
                             25,25,25,25,25,25,25,25,25,25),
+=======
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            24,24,24,24,24,25,25,25,25,25),
+>>>>>>> 3004de4d5d7ecfd71d56dce0a9823df563cccf48
              col.ind = groups, fill.ind = groups,
              #addEllipses = TRUE,
              alpha.ind = 0.4 , 
              #habillage = groups,# color by groups
              palette = c(), 
              legend.title = "Sex", #theme(legend.position = "none") + 
+<<<<<<< HEAD
              title = "PCA of All Cotwins' Distance between Landmarks") +
   theme(plot.title = element_text(size=30))
 #theme(legend.position = "none") +   
@@ -1159,6 +1197,16 @@ fviz_pca_ind(res.pca, pointsize = 10, axes = c(1, 2), repel = T,
 
 #age
 all_dist_pheno_age <- all_dist_pheno %>%
+=======
+             title = "PCA of FC of Feature Distance") +
+  theme(plot.title = element_text(size=30))
+  #theme(legend.position = "none") +   
+  #geom_text(aes(label = scaled_all_dist_pheno_fc$Co_twins_ID)) 
+
+#age
+
+all_dist_pheno_fc_age <- all_dist_pheno_fc %>%
+>>>>>>> 3004de4d5d7ecfd71d56dce0a9823df563cccf48
   mutate(FortyPlus = ifelse(Age > 40, 1, 0)) 
 
 fviz_pca_ind(res.pca, pointsize = 10, 
@@ -1168,6 +1216,7 @@ fviz_pca_ind(res.pca, pointsize = 10,
              pointshape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
                             21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
                             21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+<<<<<<< HEAD
                             21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
                             21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
                             21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
@@ -1175,23 +1224,38 @@ fviz_pca_ind(res.pca, pointsize = 10,
                             25,25,25,25,25,25,25,25,25,25),
              #col.ind = as.character(all_dist_pheno_fc_age$FortyPlus), 
              fill.ind = as.character(all_dist_pheno_age$FortyPlus),
+=======
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,22,22,22,
+                            24,24,24,24,24,25,25,25,25,25),
+             #col.ind = as.character(all_dist_pheno_fc_age$FortyPlus), 
+             fill.ind = as.character(all_dist_pheno_fc_age$FortyPlus),
+>>>>>>> 3004de4d5d7ecfd71d56dce0a9823df563cccf48
              #gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
              alpha.ind = 0.4 , 
              #habillage = groups,# color by groups
              #palette = c(), 
              #legend.title = "Age" ) #+ theme(legend.position = "none")
+<<<<<<< HEAD
              title = "PCA of All Cotwins' Distance between Landmarks") +
+=======
+             title = "PCA of FC of Feature Distance") +
+>>>>>>> 3004de4d5d7ecfd71d56dce0a9823df563cccf48
   #scale_fill_gradientn(colours = heat.colors(5))+
   #theme_classic()+
   #scale_fill_discrete(name= "",labels = c("cowtins",'negative control','positive control'))+
   theme(plot.title = element_text(size=30),
+<<<<<<< HEAD
         legend.position = "none"
   ) 
+=======
+        legend.position = "none") 
+>>>>>>> 3004de4d5d7ecfd71d56dce0a9823df563cccf48
 
 fviz_pca_ind(res.pca, pointsize = 10, 
              axes = c(1, 2), repel = F, 
              geom.ind = "point", 
              mean.point = F, 
+<<<<<<< HEAD
              pointshape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
                             21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
                             21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
@@ -1202,17 +1266,35 @@ fviz_pca_ind(res.pca, pointsize = 10,
                             25,25,25,25,25,25,25,25,25,25),
              #col.ind = all_dist_pheno_fc$Age, 
              fill.ind = all_dist_pheno$Age,
+=======
+             pointshape = c(21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
+                            24,24,24,24,24,25,25,25,25,25),
+             #col.ind = all_dist_pheno_fc$Age, 
+             fill.ind = all_dist_pheno_fc$Age,
+>>>>>>> 3004de4d5d7ecfd71d56dce0a9823df563cccf48
              #gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
              alpha.ind = 0.4 , 
              #habillage = groups,# color by groups
              #palette = c(), 
              #legend.title = "Age" ) #+ theme(legend.position = "none")
+<<<<<<< HEAD
              title = "PCA of All Cotwins' Distance between Landmarks") +
   scale_fill_gradientn(colours = heat.colors(5))+
   #theme_classic() +
   labs(title = "PCA of All Cotwins' Distance between Landmarks", fill = "Age") +
   theme(plot.title = element_text(size=30)) 
 #theme(legend.position = "none")
+=======
+             title = "PCA of FC of Feature Distance") +
+  scale_fill_gradientn(colours = heat.colors(5))+
+  theme_classic() +
+  labs(title = "PCA of FC of Feature Distance", fill = "Age") +
+  theme(plot.title = element_text(size=30)) 
+  #theme(legend.position = "none")
+>>>>>>> 3004de4d5d7ecfd71d56dce0a9823df563cccf48
 
 fviz_screeplot(res.pca, addlabels = TRUE, ylim = c(0, 50))
 
@@ -3259,6 +3341,7 @@ ggplot(arpdabs_tsne[,10:11]) +
         legend.text=element_text(size=20))#, 
 #legend.position = "none") 
 
+<<<<<<< HEAD
 cluster.tsne.arpdabs.1.2 <- Mclust(arpdabs_tsne[,10:11], prior = priorControl())
 pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.tsne.arpdabs.1.2.BIC.pdf", w=6, h=4)
 plot(cluster.tsne.arpdabs.1.2, what = "BIC")
@@ -3272,6 +3355,8 @@ dev.off()
 pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster.tsne.arpdabs.1.2.plot.uncertainty.pdf", w=4, h=4)
 plot(cluster.tsne.arpdabs.1.2, what = "uncertainty")
 dev.off()
+=======
+>>>>>>> 3004de4d5d7ecfd71d56dce0a9823df563cccf48
 
 #######UMAP#######
 
