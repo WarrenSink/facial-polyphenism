@@ -1085,6 +1085,7 @@ library("FactoMineR")
 library("factoextra")
 library(ggrepel)
 library(ggpmisc)
+library(mclust)
 
 #dist
 
@@ -1254,8 +1255,40 @@ pdf("/Users/Warren.Sink/github/facial-polyphenism/Plots/Schoeller-mclust/cluster
 plot(cluster.pca.adp.1.2.3, what = "uncertainty")
 dev.off()
 
-all_dist_pheno_test<-all_dist_pheno
-all_dist_pheno_test$mclust_clusters <- cluster.pca.adp.1.2.3$classification
+all_dist_pheno_class12 <- all_dist_pheno
+all_dist_pheno_class123 <- all_dist_pheno
+all_dist_pheno_class12$mclust_clusters <- cluster.pca.adp.1.2$classification
+all_dist_pheno_class123$mclust_clusters <- cluster.pca.adp.1.2.3$classification
+
+all_dist_pheno_class12 %>% 
+  group_by(mclust_clusters) %>%
+  count(Sex) %>%
+  ggplot(aes(x = mclust_clusters, y = n, fill = Sex)) +
+  geom_bar(stat="identity", alpha=.6, width=.4) +
+  theme_classic() +
+  labs(x = "MCLUST Clusters", y = "", title = "Clustering of All Schoeller Individuals") +
+  scale_x_discrete(limits=c("1","2")) +
+  theme(plot.title = element_text(hjust = 0.5, size = 30),
+        axis.title.x = element_text(size = 40),
+        axis.title.y = element_text(size = 40),  
+        axis.text.x= element_text(size = 15, angle = 0),
+        axis.text.y= element_blank())
+
+all_dist_pheno_class12 %>% 
+  group_by(mclust_clusters) %>%
+  count(Ethnicity) %>%
+  group_by(mclust_clusters) %>%
+  arrange(n) %>%
+  ggplot(aes(x = mclust_clusters, y = n, fill = Ethnicity)) +
+  geom_bar(stat="identity", alpha=.6, width=.4) +
+  theme_classic() +
+  labs(x = "MCLUST Clusters", y = "", title = "Clustering of All Schoeller Individuals") +
+  scale_x_discrete(limits=c("1","2")) +
+  theme(plot.title = element_text(hjust = 0.5, size = 30),
+        axis.title.x = element_text(size = 40),
+        axis.title.y = element_text(size = 40),  
+        axis.text.x= element_text(size = 15, angle = 0),
+        axis.text.y= element_blank())
 
 
 #dist fc
@@ -2296,7 +2329,9 @@ ggplot(tsne_plot) + geom_point(aes(x=x, y=y, color=scaled_all_dist_pheno_fc$Age,
         axis.text.x= element_text(size = 22),
         axis.text.y= element_text(size = 22), 
         legend.title=element_text(size=20), 
-        legend.text=element_text(size=20))#, 
+        legend.text=element_text(size=20),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank())#, 
 #legend.position = "none")
 dev.off()
 
@@ -3691,3 +3726,31 @@ ggplot(umap_arpfc) +
   scale_color_manual(values=c("#0727f5","#76EEC6" ,"#FF0000", "#FF7F24" , "#615292", "#AEC960", "#EE1289", "#615292"), guide=FALSE) +
   scale_fill_manual(values=c("#0727f5","#76EEC6","#FF0000" , "#FF7F24" ,"#615292", "#AEC960", "#EE1289","white"), guide=FALSE)
 dev.off()
+
+
+##########Seurat########
+library(Seurat)
+
+scaled_all_dist_pheno_delta <- scale(all_dist_pheno_delta[,10:360])
+
+pca_all_dist_pheno_delta <- RunPCA(scaled_all_dist_pheno_delta, verbose = FALSE)
+
+#pca_all_dist_pheno_delta <- prcomp(scaled_all_dist_pheno_delta)
+
+pca_all_dist_pheno_delta <- as.data.frame(pca_all_dist_pheno_delta[["sdev"]])
+
+ElbowPlot(pca_all_dist_pheno_delta@stdev)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
