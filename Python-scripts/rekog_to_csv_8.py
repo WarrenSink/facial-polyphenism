@@ -1,11 +1,10 @@
 #libraries
-import boto
 import boto3
 import pandas as pd
 
 #the bucket name refers to the name of the database folder, which contains the images
 #make sure the name is correct or else you may have the wrong data or generate an error
-bucket_name = 'schoeller-test'
+bucket_name = 'msu-cotwins-all'
 
 #s3 = the database with the buckets
 s3 = boto3.resource('s3')
@@ -77,5 +76,5 @@ img_df_long = pd.DataFrame(results_long, columns=["ID",'ChinBottom','LeftEyeDown
 #transpose it so the matrix works well with the R script
 img_df_long_1 = img_df_long.transpose()
 
-#create the csv
-img_df_long_1.to_csv("schoeller_test.csv")
+#create the csv and set it in the appropriate folder
+img_df_long_1.to_csv("~/github/facial-polyphenism/CSVs/msu_extract.csv")
